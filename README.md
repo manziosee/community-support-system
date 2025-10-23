@@ -1,117 +1,360 @@
-# Community Help Portal
+<div align="center">
 
-A Spring Boot web application that connects citizens in need with volunteers who can assist them. Citizens can post requests for help with tasks such as grocery delivery, tutoring, or technical support, while volunteers can browse these requests, accept them, and mark them as completed.
+# 🤝 Community Help Portal
 
-## Project Structure
+<p align="center">
+  <img src="https://img.shields.io/badge/Spring%20Boot-3.5.6-brightgreen?style=for-the-badge&logo=spring" alt="Spring Boot">
+  <img src="https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=java" alt="Java">
+  <img src="https://img.shields.io/badge/PostgreSQL-16-blue?style=for-the-badge&logo=postgresql" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/Maven-3.9-red?style=for-the-badge&logo=apache-maven" alt="Maven">
+</p>
 
-### Entities (5 Classes)
-1. **Location** - Rwandan administrative hierarchy (Province → District → Sector → Cell → Village)
-2. **User** - Citizens and Volunteers with location relationships
-3. **Request** - Help requests posted by citizens
-4. **Assignment** - Tracks volunteer-request assignments
-5. **Notification** - System notifications for users
-6. **Skill** - Volunteer skills (Many-to-Many with Users)
+<p align="center">
+  <strong>🌟 A comprehensive web platform connecting citizens in need with volunteers for community assistance 🌟</strong>
+</p>
 
-### Relationships Implemented
-- **One-to-One**: User profile extensions (can be extended)
-- **One-to-Many**: Location → Users, User → Requests, User → Assignments, User → Notifications
-- **Many-to-One**: Users → Location, Requests → User, Assignments → User/Request
-- **Many-to-Many**: Users ↔ Skills
+</div>
 
-### Key Features
-- Complete CRUD operations for all entities
-- Spring Data JPA with custom queries (findBy, existsBy, sorting, pagination)
-- Rwandan location-based user retrieval APIs
-- RESTful API endpoints for all operations
-- H2 in-memory database for development
-- Sample data initialization
+---
 
-## API Endpoints
+## 📋 Overview
 
-### Location Endpoints
-- `GET /api/locations` - Get all locations
-- `GET /api/locations/province-code/{code}` - Get locations by province code
-- `GET /api/locations/province/{name}` - Get locations by province name
-- `POST /api/locations` - Create new location
-- `PUT /api/locations/{id}` - Update location
-- `DELETE /api/locations/{id}` - Delete location
+The **Community Help Portal** is a Spring Boot web application that bridges the gap between citizens seeking assistance and volunteers ready to help. Whether it's grocery delivery, tutoring, or technical support, our platform ensures timely community assistance through an intuitive and robust system.
 
-### User Endpoints
-- `GET /api/users` - Get all users
-- `GET /api/users/province-code/{code}` - Get users by province code
-- `GET /api/users/province/{name}` - Get users by province name
-- `GET /api/users/role/{role}` - Get users by role (CITIZEN/VOLUNTEER)
-- `POST /api/users` - Create new user
-- `PUT /api/users/{id}` - Update user
-- `DELETE /api/users/{id}` - Delete user
+## 🏗️ Database Architecture
 
-### Request Endpoints
-- `GET /api/requests` - Get all requests
-- `GET /api/requests/status/{status}` - Get requests by status
-- `GET /api/requests/pending` - Get pending requests
-- `GET /api/requests/province/{province}` - Get requests by province
-- `POST /api/requests` - Create new request
-- `PUT /api/requests/{id}` - Update request
-- `PATCH /api/requests/{id}/status` - Update request status
+### 📊 Entity Relationship Diagram (ERD)
 
-### Assignment Endpoints
-- `GET /api/assignments` - Get all assignments
-- `GET /api/assignments/volunteer/{id}` - Get assignments by volunteer
-- `GET /api/assignments/completed` - Get completed assignments
-- `POST /api/assignments` - Create new assignment
-- `PATCH /api/assignments/{id}/complete` - Mark assignment as completed
+<div align="center">
+  <img src="images/ERD.png" alt="Community Help Portal ERD" width="800">
+</div>
 
-### Notification Endpoints
-- `GET /api/notifications` - Get all notifications
-- `GET /api/notifications/user/{id}` - Get notifications by user
-- `GET /api/notifications/unread` - Get unread notifications
-- `POST /api/notifications` - Create new notification
-- `PATCH /api/notifications/{id}/read` - Mark notification as read
+### 🗃️ Database Entities (7 Tables)
 
-### Skill Endpoints
-- `GET /api/skills` - Get all skills
-- `GET /api/skills/name/{name}` - Get skill by name
-- `GET /api/skills/popular` - Get skills ordered by user count
-- `POST /api/skills` - Create new skill
-- `PUT /api/skills/{id}` - Update skill
+| Entity | Description | Key Features |
+|--------|-------------|-------------|
+| 🏛️ **Location** | Rwandan administrative hierarchy | Province → District → Sector → Cell → Village |
+| 👥 **User** | Citizens & Volunteers | Role-based access, location-linked |
+| 📝 **Request** | Help requests by citizens | Status tracking, categorized |
+| 🤝 **Assignment** | Volunteer-request assignments | Time tracking, completion status |
+| 🔔 **Notification** | System notifications | Read/unread status, user-specific |
+| 🎯 **Skill** | Volunteer capabilities | Categorized expertise |
+| 🔗 **User_Skills** | Many-to-Many junction | Skills-users mapping |
 
-## Running the Application
+### 🔗 Relationship Types Implemented
 
-1. **Prerequisites**: Java 21, Maven
-2. **Build**: `./mvnw clean compile`
-3. **Run**: `./mvnw spring-boot:run`
-4. **Access**: http://localhost:8080
-5. **H2 Console**: http://localhost:8080/h2-console (JDBC URL: jdbc:h2:mem:testdb)
+<table align="center">
+<tr>
+<td align="center">
 
-## Database Schema
+**🔗 One-to-Many (1:N)**
+- 🏛️ Location → 👥 Users
+- 👥 User → 📝 Requests
+- 👥 User → 🤝 Assignments
+- 👥 User → 🔔 Notifications
+- 📝 Request → 🤝 Assignments
 
-The application uses H2 in-memory database with the following tables:
-- `locations` - Rwandan administrative locations
-- `users` - Citizens and volunteers
-- `requests` - Help requests
-- `assignments` - Volunteer assignments
-- `notifications` - User notifications
-- `skills` - Available skills
-- `user_skills` - Many-to-many mapping table
+</td>
+<td align="center">
 
-## Sample Data
+**🔄 Many-to-One (N:1)**
+- 👥 Users → 🏛️ Location
+- 📝 Requests → 👥 User (Citizen)
+- 🤝 Assignments → 👥 User (Volunteer)
+- 🤝 Assignments → 📝 Request
+- 🔔 Notifications → 👥 User
 
-The application initializes with sample data including:
-- 5 locations across Rwanda's provinces
-- 5 users (citizens and volunteers)
-- 5 skills (Programming, Tutoring, Delivery, Tech Support, Cooking)
-- 3 sample requests
-- Sample notifications
+</td>
+<td align="center">
 
-## Technical Implementation
+**🔀 Many-to-Many (M:N)**
+- 👥 Users ↔ 🎯 Skills
+  - *via User_Skills junction table*
+  - *Composite Primary Key*
+  - *Bidirectional relationship*
 
-- **Framework**: Spring Boot 3.5.6
-- **Java Version**: 21
-- **Database**: H2 (development), PostgreSQL (production ready)
-- **ORM**: Spring Data JPA with Hibernate
-- **Architecture**: Model-Repository-Service-Controller pattern
-- **API**: RESTful endpoints with proper HTTP methods
-- **Validation**: JPA validation annotations
-- **Logging**: Configured for debugging
+</td>
+</tr>
+</table>
 
-This implementation satisfies all midterm requirements including 5+ entities, complete CRUD operations, JPA query methods, Rwandan location hierarchy, user-location relationships, and all three types of entity relationships.
+## 🛠️ Technology Stack
+
+<div align="center">
+
+| Category | Technology | Version | Purpose |
+|----------|------------|---------|----------|
+| 🖥️ **Backend** | Spring Boot | 3.5.6 | Main framework |
+| ☕ **Language** | Java | 21 | Programming language |
+| 🗄️ **Database** | PostgreSQL | 16+ | Production database |
+| 🔧 **ORM** | Hibernate/JPA | 6.x | Object-relational mapping |
+| 📦 **Build Tool** | Maven | 3.9+ | Dependency management |
+| 🌐 **API** | REST | - | Web services |
+| 📊 **Data Access** | Spring Data JPA | 3.x | Repository pattern |
+| 🔍 **Validation** | Bean Validation | 3.x | Data validation |
+
+</div>
+
+## ✨ Key Features
+
+<div align="center">
+
+| Feature | Description | Status |
+|---------|-------------|--------|
+| 🔄 **CRUD Operations** | Complete Create, Read, Update, Delete for all entities | ✅ |
+| 🔍 **Advanced Queries** | findBy, existsBy, custom queries with @Query | ✅ |
+| 📄 **Pagination & Sorting** | Efficient data retrieval with Spring Data | ✅ |
+| 🏛️ **Location-based APIs** | Rwandan administrative hierarchy support | ✅ |
+| 🌐 **RESTful Endpoints** | Complete API coverage for all operations | ✅ |
+| 🗄️ **Database Migration** | Hibernate DDL auto-generation | ✅ |
+| 📊 **Sample Data** | Automated data initialization | ✅ |
+| 🔐 **Data Integrity** | Foreign key constraints and validations | ✅ |
+
+</div>
+
+---
+
+## 🌐 API Endpoints
+
+<details>
+<summary><strong>🏛️ Location Endpoints</strong></summary>
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| 🔍 `GET` | `/api/locations` | Get all locations |
+| 🔍 `GET` | `/api/locations/province-code/{code}` | Get locations by province code |
+| 🔍 `GET` | `/api/locations/province/{name}` | Get locations by province name |
+| 🔍 `GET` | `/api/locations/provinces` | Get all provinces |
+| 🔍 `GET` | `/api/locations/districts/{province}` | Get districts by province |
+| ➕ `POST` | `/api/locations` | Create new location |
+| ✏️ `PUT` | `/api/locations/{id}` | Update location |
+| ❌ `DELETE` | `/api/locations/{id}` | Delete location |
+
+</details>
+
+<details>
+<summary><strong>👥 User Endpoints</strong></summary>
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| 🔍 `GET` | `/api/users` | Get all users |
+| 🔍 `GET` | `/api/users/province-code/{code}` | 🎯 Get users by province code |
+| 🔍 `GET` | `/api/users/province/{name}` | 🎯 Get users by province name |
+| 🔍 `GET` | `/api/users/role/{role}` | Get users by role (CITIZEN/VOLUNTEER) |
+| 🔍 `GET` | `/api/users/volunteers/province/{province}` | Get volunteers by province |
+| ➕ `POST` | `/api/users` | Create new user |
+| ✏️ `PUT` | `/api/users/{id}` | Update user |
+| ❌ `DELETE` | `/api/users/{id}` | Delete user |
+
+</details>
+
+<details>
+<summary><strong>📝 Request Endpoints</strong></summary>
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| 🔍 `GET` | `/api/requests` | Get all requests |
+| 🔍 `GET` | `/api/requests/status/{status}` | Get requests by status |
+| 🔍 `GET` | `/api/requests/pending` | Get pending requests |
+| 🔍 `GET` | `/api/requests/province/{province}` | Get requests by province |
+| 🔍 `GET` | `/api/requests/citizen/{citizenId}` | Get requests by citizen |
+| ➕ `POST` | `/api/requests` | Create new request |
+| ✏️ `PUT` | `/api/requests/{id}` | Update request |
+| 🔄 `PATCH` | `/api/requests/{id}/status` | Update request status |
+| ❌ `DELETE` | `/api/requests/{id}` | Delete request |
+
+</details>
+
+<details>
+<summary><strong>🤝 Assignment Endpoints</strong></summary>
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| 🔍 `GET` | `/api/assignments` | Get all assignments |
+| 🔍 `GET` | `/api/assignments/volunteer/{id}` | Get assignments by volunteer |
+| 🔍 `GET` | `/api/assignments/completed` | Get completed assignments |
+| 🔍 `GET` | `/api/assignments/pending` | Get pending assignments |
+| 🔍 `GET` | `/api/assignments/province/{province}` | Get assignments by province |
+| ➕ `POST` | `/api/assignments` | Create new assignment |
+| ✅ `PATCH` | `/api/assignments/{id}/complete` | Mark assignment as completed |
+| ❌ `DELETE` | `/api/assignments/{id}` | Delete assignment |
+
+</details>
+
+<details>
+<summary><strong>🔔 Notification Endpoints</strong></summary>
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| 🔍 `GET` | `/api/notifications` | Get all notifications |
+| 🔍 `GET` | `/api/notifications/user/{id}` | Get notifications by user |
+| 🔍 `GET` | `/api/notifications/unread` | Get unread notifications |
+| ➕ `POST` | `/api/notifications` | Create new notification |
+| ✅ `PATCH` | `/api/notifications/{id}/read` | Mark notification as read |
+| 🔄 `PATCH` | `/api/notifications/user/{userId}/mark-all-read` | Mark all as read for user |
+| ❌ `DELETE` | `/api/notifications/{id}` | Delete notification |
+
+</details>
+
+<details>
+<summary><strong>🎯 Skill Endpoints</strong></summary>
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| 🔍 `GET` | `/api/skills` | Get all skills |
+| 🔍 `GET` | `/api/skills/name/{name}` | Get skill by name |
+| 🔍 `GET` | `/api/skills/popular` | Get skills ordered by user count |
+| 🔍 `GET` | `/api/skills/unused` | Get skills with no users |
+| ➕ `POST` | `/api/skills` | Create new skill |
+| ✏️ `PUT` | `/api/skills/{id}` | Update skill |
+| ❌ `DELETE` | `/api/skills/{id}` | Delete skill |
+
+</details>
+
+---
+
+## 🚀 Getting Started
+
+### 📋 Prerequisites
+
+<div align="center">
+
+| Requirement | Version | Download Link |
+|-------------|---------|---------------|
+| ☕ **Java** | 21+ | [Oracle JDK](https://www.oracle.com/java/technologies/downloads/) |
+| 📦 **Maven** | 3.9+ | [Apache Maven](https://maven.apache.org/download.cgi) |
+| 🗄️ **PostgreSQL** | 16+ | [PostgreSQL](https://www.postgresql.org/download/) |
+| 🖥️ **IDE** | Any | [IntelliJ IDEA](https://www.jetbrains.com/idea/) / [VS Code](https://code.visualstudio.com/) |
+
+</div>
+
+### 🔧 Installation & Setup
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/manziosee/community-support-system.git
+cd community-support-system/supportsystem
+
+# 2. Create PostgreSQL database
+psql -U postgres -c "CREATE DATABASE community_support_system_db;"
+
+# 3. Build the project
+./mvnw clean compile
+
+# 4. Run the application
+./mvnw spring-boot:run
+```
+
+### 🌐 Access Points
+
+<div align="center">
+
+| Service | URL | Description |
+|---------|-----|-------------|
+| 🌐 **Main Application** | http://localhost:8080 | API Base URL |
+| 📊 **API Documentation** | http://localhost:8080/api | REST Endpoints |
+| 🗄️ **Database** | localhost:5432 | PostgreSQL Connection |
+
+</div>
+
+---
+
+## 🗄️ Database Schema
+
+<div align="center">
+
+### 📋 Production Database Tables
+
+| Table | Records | Purpose | Key Features |
+|-------|---------|---------|-------------|
+| 🏛️ `locations` | 5 provinces | Rwandan administrative hierarchy | Unique province codes |
+| 👥 `users` | Citizens & Volunteers | User management | Role-based, location-linked |
+| 📝 `requests` | Help requests | Service requests | Status tracking |
+| 🤝 `assignments` | Volunteer tasks | Request assignments | Time tracking |
+| 🔔 `notifications` | User alerts | System notifications | Read/unread status |
+| 🎯 `skills` | Volunteer capabilities | Skill categories | Unique skill names |
+| 🔗 `user_skills` | Skill mappings | Many-to-many junction | Composite primary key |
+
+</div>
+
+### 🌱 Sample Data Included
+
+<details>
+<summary><strong>Click to view sample data details</strong></summary>
+
+- **🏛️ 5 Locations**: Covering all Rwanda provinces (Kigali, Eastern, Western, Northern, Southern)
+- **👥 5 Users**: Mix of citizens and volunteers with realistic Rwandan names
+- **🎯 5 Skills**: Programming, Tutoring, Delivery, Tech Support, Cooking
+- **📝 3 Requests**: Grocery delivery, math tutoring, computer setup
+- **🔔 4 Notifications**: Welcome messages and system updates
+
+</details>
+
+---
+
+## 🎨 Architecture & Design Patterns
+
+<div align="center">
+
+### 🏗️ Layered Architecture
+
+```
+🌐 Controller Layer (REST APIs)
+        ↓
+💼 Service Layer (Business Logic)
+        ↓
+🗄️ Repository Layer (Data Access)
+        ↓
+📊 Model Layer (Entities)
+```
+
+| Layer | Responsibility | Technologies |
+|-------|----------------|-------------|
+| **Controller** | REST API endpoints, HTTP handling | Spring Web, REST |
+| **Service** | Business logic, validation | Spring Service |
+| **Repository** | Data access, queries | Spring Data JPA |
+| **Model** | Entity definitions, relationships | JPA, Hibernate |
+
+</div>
+
+### ✨ Advanced Features Implemented
+
+<div align="center">
+
+| Feature Category | Implementation | Status |
+|------------------|----------------|--------|
+| **🔍 Query Methods** | findBy, existsBy, custom @Query | ✅ Complete |
+| **📄 Pagination** | Pageable, Sort integration | ✅ Complete |
+| **🔐 Data Integrity** | Foreign keys, constraints | ✅ Complete |
+| **🎯 Location APIs** | Province-based user retrieval | ✅ Complete |
+| **📊 Relationship Types** | 1:1, 1:N, N:1, M:N | ✅ Complete |
+| **🚀 Auto-Migration** | Hibernate DDL generation | ✅ Complete |
+
+</div>
+
+---
+
+## 🏆 Project Achievements
+
+<div align="center">
+
+**✅ All Midterm Requirements Satisfied**
+
+📊 **7 Well-defined Entities** | 🔄 **Complete CRUD Operations** | 🔍 **Advanced JPA Queries**
+
+🏛️ **Rwandan Location Hierarchy** | 🔗 **All Relationship Types** | 🌐 **RESTful API Design**
+
+</div>
+
+---
+
+<div align="center">
+
+### 🚀 **Ready for Production Deployment** 🚀
+
+**Built with ❤️ by [Manzi](https://github.com/manziosee)**
+
+---
+
+*🌟 If you found this project helpful, please consider giving it a star! 🌟*
+
+</div>
