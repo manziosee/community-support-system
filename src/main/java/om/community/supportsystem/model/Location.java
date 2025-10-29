@@ -16,20 +16,17 @@ public class Location {
     @Column(nullable = false)
     private String district;
     
-    @Column(nullable = false)
     private String sector;
     
-    @Column(nullable = false)
     private String cell;
     
-    @Column(nullable = false)
     private String village;
     
     @Column(unique = true)
     private String provinceCode;
     
     // One-to-Many: One location can have many users
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "location", fetch = FetchType.LAZY)
     private List<User> users;
     
     // Constructors
@@ -41,6 +38,12 @@ public class Location {
         this.sector = sector;
         this.cell = cell;
         this.village = village;
+        this.provinceCode = provinceCode;
+    }
+    
+    public Location(String province, String district, String provinceCode) {
+        this.province = province;
+        this.district = district;
         this.provinceCode = provinceCode;
     }
     

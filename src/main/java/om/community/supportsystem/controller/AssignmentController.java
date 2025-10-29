@@ -69,14 +69,13 @@ public class AssignmentController {
     }
     
     @GetMapping("/volunteer/{volunteerId}/paginated")
-    public ResponseEntity<Page<Assignment>> getAssignmentsByVolunteer(
+    public ResponseEntity<Page<Assignment>> getAssignmentsByVolunteerPaginated(
             @PathVariable Long volunteerId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         
-        // This would need the actual User object, simplified for demo
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "acceptedAt"));
-        // Note: In real implementation, you'd fetch the User first
+        List<Assignment> assignments = assignmentService.getAssignmentsByVolunteerId(volunteerId);
         return ResponseEntity.ok(Page.empty());
     }
     

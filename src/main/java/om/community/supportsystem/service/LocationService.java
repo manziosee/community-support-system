@@ -71,6 +71,13 @@ public class LocationService {
     
     // Delete
     public void deleteLocation(Long id) {
+        Location location = locationRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Location not found with id: " + id));
+        
+        if (location.getUsers() != null && !location.getUsers().isEmpty()) {
+            throw new RuntimeException("Cannot delete location with existing users. Please reassign users first.");
+        }
+        
         locationRepository.deleteById(id);
     }
     
