@@ -120,17 +120,56 @@ CREATE INDEX idx_assignments_request ON assignments(request_id);
 CREATE INDEX idx_notifications_user ON notifications(user_id);
 CREATE INDEX idx_locations_province_code ON locations(province_code);
 
--- SAMPLE DATA for Testing
+-- SAMPLE DATA for Testing (Complete Rwandan Administrative Structure)
 INSERT INTO locations (province, district, sector, cell, village, province_code) VALUES
-('Kigali', 'Gasabo', 'Remera', 'Gisozi', 'Ubumwe', 'KG'),
-('Eastern', 'Rwamagana', 'Muhazi', 'Gahengeri', 'Kabare', 'EP'),
-('Western', 'Rubavu', 'Gisenyi', 'Nyundo', 'Cyanzarwe', 'WP'),
-('Northern', 'Musanze', 'Muhoza', 'Nyakinama', 'Cyuve', 'NP'),
-('Southern', 'Huye', 'Ngoma', 'Matyazo', 'Rwaniro', 'SP');
+-- Kigali City (3 Districts)
+('Kigali City', 'Gasabo', 'Remera', 'Gisozi', 'Ubumwe', 'KG'),
+('Kigali City', 'Kicukiro', 'Niboye', 'Kagarama', 'Nyarugunga', 'KG'),
+('Kigali City', 'Nyarugenge', 'Nyarugenge', 'Rwezamenyo', 'Biryogo', 'KG'),
+
+-- Eastern Province (7 Districts)
+('Eastern Province', 'Nyagatare', 'Nyagatare', 'Rukomo', 'Karama', 'EP'),
+('Eastern Province', 'Gatsibo', 'Gatsibo', 'Gitoki', 'Kageyo', 'EP'),
+('Eastern Province', 'Bugesera', 'Ntarama', 'Zaza', 'Mayange', 'EP'),
+('Eastern Province', 'Kayonza', 'Kayonza', 'Mukarange', 'Murama', 'EP'),
+('Eastern Province', 'Ngoma', 'Sake', 'Mugesera', 'Kibungo', 'EP'),
+('Eastern Province', 'Kirehe', 'Kirehe', 'Nasho', 'Mahama', 'EP'),
+('Eastern Province', 'Rwamagana', 'Muhazi', 'Gahengeri', 'Kabare', 'EP'),
+
+-- Western Province (7 Districts)
+('Western Province', 'Rusizi', 'Kamembe', 'Muganza', 'Nkanka', 'WP'),
+('Western Province', 'Rubavu', 'Gisenyi', 'Nyundo', 'Cyanzarwe', 'WP'),
+('Western Province', 'Nyamasheke', 'Kagano', 'Kanjongo', 'Nyabitekeri', 'WP'),
+('Western Province', 'Ngororero', 'Bwira', 'Matyazo', 'Gatumba', 'WP'),
+('Western Province', 'Karongi', 'Bwishyura', 'Mutuntu', 'Bwishyura', 'WP'),
+('Western Province', 'Rutsiro', 'Kigeyo', 'Ruhango', 'Mushonyi', 'WP'),
+('Western Province', 'Nyabihu', 'Mukamira', 'Jenda', 'Shyira', 'WP'),
+
+-- Southern Province (8 Districts)
+('Southern Province', 'Kamonyi', 'Kamonyi', 'Rugalika', 'Nyamiyaga', 'SP'),
+('Southern Province', 'Nyamagabe', 'Gasaka', 'Mushubi', 'Tare', 'SP'),
+('Southern Province', 'Huye', 'Ngoma', 'Matyazo', 'Rwaniro', 'SP'),
+('Southern Province', 'Nyanza', 'Busasamana', 'Rwabicuma', 'Cyabakamyi', 'SP'),
+('Southern Province', 'Gisagara', 'Save', 'Kigembe', 'Mamba', 'SP'),
+('Southern Province', 'Ruhango', 'Ruhango', 'Kabagari', 'Muhanga', 'SP'),
+('Southern Province', 'Muhanga', 'Muhanga', 'Cyeza', 'Shyogwe', 'SP'),
+('Southern Province', 'Nyaruguru', 'Nyamagabe', 'Kibeho', 'Cyanika', 'SP'),
+
+-- Northern Province (5 Districts)
+('Northern Province', 'Gicumbi', 'Byumba', 'Bungwe', 'Cyumba', 'NP'),
+('Northern Province', 'Gakenke', 'Gakenke', 'Janja', 'Kivuruga', 'NP'),
+('Northern Province', 'Burera', 'Cyeru', 'Butaro', 'Nemba', 'NP'),
+('Northern Province', 'Rulindo', 'Base', 'Burega', 'Cyinzuzi', 'NP'),
+('Northern Province', 'Musanze', 'Muhoza', 'Nyakinama', 'Cyuve', 'NP');
 
 INSERT INTO skills (skill_name, description) VALUES
 ('Programming', 'Software development and coding'),
 ('Tutoring', 'Academic tutoring and teaching'),
 ('Delivery', 'Package and grocery delivery services'),
 ('Tech Support', 'Computer and technology assistance'),
-('Cooking', 'Meal preparation and cooking assistance');
+('Cooking', 'Meal preparation and cooking assistance'),
+('Healthcare', 'Medical assistance and health support'),
+('Construction', 'Building and repair services'),
+('Transportation', 'Vehicle and transport services'),
+('Agriculture', 'Farming and agricultural support'),
+('Education', 'Teaching and educational support');
