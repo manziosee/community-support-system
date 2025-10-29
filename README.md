@@ -333,28 +333,3 @@ psql -U postgres -c "CREATE DATABASE community_support_system_db;"
 
 ---
 
-## 🏆 Project Achievements
-
-<div align="center">
-
-**✅ All Midterm Requirements Satisfied**
-
-📊 **7 Well-defined Entities** | 🔄 **Complete CRUD Operations** | 🔍 **Advanced JPA Queries**
-
-🏛️ **Rwandan Location Hierarchy** | 🔗 **All Relationship Types** | 🌐 **RESTful API Design**
-
-</div>
-
----
-
-<div align="center">
-
-### 🚀 **Ready for Production Deployment** 🚀
-
-**Built with ❤️ by [Manzi](https://github.com/manziosee)**
-
----
-
-*🌟 If you found this project helpful, please consider giving it a star! 🌟*
-
-</div>
