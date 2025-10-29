@@ -33,6 +33,11 @@ public class User {
     @JoinColumn(name = "location_id")
     private Location location;
     
+    // User-specific location details
+    private String sector;
+    private String cell;
+    private String village;
+    
     // One-to-Many: One citizen can have many requests
     @OneToMany(mappedBy = "citizen", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Request> requests;
@@ -72,6 +77,18 @@ public class User {
         this.createdAt = LocalDateTime.now();
     }
     
+    public User(String name, String email, String password, Role role, Location location, String sector, String cell, String village) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.location = location;
+        this.sector = sector;
+        this.cell = cell;
+        this.village = village;
+        this.createdAt = LocalDateTime.now();
+    }
+    
     // Getters and Setters
     public Long getUserId() { return userId; }
     public void setUserId(Long userId) { this.userId = userId; }
@@ -105,4 +122,13 @@ public class User {
     
     public Set<Skill> getSkills() { return skills; }
     public void setSkills(Set<Skill> skills) { this.skills = skills; }
+    
+    public String getSector() { return sector; }
+    public void setSector(String sector) { this.sector = sector; }
+    
+    public String getCell() { return cell; }
+    public void setCell(String cell) { this.cell = cell; }
+    
+    public String getVillage() { return village; }
+    public void setVillage(String village) { this.village = village; }
 }

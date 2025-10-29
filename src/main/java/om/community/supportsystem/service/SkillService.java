@@ -74,6 +74,13 @@ public class SkillService {
     
     // Delete
     public void deleteSkill(Long id) {
+        Skill skill = skillRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Skill not found with id: " + id));
+        
+        if (skill.getUsers() != null && !skill.getUsers().isEmpty()) {
+            throw new RuntimeException("Cannot delete skill with existing users. Please remove skill from users first.");
+        }
+        
         skillRepository.deleteById(id);
     }
     

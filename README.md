@@ -29,12 +29,12 @@ The **Community Help Portal** is a Spring Boot web application that bridges the 
   <img src="images/ERD.png" alt="Community Help Portal ERD" width="800">
 </div>
 
-### 🗃️ Database Entities (7 Tables)
+### 🗃️ Database Entities (6 Core + 1 Junction = 7 Tables)
 
 | Entity | Description | Key Features |
 |--------|-------------|-------------|
-| 🏛️ **Location** | Rwandan administrative hierarchy | Province → District → Sector → Cell → Village |
-| 👥 **User** | Citizens & Volunteers | Role-based access, location-linked |
+| 🏛️ **Location** | Rwandan administrative hierarchy (30 districts) | Province → District (pre-loaded) |
+| 👥 **User** | Citizens & Volunteers | Role-based access, location-linked + manual sector/cell/village |
 | 📝 **Request** | Help requests by citizens | Status tracking, categorized |
 | 🤝 **Assignment** | Volunteer-request assignments | Time tracking, completion status |
 | 🔔 **Notification** | System notifications | Read/unread status, user-specific |
@@ -113,100 +113,133 @@ The **Community Help Portal** is a Spring Boot web application that bridges the 
 
 ---
 
-## 🌐 API Endpoints
+## 🌐 API Endpoints (85 Total Mappings)
 
 <details>
-<summary><strong>🏛️ Location Endpoints</strong></summary>
+<summary><strong>🏛️ Location Endpoints (11 endpoints)</strong></summary>
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | 🔍 `GET` | `/api/locations` | Get all locations |
+| 🔍 `GET` | `/api/locations/{id}` | Get location by ID |
 | 🔍 `GET` | `/api/locations/province-code/{code}` | Get locations by province code |
 | 🔍 `GET` | `/api/locations/province/{name}` | Get locations by province name |
 | 🔍 `GET` | `/api/locations/provinces` | Get all provinces |
 | 🔍 `GET` | `/api/locations/districts/{province}` | Get districts by province |
+| 🔍 `GET` | `/api/locations/search` | Search locations with pagination |
+| 🔍 `GET` | `/api/locations/popular` | Get locations ordered by user count |
 | ➕ `POST` | `/api/locations` | Create new location |
 | ✏️ `PUT` | `/api/locations/{id}` | Update location |
-| ❌ `DELETE` | `/api/locations/{id}` | Delete location |
+| ✅ `DELETE` | `/api/locations/{id}` | Delete location (validates no users) |
 
 </details>
 
 <details>
-<summary><strong>👥 User Endpoints</strong></summary>
+<summary><strong>👥 User Endpoints (15 endpoints)</strong></summary>
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | 🔍 `GET` | `/api/users` | Get all users |
-| 🔍 `GET` | `/api/users/province-code/{code}` | 🎯 Get users by province code |
-| 🔍 `GET` | `/api/users/province/{name}` | 🎯 Get users by province name |
+| 🔍 `GET` | `/api/users/{id}` | Get user by ID |
+| 🔍 `GET` | `/api/users/email/{email}` | Get user by email |
 | 🔍 `GET` | `/api/users/role/{role}` | Get users by role (CITIZEN/VOLUNTEER) |
+| 🔍 `GET` | `/api/users/province-code/{code}` | Get users by province code |
+| 🔍 `GET` | `/api/users/province/{name}` | Get users by province name |
 | 🔍 `GET` | `/api/users/volunteers/province/{province}` | Get volunteers by province |
+| 🔍 `GET` | `/api/users/search` | Search users with pagination |
+| 🔍 `GET` | `/api/users/search/name/{name}` | Search users by name |
+| 🔍 `GET` | `/api/users/recent` | Get recent users |
+| 🔍 `GET` | `/api/users/count/volunteers` | Get total volunteer count |
+| 🔍 `GET` | `/api/users/count/citizens` | Get total citizen count |
 | ➕ `POST` | `/api/users` | Create new user |
 | ✏️ `PUT` | `/api/users/{id}` | Update user |
-| ❌ `DELETE` | `/api/users/{id}` | Delete user |
+| ✅ `DELETE` | `/api/users/{id}` | Delete user (validates no requests/assignments) |
 
 </details>
 
 <details>
-<summary><strong>📝 Request Endpoints</strong></summary>
+<summary><strong>📝 Request Endpoints (14 endpoints)</strong></summary>
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | 🔍 `GET` | `/api/requests` | Get all requests |
+| 🔍 `GET` | `/api/requests/{id}` | Get request by ID |
 | 🔍 `GET` | `/api/requests/status/{status}` | Get requests by status |
+| 🔍 `GET` | `/api/requests/citizen/{citizenId}` | Get requests by citizen |
 | 🔍 `GET` | `/api/requests/pending` | Get pending requests |
 | 🔍 `GET` | `/api/requests/province/{province}` | Get requests by province |
-| 🔍 `GET` | `/api/requests/citizen/{citizenId}` | Get requests by citizen |
+| 🔍 `GET` | `/api/requests/recent` | Get recent requests |
+| 🔍 `GET` | `/api/requests/search` | Search requests with pagination |
+| 🔍 `GET` | `/api/requests/search/title/{title}` | Search requests by title |
+| 🔍 `GET` | `/api/requests/count/pending` | Get pending request count |
+| 🔍 `GET` | `/api/requests/count/completed` | Get completed request count |
 | ➕ `POST` | `/api/requests` | Create new request |
 | ✏️ `PUT` | `/api/requests/{id}` | Update request |
 | 🔄 `PATCH` | `/api/requests/{id}/status` | Update request status |
-| ❌ `DELETE` | `/api/requests/{id}` | Delete request |
+| ✅ `DELETE` | `/api/requests/{id}` | Delete request (cascades assignments) |
 
 </details>
 
 <details>
-<summary><strong>🤝 Assignment Endpoints</strong></summary>
+<summary><strong>🤝 Assignment Endpoints (11 endpoints)</strong></summary>
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | 🔍 `GET` | `/api/assignments` | Get all assignments |
+| 🔍 `GET` | `/api/assignments/{id}` | Get assignment by ID |
 | 🔍 `GET` | `/api/assignments/volunteer/{id}` | Get assignments by volunteer |
 | 🔍 `GET` | `/api/assignments/completed` | Get completed assignments |
 | 🔍 `GET` | `/api/assignments/pending` | Get pending assignments |
 | 🔍 `GET` | `/api/assignments/province/{province}` | Get assignments by province |
+| 🔍 `GET` | `/api/assignments/volunteer/{id}/paginated` | Get assignments with pagination |
+| 🔍 `GET` | `/api/assignments/top-volunteers` | Get top volunteers by assignment count |
 | ➕ `POST` | `/api/assignments` | Create new assignment |
+| ✏️ `PUT` | `/api/assignments/{id}` | Update assignment |
 | ✅ `PATCH` | `/api/assignments/{id}/complete` | Mark assignment as completed |
-| ❌ `DELETE` | `/api/assignments/{id}` | Delete assignment |
+| ✅ `DELETE` | `/api/assignments/{id}` | Delete assignment |
 
 </details>
 
 <details>
-<summary><strong>🔔 Notification Endpoints</strong></summary>
+<summary><strong>🔔 Notification Endpoints (12 endpoints)</strong></summary>
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | 🔍 `GET` | `/api/notifications` | Get all notifications |
+| 🔍 `GET` | `/api/notifications/{id}` | Get notification by ID |
 | 🔍 `GET` | `/api/notifications/user/{id}` | Get notifications by user |
+| 🔍 `GET` | `/api/notifications/user/{id}/paginated` | Get notifications with pagination |
 | 🔍 `GET` | `/api/notifications/unread` | Get unread notifications |
+| 🔍 `GET` | `/api/notifications/user/{id}/unread` | Get unread notifications by user |
+| 🔍 `GET` | `/api/notifications/user/{id}/unread/count` | Count unread notifications |
+| 🔍 `GET` | `/api/notifications/search/message/{message}` | Search notifications by message |
 | ➕ `POST` | `/api/notifications` | Create new notification |
+| ✏️ `PUT` | `/api/notifications/{id}` | Update notification |
 | ✅ `PATCH` | `/api/notifications/{id}/read` | Mark notification as read |
 | 🔄 `PATCH` | `/api/notifications/user/{userId}/mark-all-read` | Mark all as read for user |
-| ❌ `DELETE` | `/api/notifications/{id}` | Delete notification |
+| ✅ `DELETE` | `/api/notifications/{id}` | Delete notification |
+| 🧹 `DELETE` | `/api/notifications/cleanup` | Delete old read notifications |
 
 </details>
 
 <details>
-<summary><strong>🎯 Skill Endpoints</strong></summary>
+<summary><strong>🎯 Skill Endpoints (12 endpoints)</strong></summary>
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | 🔍 `GET` | `/api/skills` | Get all skills |
+| 🔍 `GET` | `/api/skills/{id}` | Get skill by ID |
 | 🔍 `GET` | `/api/skills/name/{name}` | Get skill by name |
+| 🔍 `GET` | `/api/skills/ordered` | Get all skills ordered by name |
+| 🔍 `GET` | `/api/skills/search/name/{name}` | Search skills by name |
+| 🔍 `GET` | `/api/skills/search/description/{desc}` | Search skills by description |
+| 🔍 `GET` | `/api/skills/search` | Search skills with pagination |
 | 🔍 `GET` | `/api/skills/popular` | Get skills ordered by user count |
 | 🔍 `GET` | `/api/skills/unused` | Get skills with no users |
+| 🔍 `GET` | `/api/skills/exists/name/{name}` | Check if skill exists by name |
 | ➕ `POST` | `/api/skills` | Create new skill |
 | ✏️ `PUT` | `/api/skills/{id}` | Update skill |
-| ❌ `DELETE` | `/api/skills/{id}` | Delete skill |
+| ✅ `DELETE` | `/api/skills/{id}` | Delete skill (validates no users) |
 
 </details>
 
@@ -266,8 +299,8 @@ psql -U postgres -c "CREATE DATABASE community_support_system_db;"
 
 | Table | Records | Purpose | Key Features |
 |-------|---------|---------|-------------|
-| 🏛️ `locations` | 5 provinces | Rwandan administrative hierarchy | Unique province codes |
-| 👥 `users` | Citizens & Volunteers | User management | Role-based, location-linked |
+| 🏛️ `locations` | 30 districts | Rwandan administrative hierarchy | Unique province codes (KG01-NP05) |
+| 👥 `users` | Citizens & Volunteers | User management | Role-based, location-linked + sector/cell/village fields |
 | 📝 `requests` | Help requests | Service requests | Status tracking |
 | 🤝 `assignments` | Volunteer tasks | Request assignments | Time tracking |
 | 🔔 `notifications` | User alerts | System notifications | Read/unread status |
@@ -281,11 +314,15 @@ psql -U postgres -c "CREATE DATABASE community_support_system_db;"
 <details>
 <summary><strong>Click to view sample data details</strong></summary>
 
-- **🏛️ 5 Locations**: Covering all Rwanda provinces (Kigali, Eastern, Western, Northern, Southern)
+- **🏛️ 30 Locations**: Complete Rwandan administrative structure (5 provinces, 30 districts)
+  - Kigali City: Gasabo (KG01), Kicukiro (KG02), Nyarugenge (KG03)
+  - Eastern Province: Nyagatare (EP01), Gatsibo (EP02), Bugesera (EP03), Kayonza (EP04), Ngoma (EP05), Kirehe (EP06), Rwamagana (EP07)
+  - Western Province: Rusizi (WP01), Rubavu (WP02), Nyamasheke (WP03), Ngororero (WP04), Karongi (WP05), Rutsiro (WP06), Nyabihu (WP07)
+  - Southern Province: Kamonyi (SP01), Nyamagabe (SP02), Huye (SP03), Nyanza (SP04), Gisagara (SP05), Ruhango (SP06), Muhanga (SP07), Nyaruguru (SP08)
+  - Northern Province: Gicumbi (NP01), Gakenke (NP02), Burera (NP03), Rulindo (NP04), Musanze (NP05)
 - **👥 5 Users**: Mix of citizens and volunteers with realistic Rwandan names
-- **🎯 5 Skills**: Programming, Tutoring, Delivery, Tech Support, Cooking
-- **📝 3 Requests**: Grocery delivery, math tutoring, computer setup
-- **🔔 4 Notifications**: Welcome messages and system updates
+- **🎯 10 Skills**: Programming, Tutoring, Delivery, Tech Support, Cooking, Healthcare, Construction, Transportation, Agriculture, Education
+- **📍 Location Structure**: Pre-loaded province/district, users manually enter sector/cell/village
 
 </details>
 

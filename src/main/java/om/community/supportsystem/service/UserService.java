@@ -74,6 +74,9 @@ public class UserService {
                     user.setEmail(userDetails.getEmail());
                     user.setRole(userDetails.getRole());
                     user.setLocation(userDetails.getLocation());
+                    user.setSector(userDetails.getSector());
+                    user.setCell(userDetails.getCell());
+                    user.setVillage(userDetails.getVillage());
                     if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
                         user.setPassword(userDetails.getPassword());
                     }
@@ -84,6 +87,18 @@ public class UserService {
     
     // Delete
     public void deleteUser(Long id) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        
+        // Check for related data
+        if (user.getRequests() != null && !user.getRequests().isEmpty()) {
+            throw new RuntimeException("Cannot delete user with existing requests. Please delete requests first.");
+        }
+        
+        if (user.getAssignments() != null && !user.getAssignments().isEmpty()) {
+            throw new RuntimeException("Cannot delete user with existing assignments. Please complete assignments first.");
+        }
+        
         userRepository.deleteById(id);
     }
     

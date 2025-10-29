@@ -47,13 +47,13 @@ public class NotificationController {
     }
     
     @GetMapping("/user/{userId}/paginated")
-    public ResponseEntity<Page<Notification>> getNotificationsByUser(
+    public ResponseEntity<Page<Notification>> getNotificationsByUserPaginated(
             @PathVariable Long userId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        // Note: In real implementation, you'd fetch the User first
+        List<Notification> notifications = notificationService.getNotificationsByUserId(userId);
         return ResponseEntity.ok(Page.empty());
     }
     
@@ -65,8 +65,8 @@ public class NotificationController {
     
     @GetMapping("/user/{userId}/unread")
     public ResponseEntity<List<Notification>> getUnreadNotificationsByUserId(@PathVariable Long userId) {
-        // Note: In real implementation, you'd fetch the User first
-        return ResponseEntity.ok(List.of());
+        List<Notification> notifications = notificationService.getUnreadNotificationsByUserId(userId);
+        return ResponseEntity.ok(notifications);
     }
     
     @GetMapping("/search/message/{message}")
@@ -98,7 +98,7 @@ public class NotificationController {
     
     @PatchMapping("/user/{userId}/mark-all-read")
     public ResponseEntity<Void> markAllAsReadForUser(@PathVariable Long userId) {
-        // Note: In real implementation, you'd fetch the User first
+        notificationService.markAllAsReadForUser(userId);
         return ResponseEntity.ok().build();
     }
     
@@ -118,7 +118,7 @@ public class NotificationController {
     // Statistics
     @GetMapping("/user/{userId}/unread/count")
     public ResponseEntity<Long> countUnreadNotificationsByUser(@PathVariable Long userId) {
-        // Note: In real implementation, you'd fetch the User first
-        return ResponseEntity.ok(0L);
+        long count = notificationService.countUnreadNotificationsByUser(userId);
+        return ResponseEntity.ok(count);
     }
 }
