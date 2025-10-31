@@ -2,6 +2,7 @@ package om.community.supportsystem.service;
 
 import om.community.supportsystem.model.Assignment;
 import om.community.supportsystem.model.Request;
+import om.community.supportsystem.model.RequestStatus;
 import om.community.supportsystem.model.User;
 import om.community.supportsystem.repository.AssignmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class AssignmentService {
         }
         
         // Update request status to ACCEPTED
-        requestService.updateRequestStatus(assignment.getRequest().getRequestId(), Request.Status.ACCEPTED);
+        requestService.updateRequestStatus(assignment.getRequest().getRequestId(), RequestStatus.ACCEPTED);
         
         return assignmentRepository.save(assignment);
     }
@@ -95,7 +96,7 @@ public class AssignmentService {
                 .map(assignment -> {
                     assignment.setCompletedAt(LocalDateTime.now());
                     // Update request status to COMPLETED
-                    requestService.updateRequestStatus(assignment.getRequest().getRequestId(), Request.Status.COMPLETED);
+                    requestService.updateRequestStatus(assignment.getRequest().getRequestId(), RequestStatus.COMPLETED);
                     return assignmentRepository.save(assignment);
                 })
                 .orElseThrow(() -> new RuntimeException("Assignment not found with id: " + id));

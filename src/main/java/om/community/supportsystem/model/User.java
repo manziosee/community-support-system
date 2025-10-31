@@ -1,5 +1,7 @@
 package om.community.supportsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,19 +20,20 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
     
-    @Column(nullable = false)
-    private String password;
+    @Column(nullable = false, length = 10, unique = true)
+    private String phoneNumber;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    private UserRole role;
     
     @Column(nullable = false)
     private LocalDateTime createdAt;
     
     // Many-to-One: Many users belong to one location
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "location_id")
+    @JsonIgnoreProperties("users")
     private Location location;
     
     // User-specific location details
@@ -40,14 +43,20 @@ public class User {
     
     // One-to-Many: One citizen can have many requests
     @OneToMany(mappedBy = "citizen", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("citizen")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<Request> requests;
     
     // One-to-Many: One volunteer can have many assignments
     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("volunteer")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<Assignment> assignments;
     
     // One-to-Many: One user can have many notifications
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("user")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<Notification> notifications;
     
     // Many-to-Many: Users can have multiple skills (for volunteers)
@@ -57,30 +66,30 @@ public class User {
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
+    @JsonIgnoreProperties("users")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<Skill> skills;
     
-    public enum Role {
-        CITIZEN, VOLUNTEER
-    }
+
     
     // Constructors
     public User() {
         this.createdAt = LocalDateTime.now();
     }
     
-    public User(String name, String email, String password, Role role, Location location) {
+    public User(String name, String email, String phoneNumber, UserRole role, Location location) {
         this.name = name;
         this.email = email;
-        this.password = password;
+        this.phoneNumber = phoneNumber;
         this.role = role;
         this.location = location;
         this.createdAt = LocalDateTime.now();
     }
     
-    public User(String name, String email, String password, Role role, Location location, String sector, String cell, String village) {
+    public User(String name, String email, String phoneNumber, UserRole role, Location location, String sector, String cell, String village) {
         this.name = name;
         this.email = email;
-        this.password = password;
+        this.phoneNumber = phoneNumber;
         this.role = role;
         this.location = location;
         this.sector = sector;
@@ -99,11 +108,11 @@ public class User {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
     
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
     
-    public Role getRole() { return role; }
-    public void setRole(Role role) { this.role = role; }
+    public UserRole getRole() { return role; }
+    public void setRole(UserRole role) { this.role = role; }
     
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

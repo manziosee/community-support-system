@@ -1,6 +1,7 @@
 package om.community.supportsystem.repository;
 
 import om.community.supportsystem.model.Request;
+import om.community.supportsystem.model.RequestStatus;
 import om.community.supportsystem.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +17,7 @@ import java.util.List;
 public interface RequestRepository extends JpaRepository<Request, Long> {
     
     // Find by status
-    List<Request> findByStatus(Request.Status status);
+    List<Request> findByStatus(RequestStatus status);
     
     // Find by citizen
     List<Request> findByCitizen(User citizen);
@@ -25,7 +26,7 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     List<Request> findByCitizenUserId(Long citizenId);
     
     // Find pending requests
-    List<Request> findByStatusOrderByCreatedAtDesc(Request.Status status);
+    List<Request> findByStatusOrderByCreatedAtDesc(RequestStatus status);
     
     // Check if request exists by title and citizen
     boolean existsByTitleAndCitizen(String title, User citizen);
@@ -38,10 +39,10 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     List<Request> findByLocationProvince(@Param("province") String province);
     
     // Find with pagination and sorting
-    Page<Request> findByStatusAndCitizen_Location_Province(Request.Status status, String province, Pageable pageable);
+    Page<Request> findByStatusAndCitizen_Location_Province(RequestStatus status, String province, Pageable pageable);
     
     // Count requests by status
-    long countByStatus(Request.Status status);
+    long countByStatus(RequestStatus status);
     
     // Find requests by title containing (case insensitive)
     List<Request> findByTitleContainingIgnoreCase(String title);

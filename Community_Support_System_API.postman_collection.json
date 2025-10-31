@@ -214,14 +214,14 @@
 					}
 				},
 				{
-					"name": "Get User by Email",
+					"name": "Get Volunteer by Email",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/users/email/jean@example.com",
+							"raw": "{{baseUrl}}/api/users/email/jean.volunteer@gmail.com",
 							"host": ["{{baseUrl}}"],
-							"path": ["api", "users", "email", "jean@example.com"]
+							"path": ["api", "users", "email", "jean.volunteer@gmail.com"]
 						}
 					}
 				},
@@ -305,14 +305,14 @@
 					}
 				},
 				{
-					"name": "Search Users by Name",
+					"name": "Search Volunteers by Name",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/users/search/name/Jean",
+							"raw": "{{baseUrl}}/api/users/search/name/Jean Baptiste",
 							"host": ["{{baseUrl}}"],
-							"path": ["api", "users", "search", "name", "Jean"]
+							"path": ["api", "users", "search", "name", "Jean Baptiste"]
 						}
 					}
 				},
@@ -356,19 +356,19 @@
 					}
 				},
 				{
-					"name": "Check if Email Exists",
+					"name": "Check if Volunteer Email Exists",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/users/exists/email/test@example.com",
+							"raw": "{{baseUrl}}/api/users/exists/email/jean.volunteer@gmail.com",
 							"host": ["{{baseUrl}}"],
-							"path": ["api", "users", "exists", "email", "test@example.com"]
+							"path": ["api", "users", "exists", "email", "jean.volunteer@gmail.com"]
 						}
 					}
 				},
 				{
-					"name": "Create User",
+					"name": "Create Volunteer",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -379,7 +379,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"CITIZEN\",\n  \"location\": {\n    \"locationId\": 1\n  },\n  \"sector\": \"Kimisagara\",\n  \"cell\": \"Nyabugogo\",\n  \"village\": \"Kacyiru\"\n}"
+							"raw": "{\n  \"name\": \"Jean Baptiste Uwimana\",\n  \"email\": \"jean.volunteer@gmail.com\",\n  \"phoneNumber\": \"0788123456\",\n  \"role\": \"VOLUNTEER\",\n  \"location\": {\n    \"locationId\": 1\n  },\n  \"sector\": \"Kimisagara\",\n  \"cell\": \"Nyabugogo\",\n  \"village\": \"Kacyiru\",\n  \"skills\": [\n    {\"skillId\": 1},\n    {\"skillId\": 2}\n  ]\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/users",
@@ -389,7 +389,7 @@
 					}
 				},
 				{
-					"name": "Update User",
+					"name": "Update Volunteer",
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -400,7 +400,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Updated User\",\n  \"email\": \"updated@example.com\",\n  \"password\": \"newpassword123\",\n  \"role\": \"VOLUNTEER\",\n  \"location\": {\n    \"locationId\": 2\n  },\n  \"sector\": \"Remera\",\n  \"cell\": \"Gisozi\",\n  \"village\": \"Kibagabaga\"\n}"
+							"raw": "{\n  \"name\": \"Marie Claire Mukamana\",\n  \"email\": \"marie.volunteer@gmail.com\",\n  \"phoneNumber\": \"0787654321\",\n  \"role\": \"VOLUNTEER\",\n  \"location\": {\n    \"locationId\": 2\n  },\n  \"sector\": \"Remera\",\n  \"cell\": \"Gisozi\",\n  \"village\": \"Kibagabaga\",\n  \"skills\": [\n    {\"skillId\": 3},\n    {\"skillId\": 4},\n    {\"skillId\": 5}\n  ]\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/users/1",
@@ -602,7 +602,7 @@
 					}
 				},
 				{
-					"name": "Create Request",
+					"name": "Create Request (by Citizen)",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -613,7 +613,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"title\": \"Test Request\",\n  \"description\": \"This is a test request for help\",\n  \"citizen\": {\n    \"userId\": 1\n  }\n}"
+							"raw": "{\n  \"title\": \"Need help with grocery shopping\",\n  \"description\": \"I need assistance with grocery shopping for elderly parent. Looking for someone who can help with weekly shopping in Kimisagara area.\",\n  \"citizen\": {\n    \"userId\": 2\n  }\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/requests",
@@ -700,14 +700,14 @@
 					}
 				},
 				{
-					"name": "Get Assignments by Volunteer",
+					"name": "Get Assignments by Volunteer ID",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/assignments/volunteer/3",
+							"raw": "{{baseUrl}}/api/assignments/volunteer/1",
 							"host": ["{{baseUrl}}"],
-							"path": ["api", "assignments", "volunteer", "3"]
+							"path": ["api", "assignments", "volunteer", "1"]
 						}
 					}
 				},
@@ -748,14 +748,14 @@
 					}
 				},
 				{
-					"name": "Get Assignments by Volunteer (Paginated)",
+					"name": "Get Assignments by Volunteer ID (Paginated)",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/assignments/volunteer/3/paginated?page=0&size=10",
+							"raw": "{{baseUrl}}/api/assignments/volunteer/1/paginated?page=0&size=10",
 							"host": ["{{baseUrl}}"],
-							"path": ["api", "assignments", "volunteer", "3", "paginated"],
+							"path": ["api", "assignments", "volunteer", "1", "paginated"],
 							"query": [
 								{"key": "page", "value": "0"},
 								{"key": "size", "value": "10"}
@@ -776,7 +776,7 @@
 					}
 				},
 				{
-					"name": "Create Assignment",
+					"name": "Create Assignment (Volunteer accepts Request)",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -787,7 +787,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"request\": {\n    \"requestId\": 1\n  },\n  \"volunteer\": {\n    \"userId\": 3\n  }\n}"
+							"raw": "{\n  \"request\": {\n    \"requestId\": 1\n  },\n  \"volunteer\": {\n    \"userId\": 1\n  }\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/assignments",
@@ -947,7 +947,7 @@
 					}
 				},
 				{
-					"name": "Create Notification",
+					"name": "Create Notification for Volunteer",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -958,7 +958,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"message\": \"Test notification message\",\n  \"user\": {\n    \"userId\": 1\n  }\n}"
+							"raw": "{\n  \"message\": \"New request available in your area: Grocery shopping assistance needed in Kimisagara\",\n  \"user\": {\n    \"userId\": 1\n  }\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/notifications",

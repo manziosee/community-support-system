@@ -1,6 +1,7 @@
 package om.community.supportsystem.repository;
 
 import om.community.supportsystem.model.User;
+import om.community.supportsystem.model.UserRole;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,7 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     
     // Find by role
-    List<User> findByRole(User.Role role);
+    List<User> findByRole(UserRole role);
     
     // Find by location province code
     @Query("SELECT u FROM User u WHERE u.location.provinceCode = :provinceCode")
@@ -32,6 +33,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // Check if user exists by email
     boolean existsByEmail(String email);
     
+    // Check if user exists by phone number
+    boolean existsByPhoneNumber(String phoneNumber);
+    
     // Find volunteers in specific location
     @Query("SELECT u FROM User u WHERE u.role = 'VOLUNTEER' AND u.location.province = :province")
     List<User> findVolunteersByProvince(@Param("province") String province);
@@ -40,11 +44,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByCreatedAtAfter(LocalDateTime date);
     
     // Find with pagination and sorting
-    Page<User> findByRoleAndLocation_Province(User.Role role, String province, Pageable pageable);
+    Page<User> findByRoleAndLocation_Province(UserRole role, String province, Pageable pageable);
     
     // Count users by role
-    long countByRole(User.Role role);
+    long countByRole(UserRole role);
     
     // Find users by name containing (case insensitive)
     List<User> findByNameContainingIgnoreCase(String name);
+    
+    // Find user by phone number
+    Optional<User> findByPhoneNumber(String phoneNumber);
 }

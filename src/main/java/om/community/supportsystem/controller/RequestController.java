@@ -1,6 +1,7 @@
 package om.community.supportsystem.controller;
 
 import om.community.supportsystem.model.Request;
+import om.community.supportsystem.model.RequestStatus;
 import om.community.supportsystem.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -41,7 +42,7 @@ public class RequestController {
     }
     
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<Request>> getRequestsByStatus(@PathVariable Request.Status status) {
+    public ResponseEntity<List<Request>> getRequestsByStatus(@PathVariable RequestStatus status) {
         List<Request> requests = requestService.getRequestsByStatus(status);
         return ResponseEntity.ok(requests);
     }
@@ -72,7 +73,7 @@ public class RequestController {
     
     @GetMapping("/search")
     public ResponseEntity<Page<Request>> getRequestsByStatusAndProvince(
-            @RequestParam Request.Status status,
+            @RequestParam RequestStatus status,
             @RequestParam String province,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -101,7 +102,7 @@ public class RequestController {
     }
     
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Request> updateRequestStatus(@PathVariable Long id, @RequestParam Request.Status status) {
+    public ResponseEntity<Request> updateRequestStatus(@PathVariable Long id, @RequestParam RequestStatus status) {
         try {
             Request updatedRequest = requestService.updateRequestStatus(id, status);
             return ResponseEntity.ok(updatedRequest);
@@ -131,7 +132,7 @@ public class RequestController {
     }
     
     @GetMapping("/count/status/{status}")
-    public ResponseEntity<Long> countRequestsByStatus(@PathVariable Request.Status status) {
+    public ResponseEntity<Long> countRequestsByStatus(@PathVariable RequestStatus status) {
         long count = requestService.countRequestsByStatus(status);
         return ResponseEntity.ok(count);
     }
