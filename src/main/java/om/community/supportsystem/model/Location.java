@@ -1,5 +1,6 @@
 package om.community.supportsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class Location {
     
     // One-to-Many: One location can have many users
     @OneToMany(mappedBy = "location", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"location", "requests", "assignments", "notifications", "skills"})
     private List<User> users;
     
     // Constructors

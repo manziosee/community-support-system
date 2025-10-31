@@ -19,7 +19,7 @@ public class Request {
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Status status;
+    private RequestStatus status;
     
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -35,14 +35,12 @@ public class Request {
     @OneToMany(mappedBy = "request", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Assignment> assignments;
     
-    public enum Status {
-        PENDING, ACCEPTED, COMPLETED, CANCELLED
-    }
+
     
     // Constructors
     public Request() {
         this.createdAt = LocalDateTime.now();
-        this.status = Status.PENDING;
+        this.status = RequestStatus.PENDING;
     }
     
     public Request(String title, String description, User citizen) {
@@ -50,7 +48,7 @@ public class Request {
         this.description = description;
         this.citizen = citizen;
         this.createdAt = LocalDateTime.now();
-        this.status = Status.PENDING;
+        this.status = RequestStatus.PENDING;
     }
     
     // Getters and Setters
@@ -63,8 +61,8 @@ public class Request {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
     
-    public Status getStatus() { return status; }
-    public void setStatus(Status status) { 
+    public RequestStatus getStatus() { return status; }
+    public void setStatus(RequestStatus status) { 
         this.status = status;
         this.updatedAt = LocalDateTime.now();
     }

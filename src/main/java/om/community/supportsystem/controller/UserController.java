@@ -1,6 +1,7 @@
 package om.community.supportsystem.controller;
 
 import om.community.supportsystem.model.User;
+import om.community.supportsystem.model.UserRole;
 import om.community.supportsystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -52,8 +53,15 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
     
+    @GetMapping("/phone/{phoneNumber}")
+    public ResponseEntity<User> getUserByPhoneNumber(@PathVariable String phoneNumber) {
+        return userService.getUserByPhoneNumber(phoneNumber)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+    
     @GetMapping("/role/{role}")
-    public ResponseEntity<List<User>> getUsersByRole(@PathVariable User.Role role) {
+    public ResponseEntity<List<User>> getUsersByRole(@PathVariable UserRole role) {
         List<User> users = userService.getUsersByRole(role);
         return ResponseEntity.ok(users);
     }
@@ -78,7 +86,7 @@ public class UserController {
     
     @GetMapping("/search")
     public ResponseEntity<Page<User>> getUsersByRoleAndProvince(
-            @RequestParam User.Role role,
+            @RequestParam UserRole role,
             @RequestParam String province,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -136,6 +144,12 @@ public class UserController {
     @GetMapping("/exists/email/{email}")
     public ResponseEntity<Boolean> existsByEmail(@PathVariable String email) {
         boolean exists = userService.existsByEmail(email);
+        return ResponseEntity.ok(exists);
+    }
+    
+    @GetMapping("/exists/phone/{phoneNumber}")
+    public ResponseEntity<Boolean> existsByPhoneNumber(@PathVariable String phoneNumber) {
+        boolean exists = userService.existsByPhoneNumber(phoneNumber);
         return ResponseEntity.ok(exists);
     }
 }

@@ -1,6 +1,7 @@
 package om.community.supportsystem.service;
 
 import om.community.supportsystem.model.Request;
+import om.community.supportsystem.model.RequestStatus;
 import om.community.supportsystem.model.User;
 import om.community.supportsystem.repository.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class RequestService {
         return requestRepository.findById(id);
     }
     
-    public List<Request> getRequestsByStatus(Request.Status status) {
+    public List<Request> getRequestsByStatus(RequestStatus status) {
         return requestRepository.findByStatus(status);
     }
     
@@ -45,7 +46,7 @@ public class RequestService {
     }
     
     public List<Request> getPendingRequests() {
-        return requestRepository.findByStatusOrderByCreatedAtDesc(Request.Status.PENDING);
+        return requestRepository.findByStatusOrderByCreatedAtDesc(RequestStatus.PENDING);
     }
     
     public List<Request> getRequestsByProvince(String province) {
@@ -61,7 +62,7 @@ public class RequestService {
         return requestRepository.findRecentRequests(weekAgo);
     }
     
-    public Page<Request> getRequestsByStatusAndProvince(Request.Status status, String province, Pageable pageable) {
+    public Page<Request> getRequestsByStatusAndProvince(RequestStatus status, String province, Pageable pageable) {
         return requestRepository.findByStatusAndCitizen_Location_Province(status, province, pageable);
     }
     
@@ -81,7 +82,7 @@ public class RequestService {
                 .orElseThrow(() -> new RuntimeException("Request not found with id: " + id));
     }
     
-    public Request updateRequestStatus(Long id, Request.Status status) {
+    public Request updateRequestStatus(Long id, RequestStatus status) {
         return requestRepository.findById(id)
                 .map(request -> {
                     request.setStatus(status);
@@ -100,15 +101,15 @@ public class RequestService {
         return requestRepository.existsByTitleAndCitizen(title, citizen);
     }
     
-    public long countRequestsByStatus(Request.Status status) {
+    public long countRequestsByStatus(RequestStatus status) {
         return requestRepository.countByStatus(status);
     }
     
     public long getTotalPendingRequests() {
-        return requestRepository.countByStatus(Request.Status.PENDING);
+        return requestRepository.countByStatus(RequestStatus.PENDING);
     }
     
     public long getTotalCompletedRequests() {
-        return requestRepository.countByStatus(Request.Status.COMPLETED);
+        return requestRepository.countByStatus(RequestStatus.COMPLETED);
     }
 }

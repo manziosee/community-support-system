@@ -27,6 +27,9 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     // Find unread notifications by user
     List<Notification> findByUserAndIsReadFalse(User user);
     
+    // Find unread notifications by user ID
+    List<Notification> findByUserUserIdAndIsReadFalse(Long userId);
+    
     // Find read notifications
     List<Notification> findByIsReadTrue();
     
@@ -41,6 +44,9 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     
     // Count unread notifications by user
     long countByUserAndIsReadFalse(User user);
+    
+    // Count unread notifications by user ID
+    long countByUserUserIdAndIsReadFalse(Long userId);
     
     // Find notifications by message containing (case insensitive)
     List<Notification> findByMessageContainingIgnoreCase(String message);

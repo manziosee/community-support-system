@@ -1,7 +1,10 @@
 package om.community.supportsystem.service;
 
 import om.community.supportsystem.model.User;
+import om.community.supportsystem.model.UserRole;
+import om.community.supportsystem.model.Location;
 import om.community.supportsystem.repository.UserRepository;
+import om.community.supportsystem.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,11 +20,32 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
     
+    @Autowired
+    private LocationService locationService;
+    
     // Create
     public User createUser(User user) {
+        // Validate email uniqueness
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("User with email " + user.getEmail() + " already exists");
         }
+        
+        // Validate phone number uniqueness and format
+        if (user.getPhoneNumber() == null || !user.getPhoneNumber().matches("^[0-9]{10}$")) {
+            throw new RuntimeException("Phone number must be exactly 10 digits");
+        }
+        
+        if (userRepository.existsByPhoneNumber(user.getPhoneNumber())) {
+            throw new RuntimeException("User with phone number " + user.getPhoneNumber() + " already exists");
+        }
+        
+        // Ensure location is properly loaded
+        if (user.getLocation() != null && user.getLocation().getLocationId() != null) {
+            Location location = locationService.getLocationById(user.getLocation().getLocationId())
+                .orElseThrow(() -> new RuntimeException("Location not found with id: " + user.getLocation().getLocationId()));
+            user.setLocation(location);
+        }
+        
         return userRepository.save(user);
     }
     
@@ -38,7 +62,7 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
     
-    public List<User> getUsersByRole(User.Role role) {
+    public List<User> getUsersByRole(UserRole role) {
         return userRepository.findByRole(role);
     }
     
@@ -58,7 +82,7 @@ public class UserService {
         return userRepository.findByCreatedAtAfter(date);
     }
     
-    public Page<User> getUsersByRoleAndProvince(User.Role role, String province, Pageable pageable) {
+    public Page<User> getUsersByRoleAndProvince(UserRole role, String province, Pageable pageable) {
         return userRepository.findByRoleAndLocation_Province(role, province, pageable);
     }
     
@@ -72,14 +96,19 @@ public class UserService {
                 .map(user -> {
                     user.setName(userDetails.getName());
                     user.setEmail(userDetails.getEmail());
+                    user.setPhoneNumber(userDetails.getPhoneNumber());
                     user.setRole(userDetails.getRole());
-                    user.setLocation(userDetails.getLocation());
+                    
+                    // Handle location update
+                    if (userDetails.getLocation() != null && userDetails.getLocation().getLocationId() != null) {
+                        Location location = locationService.getLocationById(userDetails.getLocation().getLocationId())
+                            .orElseThrow(() -> new RuntimeException("Location not found with id: " + userDetails.getLocation().getLocationId()));
+                        user.setLocation(location);
+                    }
+                    
                     user.setSector(userDetails.getSector());
                     user.setCell(userDetails.getCell());
                     user.setVillage(userDetails.getVillage());
-                    if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
-                        user.setPassword(userDetails.getPassword());
-                    }
                     return userRepository.save(user);
                 })
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
@@ -107,15 +136,23 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
     
-    public long countUsersByRole(User.Role role) {
+    public boolean existsByPhoneNumber(String phoneNumber) {
+        return userRepository.existsByPhoneNumber(phoneNumber);
+    }
+    
+    public Optional<User> getUserByPhoneNumber(String phoneNumber) {
+        return userRepository.findByPhoneNumber(phoneNumber);
+    }
+    
+    public long countUsersByRole(UserRole role) {
         return userRepository.countByRole(role);
     }
     
     public long getTotalVolunteers() {
-        return userRepository.countByRole(User.Role.VOLUNTEER);
+        return userRepository.countByRole(UserRole.VOLUNTEER);
     }
     
     public long getTotalCitizens() {
-        return userRepository.countByRole(User.Role.CITIZEN);
+        return userRepository.countByRole(UserRole.CITIZEN);
     }
 }

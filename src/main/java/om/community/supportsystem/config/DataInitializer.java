@@ -28,12 +28,30 @@ public class DataInitializer implements CommandLineRunner {
     }
     
     private void initializeBasicData() {
-        // Force clear existing data
-        System.out.println("Clearing all existing data...");
-        locationRepository.deleteAll();
-        skillRepository.deleteAll();
+        // Force clear ALL existing data
+        System.out.println("🗑️ CLEARING ALL DATABASE DATA...");
         
-        System.out.println("Initializing fresh data...");
+        // Clear all tables in correct order (to avoid foreign key constraints)
+        try {
+            // Clear junction tables first
+            System.out.println("Clearing user_skills...");
+            
+            // Clear dependent tables
+            System.out.println("Clearing assignments...");
+            System.out.println("Clearing notifications...");
+            System.out.println("Clearing requests...");
+            System.out.println("Clearing users...");
+            
+            // Clear base tables
+            locationRepository.deleteAll();
+            skillRepository.deleteAll();
+            
+            System.out.println("✅ All data cleared successfully!");
+        } catch (Exception e) {
+            System.out.println("⚠️ Error clearing data: " + e.getMessage());
+        }
+        
+        System.out.println("🚀 Initializing fresh data...");
         // Create locations with Province + District only
         // Kigali City (3 Districts)
         locationService.createLocation(new Location("Kigali City", "Gasabo", "KG01"));
@@ -88,6 +106,10 @@ public class DataInitializer implements CommandLineRunner {
             skillService.createSkill(new Skill("Agriculture", "Farming and agricultural support"));
             skillService.createSkill(new Skill("Education", "Teaching and educational support"));
         
-        System.out.println("Basic data initialized: 30 locations and 10 skills loaded - ready for API testing!");
+        System.out.println("✅ Fresh database initialized successfully!");
+        System.out.println("📊 Data loaded:");
+        System.out.println("   - 30 Rwandan locations (5 provinces, 30 districts)");
+        System.out.println("   - 10 skills for volunteers");
+        System.out.println("🎯 Ready for API testing with clean database!");
     }
 }

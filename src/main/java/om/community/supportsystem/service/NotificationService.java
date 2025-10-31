@@ -53,6 +53,10 @@ public class NotificationService {
         return notificationRepository.findByUserAndIsReadFalse(user);
     }
     
+    public List<Notification> getUnreadNotificationsByUserId(Long userId) {
+        return notificationRepository.findByUserUserIdAndIsReadFalse(userId);
+    }
+    
     public List<Notification> getRecentNotificationsByUser(User user) {
         LocalDateTime dayAgo = LocalDateTime.now().minusDays(1);
         return notificationRepository.findRecentNotificationsByUser(user, dayAgo);
@@ -92,6 +96,12 @@ public class NotificationService {
         notificationRepository.saveAll(unreadNotifications);
     }
     
+    public void markAllAsReadForUser(Long userId) {
+        List<Notification> unreadNotifications = notificationRepository.findByUserUserIdAndIsReadFalse(userId);
+        unreadNotifications.forEach(notification -> notification.setIsRead(true));
+        notificationRepository.saveAll(unreadNotifications);
+    }
+    
     // Delete
     public void deleteNotification(Long id) {
         notificationRepository.deleteById(id);
@@ -109,5 +119,9 @@ public class NotificationService {
     
     public long countUnreadNotificationsByUser(User user) {
         return notificationRepository.countByUserAndIsReadFalse(user);
+    }
+    
+    public long countUnreadNotificationsByUser(Long userId) {
+        return notificationRepository.countByUserUserIdAndIsReadFalse(userId);
     }
 }
