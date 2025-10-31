@@ -1,5 +1,6 @@
 package om.community.supportsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -18,11 +19,13 @@ public class Assignment {
     // Many-to-One: Many assignments belong to one request
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id", nullable = false)
+    @JsonIgnoreProperties({"assignments", "citizen"})
     private Request request;
     
     // Many-to-One: Many assignments belong to one volunteer
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "volunteer_id", nullable = false)
+    @JsonIgnoreProperties({"assignments", "requests", "notifications"})
     private User volunteer;
     
     // Constructors

@@ -1,5 +1,7 @@
 package om.community.supportsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.Set;
 
@@ -18,6 +20,7 @@ public class Skill {
     
     // Many-to-Many: Skills can belong to many users
     @ManyToMany(mappedBy = "skills", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<User> users;
     
     // Constructors
