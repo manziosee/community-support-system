@@ -3,9 +3,9 @@
 ## 🔄 Complete Database Reset Process
 
 ### Current Configuration:
-- **DDL Mode**: `create` (drops and recreates all tables on startup)
-- **Data Initializer**: Clears all existing data and loads fresh sample data
-- **Auto-Reset**: Every application restart = fresh database
+- **DDL Mode**: `update` (preserves existing data, only updates schema)
+- **Data Initializer**: Only loads sample data if database is empty
+- **Data Persistence**: Your data will remain between restarts
 
 ---
 
@@ -19,29 +19,43 @@ mvn spring-boot:run
 ```
 
 **What happens:**
-1. 🗑️ **Drops all tables** (users, requests, assignments, notifications, locations, skills, user_skills)
-2. 🏗️ **Recreates schema** with updated User model (including phoneNumber field)
-3. 🌱 **Loads fresh data**:
+1. 🔄 **Updates schema** if needed (preserves existing data)
+2. 📊 **Keeps your data** (users, requests, assignments, notifications)
+3. 🌱 **Only loads sample data if database is empty**:
    - 30 Rwandan locations (5 provinces, 30 districts)
    - 10 skills for volunteers
-   - No users, requests, assignments, or notifications
 
-### Method 2: Manual Database Reset (Alternative)
+### Method 2: Manual Data Reset (When Needed)
 ```sql
 -- Connect to PostgreSQL
 psql -U postgres -d community_support_system_db
 
--- Drop all tables
-DROP TABLE IF EXISTS user_skills CASCADE;
-DROP TABLE IF EXISTS assignments CASCADE;
-DROP TABLE IF EXISTS notifications CASCADE;
-DROP TABLE IF EXISTS requests CASCADE;
-DROP TABLE IF EXISTS users CASCADE;
-DROP TABLE IF EXISTS skills CASCADE;
-DROP TABLE IF EXISTS locations CASCADE;
+-- Clear user data only (keeps locations and skills)
+DELETE FROM user_skills;
+DELETE FROM assignments;
+DELETE FROM notifications;
+DELETE FROM requests;
+DELETE FROM users;
 
--- Exit and restart application
+-- OR clear everything including locations and skills
+DELETE FROM user_skills;
+DELETE FROM assignments;
+DELETE FROM notifications;
+DELETE FROM requests;
+DELETE FROM users;
+DELETE FROM skills;
+DELETE FROM locations;
+
+-- Exit
 \q
+```
+
+### Method 3: Force Complete Reset (Emergency)
+```bash
+# Temporarily change config to create mode
+# Edit application.properties: spring.jpa.hibernate.ddl-auto=create
+# Restart application (this will drop all tables)
+# Change back to: spring.jpa.hibernate.ddl-auto=update
 ```
 
 ---
@@ -197,12 +211,13 @@ CREATE TABLE users (
 
 ## 🚨 Important Notes
 
-1. **Every Restart = Fresh DB**: Current config drops all data on restart
+1. **Data Persists**: Your data will remain between application restarts
 2. **No Password Required**: Simplified volunteer registration process
 3. **Phone Number Required**: All new users must have 10-digit phone number
 4. **Unique Constraints**: Email and phone must be unique
 5. **Skills Integration**: Volunteers can specify their skills during registration
 6. **Clean Responses**: No password field, no null collection fields
 7. **85+ Total Endpoints**: Volunteer-focused API design
+8. **Manual Reset Only**: Data is only cleared when you manually reset
 
-**Ready to start fresh! Restart your application now.** 🚀
+**Your data is now safe and persistent! 🔒**

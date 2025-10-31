@@ -28,30 +28,16 @@ public class DataInitializer implements CommandLineRunner {
     }
     
     private void initializeBasicData() {
-        // Force clear ALL existing data
-        System.out.println("🗑️ CLEARING ALL DATABASE DATA...");
-        
-        // Clear all tables in correct order (to avoid foreign key constraints)
-        try {
-            // Clear junction tables first
-            System.out.println("Clearing user_skills...");
-            
-            // Clear dependent tables
-            System.out.println("Clearing assignments...");
-            System.out.println("Clearing notifications...");
-            System.out.println("Clearing requests...");
-            System.out.println("Clearing users...");
-            
-            // Clear base tables
-            locationRepository.deleteAll();
-            skillRepository.deleteAll();
-            
-            System.out.println("✅ All data cleared successfully!");
-        } catch (Exception e) {
-            System.out.println("⚠️ Error clearing data: " + e.getMessage());
+        // Only initialize if database is empty
+        if (locationRepository.count() > 0) {
+            System.out.println("📊 Database already contains data - skipping initialization");
+            System.out.println("   - Locations: " + locationRepository.count());
+            System.out.println("   - Skills: " + skillRepository.count());
+            System.out.println("✅ Using existing data!");
+            return;
         }
         
-        System.out.println("🚀 Initializing fresh data...");
+        System.out.println("🚀 Initializing fresh data (empty database detected)...");
         // Create locations with Province + District only
         // Kigali City (3 Districts)
         locationService.createLocation(new Location("Kigali City", "Gasabo", "KG01"));
@@ -110,6 +96,6 @@ public class DataInitializer implements CommandLineRunner {
         System.out.println("📊 Data loaded:");
         System.out.println("   - 30 Rwandan locations (5 provinces, 30 districts)");
         System.out.println("   - 10 skills for volunteers");
-        System.out.println("🎯 Ready for API testing with clean database!");
+        System.out.println("🎯 Ready for API testing! Data will persist between restarts.");
     }
 }
