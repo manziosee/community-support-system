@@ -1042,6 +1042,47 @@
 			]
 		},
 		{
+			"name": "🗑️ Data Management (3 endpoints)",
+			"item": [
+				{
+					"name": "Reset Database (Start from ID 1)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/data/reset-database",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "data", "reset-database"]
+						}
+					}
+				},
+				{
+					"name": "Delete Specific User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/data/user/2",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "data", "user", "2"]
+						}
+					}
+				},
+				{
+					"name": "Clear All Database Data",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/data/clear-all",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "data", "clear-all"]
+						}
+					}
+				}
+			]
+		},
+		{
 			"name": "🎯 Skills (12 endpoints)",
 			"item": [
 				{

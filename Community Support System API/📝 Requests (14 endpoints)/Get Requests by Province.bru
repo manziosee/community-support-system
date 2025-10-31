@@ -1,0 +1,15 @@
+meta {
+  name: Get Requests by Province
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/api/requests/province/Kigali City
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

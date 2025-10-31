@@ -1,0 +1,15 @@
+meta {
+  name: Get All Provinces
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/locations/provinces
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

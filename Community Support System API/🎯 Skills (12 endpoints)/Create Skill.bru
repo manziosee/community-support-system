@@ -1,0 +1,26 @@
+meta {
+  name: Create Skill
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{baseUrl}}/api/skills
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "skillName": "Test Skill",
+    "description": "This is a test skill description"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

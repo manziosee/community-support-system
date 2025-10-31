@@ -1,0 +1,15 @@
+meta {
+  name: Check if Skill Name Exists
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/api/skills/exists/name/Programming
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

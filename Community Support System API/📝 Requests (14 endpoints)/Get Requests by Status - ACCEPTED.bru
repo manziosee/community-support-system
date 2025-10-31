@@ -1,0 +1,15 @@
+meta {
+  name: Get Requests by Status - ACCEPTED
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/api/requests/status/ACCEPTED
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

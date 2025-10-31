@@ -1,0 +1,15 @@
+meta {
+  name: Get Pending Assignments
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/assignments/pending
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

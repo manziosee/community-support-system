@@ -1,0 +1,15 @@
+meta {
+  name: Get Completed Requests Count
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{baseUrl}}/api/requests/count/completed
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

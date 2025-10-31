@@ -5,6 +5,7 @@ import om.community.supportsystem.model.Request;
 import om.community.supportsystem.model.RequestStatus;
 import om.community.supportsystem.model.User;
 import om.community.supportsystem.repository.AssignmentRepository;
+import om.community.supportsystem.repository.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,7 @@ public class AssignmentService {
     private AssignmentRepository assignmentRepository;
     
     @Autowired
-    private RequestService requestService;
+    private RequestRepository requestRepository;
     
     // Create
     public Assignment createAssignment(Assignment assignment) {
@@ -31,7 +32,9 @@ public class AssignmentService {
         }
         
         // Update request status to ACCEPTED
-        requestService.updateRequestStatus(assignment.getRequest().getRequestId(), RequestStatus.ACCEPTED);
+        Request request = assignment.getRequest();
+        request.setStatus(RequestStatus.ACCEPTED);
+        requestRepository.save(request);
         
         return assignmentRepository.save(assignment);
     }
@@ -96,7 +99,9 @@ public class AssignmentService {
                 .map(assignment -> {
                     assignment.setCompletedAt(LocalDateTime.now());
                     // Update request status to COMPLETED
-                    requestService.updateRequestStatus(assignment.getRequest().getRequestId(), RequestStatus.COMPLETED);
+                    Request request = assignment.getRequest();
+                    request.setStatus(RequestStatus.COMPLETED);
+                    requestRepository.save(request);
                     return assignmentRepository.save(assignment);
                 })
                 .orElseThrow(() -> new RuntimeException("Assignment not found with id: " + id));

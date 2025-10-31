@@ -1,0 +1,15 @@
+meta {
+  name: Get Pending Requests Count
+  type: http
+  seq: 12
+}
+
+get {
+  url: {{baseUrl}}/api/requests/count/pending
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
