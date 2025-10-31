@@ -1,0 +1,30 @@
+meta {
+  name: Create Location
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{baseUrl}}/api/locations
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "province": "Test Province",
+    "district": "Test District",
+    "sector": "Test Sector",
+    "cell": "Test Cell",
+    "village": "Test Village",
+    "provinceCode": "TP01"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

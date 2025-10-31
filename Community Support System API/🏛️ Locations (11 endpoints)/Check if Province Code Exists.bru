@@ -1,0 +1,15 @@
+meta {
+  name: Check if Province Code Exists
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/api/locations/exists/province-code/KG01
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

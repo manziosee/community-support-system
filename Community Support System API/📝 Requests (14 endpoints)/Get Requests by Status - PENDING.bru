@@ -1,0 +1,15 @@
+meta {
+  name: Get Requests by Status - PENDING
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/requests/status/PENDING
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

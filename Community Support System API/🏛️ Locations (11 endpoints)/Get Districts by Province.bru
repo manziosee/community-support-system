@@ -1,0 +1,15 @@
+meta {
+  name: Get Districts by Province
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/api/locations/districts/Eastern Province
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

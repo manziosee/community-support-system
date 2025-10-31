@@ -1,0 +1,15 @@
+meta {
+  name: Check if Volunteer Email Exists
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{baseUrl}}/api/users/exists/email/jean.volunteer@gmail.com
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

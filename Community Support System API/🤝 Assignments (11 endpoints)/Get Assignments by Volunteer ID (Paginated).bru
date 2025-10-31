@@ -1,0 +1,20 @@
+meta {
+  name: Get Assignments by Volunteer ID (Paginated)
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/api/assignments/volunteer/1/paginated?page=0&size=10
+  body: none
+  auth: inherit
+}
+
+params:query {
+  page: 0
+  size: 10
+}
+
+settings {
+  encodeUrl: true
+}

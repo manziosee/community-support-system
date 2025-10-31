@@ -1,0 +1,30 @@
+meta {
+  name: Create Assignment (Volunteer accepts Request)
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/api/assignments
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "request": {
+      "requestId": 1
+    },
+    "volunteer": {
+      "userId": 1
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+}

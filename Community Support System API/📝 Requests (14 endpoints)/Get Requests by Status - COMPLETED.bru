@@ -1,0 +1,15 @@
+meta {
+  name: Get Requests by Status - COMPLETED
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/requests/status/COMPLETED
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

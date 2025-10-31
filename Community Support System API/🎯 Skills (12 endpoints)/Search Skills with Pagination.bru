@@ -1,0 +1,22 @@
+meta {
+  name: Search Skills with Pagination
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/api/skills/search?skillName=Programming&page=0&size=10&sortBy=skillName
+  body: none
+  auth: inherit
+}
+
+params:query {
+  skillName: Programming
+  page: 0
+  size: 10
+  sortBy: skillName
+}
+
+settings {
+  encodeUrl: true
+}

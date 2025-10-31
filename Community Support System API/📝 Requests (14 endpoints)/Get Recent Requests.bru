@@ -1,0 +1,15 @@
+meta {
+  name: Get Recent Requests
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/api/requests/recent
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

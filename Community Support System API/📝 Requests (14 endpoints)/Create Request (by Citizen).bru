@@ -1,0 +1,29 @@
+meta {
+  name: Create Request (by Citizen)
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{baseUrl}}/api/requests
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "title": "Need help with grocery shopping",
+    "description": "I need assistance with grocery shopping for elderly parent. Looking for someone who can help with weekly shopping in Kimisagara area.",
+    "citizen": {
+      "userId": 2
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+}

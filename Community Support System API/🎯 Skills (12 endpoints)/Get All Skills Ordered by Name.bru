@@ -1,0 +1,15 @@
+meta {
+  name: Get All Skills Ordered by Name
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/api/skills/ordered
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Community Support System API",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
