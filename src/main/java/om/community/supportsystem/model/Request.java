@@ -1,5 +1,6 @@
 package om.community.supportsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -35,7 +36,7 @@ public class Request {
     
     // One-to-Many: One request can have many assignments (history)
     @OneToMany(mappedBy = "request", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnoreProperties({"request", "volunteer"})
+    @JsonIgnore
     private List<Assignment> assignments;
     
 

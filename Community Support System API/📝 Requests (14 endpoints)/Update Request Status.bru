@@ -1,0 +1,19 @@
+meta {
+  name: Update Request Status
+  type: http
+  seq: 17
+}
+
+patch {
+  url: {{baseUrl}}/api/requests/1/status?status=ACCEPTED
+  body: none
+  auth: inherit
+}
+
+params:query {
+  status: ACCEPTED
+}
+
+settings {
+  encodeUrl: true
+}

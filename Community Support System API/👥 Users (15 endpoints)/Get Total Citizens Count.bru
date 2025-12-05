@@ -1,0 +1,15 @@
+meta {
+  name: Get Total Citizens Count
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{baseUrl}}/api/users/count/citizens
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

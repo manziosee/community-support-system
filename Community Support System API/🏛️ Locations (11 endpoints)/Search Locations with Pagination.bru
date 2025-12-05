@@ -1,0 +1,22 @@
+meta {
+  name: Search Locations with Pagination
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/api/locations/search?province=Kigali City&page=0&size=10&sortBy=district
+  body: none
+  auth: inherit
+}
+
+params:query {
+  province: Kigali City
+  page: 0
+  size: 10
+  sortBy: district
+}
+
+settings {
+  encodeUrl: true
+}

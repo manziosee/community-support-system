@@ -25,6 +25,19 @@ public class UserService {
     
     // Create
     public User createUser(User user) {
+        // Validate required fields
+        if (user.getName() == null || user.getName().trim().isEmpty()) {
+            throw new RuntimeException("Name is required");
+        }
+        
+        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+            throw new RuntimeException("Email is required");
+        }
+        
+        if (user.getRole() == null) {
+            throw new RuntimeException("Role is required (CITIZEN or VOLUNTEER)");
+        }
+        
         // Validate email uniqueness
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("User with email " + user.getEmail() + " already exists");

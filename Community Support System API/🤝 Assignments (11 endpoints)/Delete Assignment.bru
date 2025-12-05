@@ -1,0 +1,15 @@
+meta {
+  name: Delete Assignment
+  type: http
+  seq: 12
+}
+
+delete {
+  url: {{baseUrl}}/api/assignments/1
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

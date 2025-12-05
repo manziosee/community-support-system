@@ -1,0 +1,15 @@
+meta {
+  name: Mark All Notifications as Read for User
+  type: http
+  seq: 12
+}
+
+patch {
+  url: {{baseUrl}}/api/notifications/user/1/mark-all-read
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

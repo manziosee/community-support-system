@@ -1,0 +1,15 @@
+meta {
+  name: Complete Assignment
+  type: http
+  seq: 11
+}
+
+patch {
+  url: {{baseUrl}}/api/assignments/1/complete
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

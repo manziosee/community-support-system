@@ -1,0 +1,15 @@
+meta {
+  name: Get Completed Assignments
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/api/assignments/completed
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

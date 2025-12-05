@@ -1,0 +1,23 @@
+meta {
+  name: Search Requests with Pagination
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/api/requests/search?status=PENDING&province=Kigali City&page=0&size=10&sortBy=createdAt
+  body: none
+  auth: inherit
+}
+
+params:query {
+  status: PENDING
+  province: Kigali City
+  page: 0
+  size: 10
+  sortBy: createdAt
+}
+
+settings {
+  encodeUrl: true
+}

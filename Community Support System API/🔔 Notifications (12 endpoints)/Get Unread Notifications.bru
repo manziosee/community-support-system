@@ -1,0 +1,15 @@
+meta {
+  name: Get Unread Notifications
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/notifications/unread
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

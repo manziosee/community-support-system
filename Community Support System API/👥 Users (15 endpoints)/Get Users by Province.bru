@@ -1,0 +1,15 @@
+meta {
+  name: Get Users by Province
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/api/users/province/Kigali City
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

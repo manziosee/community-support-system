@@ -1,0 +1,19 @@
+meta {
+  name: Cleanup Old Read Notifications
+  type: http
+  seq: 14
+}
+
+delete {
+  url: {{baseUrl}}/api/notifications/cleanup?daysOld=30
+  body: none
+  auth: inherit
+}
+
+params:query {
+  daysOld: 30
+}
+
+settings {
+  encodeUrl: true
+}

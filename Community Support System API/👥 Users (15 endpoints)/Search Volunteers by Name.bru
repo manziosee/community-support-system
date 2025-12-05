@@ -1,0 +1,15 @@
+meta {
+  name: Search Volunteers by Name
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/api/users/search/name/Jean Baptiste
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
