@@ -1,8 +1,9 @@
 package om.community.supportsystem.repository;
 
-import om.community.supportsystem.model.Assignment;
-import om.community.supportsystem.model.Request;
-import om.community.supportsystem.model.User;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,9 +11,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import om.community.supportsystem.model.Assignment;
+import om.community.supportsystem.model.Request;
+import om.community.supportsystem.model.User;
 
 @Repository
 public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
@@ -37,6 +38,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     
     // Find assignments accepted after specific date
     List<Assignment> findByAcceptedAtAfter(LocalDateTime date);
+    
     
     // Find current assignment for a request (not completed)
     Optional<Assignment> findByRequestAndCompletedAtIsNull(Request request);
