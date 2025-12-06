@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer circle -->
+  <circle cx="100" cy="100" r="90" fill="#4F46E5" opacity="0.1" stroke="#4F46E5" stroke-width="4"/>
+  
+  <!-- People icons in a circle -->
+  <g fill="#4F46E5">
+    <!-- Center person -->
+    <path d="M100 70c-8.284 0-15-6.716-15-15s6.716-15 15-15 15 6.716 15 15-6.716 15-15 15zm0 10c11.046 0 20 8.954 20 20v10H80v-10c0-11.046 8.954-20 20-20z"/>
+    
+    <!-- Top person -->
+    <path d="M100 30c-5.523 0-10-4.477-10-10s4.477-10 10-10 10 4.477 10 10-4.477 10-10 10zm0 10c8.284 0 15 6.716 15 15v5h-30v-5c0-8.284 6.716-15 15-15z" transform="translate(0, -15)"/>
+    
+    <!-- Right person -->
+    <path d="M170 100c0-5.523-4.477-10-10-10s-10 4.477-10 10 4.477 10 10 10 10-4.477 10-10zm-10 10c-8.284 0-15-6.716-15-15v-5h30v5c0 8.284-6.716 15-15 15z" transform="rotate(90, 100, 100)"/>
+    
+    <!-- Bottom person -->
+    <path d="M100 170c5.523 0 10 4.477 10 10s-4.477 10-10 10-10-4.477-10-10 4.477-10 10-10zm0-10c-8.284 0-15-6.716-15-15v-5h30v5c0 8.284-6.716 15-15 15z" transform="translate(0, 15)"/>
+    
+    <!-- Left person -->
+    <path d="M30 100c0 5.523 4.477 10 10 10s10-4.477 10-10-4.477-10-10-10-10 4.477-10 10zm10-10c8.284 0 15 6.716 15 15v5H25v-5c0-8.284 6.716-15 15-15z" transform="rotate(-90, 100, 100)"/>
+  </g>
+  
+  <!-- Text around the circle -->
+  <path id="textPath" d="M30,100a70,70 0 1,1 140,0a70,70 0 1,1 -140,0" fill="none"/>
+  <text fill="#4F46E5" font-size="14" font-weight="bold">
+    <textPath href="#textPath" startOffset="50%" text-anchor="middle">COMMUNITY SUPPORT SYSTEM</textPath>
+  </text>
+</svg>
