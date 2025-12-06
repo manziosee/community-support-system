@@ -3,10 +3,7 @@ package om.community.supportsystem.controller;
 import om.community.supportsystem.model.Notification;
 import om.community.supportsystem.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,14 +44,13 @@ public class NotificationController {
     }
     
     @GetMapping("/user/{userId}/paginated")
-    public ResponseEntity<Page<Notification>> getNotificationsByUserPaginated(
+    public ResponseEntity<List<Notification>> getNotificationsByUserPaginated(
             @PathVariable Long userId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         List<Notification> notifications = notificationService.getNotificationsByUserId(userId);
-        return ResponseEntity.ok(Page.empty());
+        return ResponseEntity.ok(notifications);
     }
     
     @GetMapping("/unread")

@@ -4,7 +4,6 @@ import om.community.supportsystem.model.User;
 import om.community.supportsystem.model.UserRole;
 import om.community.supportsystem.model.Location;
 import om.community.supportsystem.repository.UserRepository;
-import om.community.supportsystem.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,9 +18,6 @@ public class UserService {
     
     @Autowired
     private UserRepository userRepository;
-    
-    @Autowired
-    private LocationService locationService;
     
     // Create
     public User createUser(User user) {
@@ -52,12 +48,7 @@ public class UserService {
             throw new RuntimeException("User with phone number " + user.getPhoneNumber() + " already exists");
         }
         
-        // Ensure location is properly loaded
-        if (user.getLocation() != null && user.getLocation().getLocationId() != null) {
-            Location location = locationService.getLocationById(user.getLocation().getLocationId())
-                .orElseThrow(() -> new RuntimeException("Location not found with id: " + user.getLocation().getLocationId()));
-            user.setLocation(location);
-        }
+        // Location will be handled by JPA automatically
         
         return userRepository.save(user);
     }
@@ -113,10 +104,8 @@ public class UserService {
                     user.setRole(userDetails.getRole());
                     
                     // Handle location update
-                    if (userDetails.getLocation() != null && userDetails.getLocation().getLocationId() != null) {
-                        Location location = locationService.getLocationById(userDetails.getLocation().getLocationId())
-                            .orElseThrow(() -> new RuntimeException("Location not found with id: " + userDetails.getLocation().getLocationId()));
-                        user.setLocation(location);
+                    if (userDetails.getLocation() != null) {
+                        user.setLocation(userDetails.getLocation());
                     }
                     
                     user.setSector(userDetails.getSector());
