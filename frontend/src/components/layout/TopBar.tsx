@@ -28,7 +28,7 @@ const TopBar: React.FC = () => {
   };
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+    <header className="bg-white shadow-sm border-b border-neutral-200 px-6 py-4">
       <div className="flex items-center justify-between">
         {/* Search */}
         <div className="flex-1 max-w-lg">
@@ -37,7 +37,7 @@ const TopBar: React.FC = () => {
             <input
               type="text"
               placeholder="Search users, requests, assignments..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              className="w-full pl-10 pr-4 py-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all duration-200"
               onFocus={() => setShowSearch(true)}
               onBlur={() => setTimeout(() => setShowSearch(false), 200)}
             />
@@ -54,10 +54,10 @@ const TopBar: React.FC = () => {
           {/* Notifications */}
           <button
             onClick={() => navigate('/notifications')}
-            className="relative p-2 text-gray-400 hover:text-gray-600 transition-colors"
+            className="relative p-2 text-neutral-500 hover:text-sky-600 transition-colors duration-200 rounded-lg hover:bg-sky-50"
           >
             <Bell className="w-6 h-6" />
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+            <span className="absolute -top-1 -right-1 w-5 h-5 bg-sky-500 text-white text-xs rounded-full flex items-center justify-center font-semibold shadow-sm">
               3
             </span>
           </button>
@@ -66,22 +66,22 @@ const TopBar: React.FC = () => {
           <div className="relative" ref={userMenuRef}>
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex items-center space-x-3 p-2 rounded-lg hover:bg-sky-50 transition-all duration-200"
             >
-              <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
-                <span className="text-primary-600 font-medium text-sm">
+              <div className="w-8 h-8 bg-gradient-to-br from-sky-400 to-sky-600 rounded-full flex items-center justify-center shadow-sm">
+                <span className="text-white font-semibold text-sm">
                   {user?.name.charAt(0).toUpperCase()}
                 </span>
               </div>
               <div className="hidden md:block text-left">
-                <p className="text-sm font-medium text-gray-900">{user?.name}</p>
-                <p className="text-xs text-gray-500 capitalize">{user?.role.toLowerCase()}</p>
+                <p className="text-sm font-semibold text-gray-900">{user?.name}</p>
+                <p className="text-xs text-neutral-600 capitalize">{user?.role.toLowerCase()}</p>
               </div>
-              <ChevronDown className="w-4 h-4 text-gray-400" />
+              <ChevronDown className="w-4 h-4 text-neutral-500" />
             </button>
 
             {showUserMenu && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-soft-lg border border-neutral-200 py-1 z-50 animate-slide-down">
                 <button
                   onClick={() => {
                     navigate('/profile');
@@ -105,7 +105,7 @@ const TopBar: React.FC = () => {
                 <hr className="my-1" />
                 <button
                   onClick={handleLogout}
-                  className="flex items-center space-x-3 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                  className="flex items-center space-x-3 w-full px-4 py-2 text-sm text-sky-600 hover:bg-sky-50 transition-colors duration-200"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>Sign out</span>

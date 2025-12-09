@@ -7,8 +7,7 @@ import {
   Award, 
   Bell, 
   MapPin,
-  Plus,
-  TrendingUp
+  Plus
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { assignmentsApi, requestsApi, notificationsApi } from '../../services/api';
@@ -86,33 +85,35 @@ const VolunteerDashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Welcome Header */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-gradient-to-br from-sky-400 to-sky-600 rounded-2xl shadow-soft-lg p-8 text-white">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-3xl font-bold mb-2">
               Welcome back, {user?.name}! 🤝
             </h1>
-            <p className="text-gray-600 mt-1">
+            <p className="text-white/90 flex items-center mb-2">
               <MapPin className="inline w-4 h-4 mr-1" />
               {user?.location.district}, {user?.location.province}
             </p>
-            <div className="flex items-center mt-2">
-              <Award className="w-4 h-4 text-yellow-500 mr-1" />
-              <span className="text-sm text-gray-600">
+            <div className="flex items-center">
+              <Award className="w-4 h-4 text-white/80 mr-1" />
+              <span className="text-sm text-white/90">
                 Skills: {user?.skills?.map(s => s.skillName).join(', ') || 'No skills added'}
               </span>
             </div>
           </div>
-          <div className="flex space-x-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <Link to="/requests/available">
-              <Button variant="secondary" icon={FileText}>
+              <button className="inline-flex items-center bg-white text-sky-600 px-6 py-3 rounded-lg shadow-md font-semibold">
+                <FileText className="w-5 h-5 mr-2" />
                 Browse Requests
-              </Button>
+              </button>
             </Link>
             <Link to="/profile">
-              <Button icon={Plus}>
+              <button className="inline-flex items-center bg-white text-sky-600 px-6 py-3 rounded-lg shadow-md font-semibold">
+                <Plus className="w-5 h-5 mr-2" />
                 Update Skills
-              </Button>
+              </button>
             </Link>
           </div>
         </div>
@@ -157,12 +158,12 @@ const VolunteerDashboard: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* My Active Assignments */}
-        <Card padding="none">
-          <div className="p-6 border-b border-gray-200">
+        <Card padding="none" hover>
+          <div className="p-6 border-b border-sky-200 bg-gradient-to-r from-sky-50 to-sky-100">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">My Active Assignments</h2>
-              <Link to="/assignments" className="text-sm text-blue-600 hover:text-blue-500">
-                View all
+              <h2 className="text-lg font-bold text-gray-900">My Active Assignments</h2>
+              <Link to="/assignments" className="text-sm text-sky-600 hover:text-sky-700 font-semibold">
+                View all →
               </Link>
             </div>
           </div>
@@ -181,7 +182,7 @@ const VolunteerDashboard: React.FC = () => {
                   <Link
                     key={assignment.assignmentId}
                     to={`/assignments/${assignment.assignmentId}`}
-                    className="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-blue-300 transition-all"
+                    className="block p-4 border border-sky-200 rounded-lg hover:bg-sky-50 hover:border-sky-300 hover:shadow-sm transition-all duration-200"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex-1 min-w-0">
@@ -204,12 +205,12 @@ const VolunteerDashboard: React.FC = () => {
         </Card>
 
         {/* Available Requests */}
-        <Card padding="none">
-          <div className="p-6 border-b border-gray-200">
+        <Card padding="none" hover>
+          <div className="p-6 border-b border-sky-200 bg-gradient-to-r from-sky-50 to-sky-100">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Available Requests</h2>
-              <Link to="/requests/available" className="text-sm text-blue-600 hover:text-blue-500">
-                View all
+              <h2 className="text-lg font-bold text-gray-900">Available Requests</h2>
+              <Link to="/requests/available" className="text-sm text-sky-600 hover:text-sky-700 font-semibold">
+                View all →
               </Link>
             </div>
           </div>
@@ -226,7 +227,7 @@ const VolunteerDashboard: React.FC = () => {
                   <Link
                     key={request.requestId}
                     to={`/requests/${request.requestId}`}
-                    className="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-blue-300 transition-all"
+                    className="block p-4 border border-sky-200 rounded-lg hover:bg-sky-50 hover:border-sky-300 hover:shadow-sm transition-all duration-200"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex-1 min-w-0">
@@ -251,12 +252,12 @@ const VolunteerDashboard: React.FC = () => {
       </div>
 
       {/* Recent Notifications */}
-      <Card padding="none">
-        <div className="p-6 border-b border-gray-200">
+      <Card padding="none" hover>
+        <div className="p-6 border-b border-sky-200 bg-gradient-to-r from-sky-50 to-sky-100">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">Recent Notifications</h2>
-            <Link to="/notifications" className="text-sm text-blue-600 hover:text-blue-500">
-              View all
+            <h2 className="text-lg font-bold text-gray-900">Recent Notifications</h2>
+            <Link to="/notifications" className="text-sm text-sky-600 hover:text-sky-700 font-semibold">
+              View all →
             </Link>
           </div>
         </div>
@@ -272,16 +273,16 @@ const VolunteerDashboard: React.FC = () => {
               {notifications.map((notification) => (
                 <div
                   key={notification.notificationId}
-                  className={`p-4 border rounded-lg transition-all ${
+                  className={`p-4 border rounded-lg transition-all duration-200 ${
                     notification.isRead
-                      ? 'border-gray-200 bg-white'
-                      : 'border-blue-200 bg-blue-50'
+                      ? 'border-neutral-200 bg-white'
+                      : 'border-sky-200 bg-sky-50 shadow-sm'
                   }`}
                 >
                   <div className="flex items-start justify-between">
                     <p className="text-sm text-gray-900 flex-1">{notification.message}</p>
                     {!notification.isRead && (
-                      <span className="ml-2 w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-1"></span>
+                      <span className="ml-2 w-2 h-2 bg-sky-600 rounded-full flex-shrink-0 mt-1 animate-pulse"></span>
                     )}
                   </div>
                   <p className="text-xs text-gray-500 mt-2">
@@ -296,10 +297,10 @@ const VolunteerDashboard: React.FC = () => {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
+        <Card hover className="group">
           <div className="text-center">
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto">
-              <FileText className="w-6 h-6 text-blue-600" />
+            <div className="w-14 h-14 bg-gradient-to-br from-sky-400 to-sky-600 rounded-xl flex items-center justify-center mx-auto shadow-sm group-hover:scale-110 transition-transform duration-300">
+              <FileText className="w-7 h-7 text-white" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mt-4">Browse Requests</h3>
             <p className="text-gray-600 mt-2 text-sm">Find new requests that match your skills</p>
@@ -309,10 +310,10 @@ const VolunteerDashboard: React.FC = () => {
           </div>
         </Card>
 
-        <Card>
+        <Card hover className="group">
           <div className="text-center">
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto">
-              <CheckSquare className="w-6 h-6 text-green-600" />
+            <div className="w-14 h-14 bg-gradient-to-br from-sky-500 to-sky-600 rounded-xl flex items-center justify-center mx-auto shadow-sm group-hover:scale-110 transition-transform duration-300">
+              <CheckSquare className="w-7 h-7 text-white" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mt-4">My Assignments</h3>
             <p className="text-gray-600 mt-2 text-sm">Track your ongoing and completed work</p>
@@ -322,10 +323,10 @@ const VolunteerDashboard: React.FC = () => {
           </div>
         </Card>
 
-        <Card>
+        <Card hover className="group">
           <div className="text-center">
-            <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mx-auto">
-              <Award className="w-6 h-6 text-yellow-600" />
+            <div className="w-14 h-14 bg-gradient-to-br from-sky-400 to-sky-500 rounded-xl flex items-center justify-center mx-auto shadow-sm group-hover:scale-110 transition-transform duration-300">
+              <Award className="w-7 h-7 text-white" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mt-4">My Skills</h3>
             <p className="text-gray-600 mt-2 text-sm">Update your skills and expertise</p>

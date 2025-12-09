@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { User, Mail, Phone, MapPin, HelpCircle, Award } from 'lucide-react';
+import { User, Mail, Phone, MapPin, HandHeart, Award } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { locationsApi, skillsApi } from '../../services/api';
 import { UserRole } from '../../types';
@@ -105,8 +105,8 @@ const RegisterPage: React.FC = () => {
       <div className="max-w-2xl w-full space-y-8">
         {/* Header */}
         <div className="text-center">
-          <div className="mx-auto w-16 h-16 bg-primary-600 rounded-full flex items-center justify-center">
-            <HelpCircle className="w-8 h-8 text-white" />
+          <div className="mx-auto w-16 h-16 bg-gradient-to-br from-sky-400 to-sky-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <HandHeart className="w-8 h-8 text-white" />
           </div>
           <h2 className="mt-6 text-3xl font-bold text-gray-900">
             Join our community

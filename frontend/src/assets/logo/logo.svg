@@ -1,29 +1,37 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Outer circle -->
-  <circle cx="100" cy="100" r="90" fill="#4F46E5" opacity="0.1" stroke="#4F46E5" stroke-width="4"/>
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Sky blue gradient background -->
+  <defs>
+    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#38bdf8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0284c7;stop-opacity:1" />
+    </linearGradient>
+  </defs>
   
-  <!-- People icons in a circle -->
-  <g fill="#4F46E5">
-    <!-- Center person -->
-    <path d="M100 70c-8.284 0-15-6.716-15-15s6.716-15 15-15 15 6.716 15 15-6.716 15-15 15zm0 10c11.046 0 20 8.954 20 20v10H80v-10c0-11.046 8.954-20 20-20z"/>
+  <!-- Rounded rectangle background with gradient -->
+  <rect width="64" height="64" rx="12" fill="url(#skyGradient)"/>
+  
+  <!-- HandHeart icon (hands holding heart) in white -->
+  <g transform="translate(12, 16)">
+    <!-- Heart shape -->
+    <path d="M20 8.5C20 5.5 17.5 3 14.5 3C12.5 3 10.8 4 10 5.5C9.2 4 7.5 3 5.5 3C2.5 3 0 5.5 0 8.5C0 14 10 22 10 22C10 22 20 14 20 8.5Z" 
+          fill="white" opacity="0.95"/>
     
-    <!-- Top person -->
-    <path d="M100 30c-5.523 0-10-4.477-10-10s4.477-10 10-10 10 4.477 10 10-4.477 10-10 10zm0 10c8.284 0 15 6.716 15 15v5h-30v-5c0-8.284 6.716-15 15-15z" transform="translate(0, -15)"/>
+    <!-- Left hand -->
+    <path d="M2 12C2 12 0 14 0 16C0 18 1 19 2 19C3 19 4 18 4 16V12" 
+          stroke="white" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.9"/>
     
-    <!-- Right person -->
-    <path d="M170 100c0-5.523-4.477-10-10-10s-10 4.477-10 10 4.477 10 10 10 10-4.477 10-10zm-10 10c-8.284 0-15-6.716-15-15v-5h30v5c0 8.284-6.716 15-15 15z" transform="rotate(90, 100, 100)"/>
-    
-    <!-- Bottom person -->
-    <path d="M100 170c5.523 0 10 4.477 10 10s-4.477 10-10 10-10-4.477-10-10 4.477-10 10-10zm0-10c-8.284 0-15-6.716-15-15v-5h30v5c0 8.284-6.716 15-15 15z" transform="translate(0, 15)"/>
-    
-    <!-- Left person -->
-    <path d="M30 100c0 5.523 4.477 10 10 10s10-4.477 10-10-4.477-10-10-10-10 4.477-10 10zm10-10c8.284 0 15 6.716 15 15v5H25v-5c0-8.284 6.716-15 15-15z" transform="rotate(-90, 100, 100)"/>
+    <!-- Right hand -->
+    <path d="M18 12C18 12 20 14 20 16C20 18 19 19 18 19C17 19 16 18 16 16V12" 
+          stroke="white" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.9"/>
   </g>
   
-  <!-- Text around the circle -->
-  <path id="textPath" d="M30,100a70,70 0 1,1 140,0a70,70 0 1,1 -140,0" fill="none"/>
-  <text fill="#4F46E5" font-size="14" font-weight="bold">
-    <textPath href="#textPath" startOffset="50%" text-anchor="middle">COMMUNITY SUPPORT SYSTEM</textPath>
-  </text>
+  <!-- Users badge (white circle with sky blue users icon) -->
+  <circle cx="48" cy="48" r="10" fill="white"/>
+  <g transform="translate(42, 42)">
+    <!-- Two user silhouettes -->
+    <circle cx="4" cy="4" r="2" fill="#0284c7"/>
+    <circle cx="8" cy="4" r="2" fill="#0284c7"/>
+    <path d="M1 12C1 10 2.5 8.5 4 8.5C5.5 8.5 7 10 7 12" stroke="#0284c7" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+    <path d="M5 12C5 10 6.5 8.5 8 8.5C9.5 8.5 11 10 11 12" stroke="#0284c7" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+  </g>
 </svg>

@@ -75,21 +75,22 @@ const CitizenDashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Welcome Header */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-gradient-to-br from-sky-400 to-sky-600 rounded-2xl shadow-soft-lg p-8 text-white">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Welcome back, {user?.name}!
+            <h1 className="text-3xl font-bold mb-2">
+              Welcome back, {user?.name}! 👋
             </h1>
-            <p className="text-gray-600 mt-1">
+            <p className="text-white/90 flex items-center">
               <MapPin className="inline w-4 h-4 mr-1" />
               {user?.location.district}, {user?.location.province}
             </p>
           </div>
           <Link to="/requests/create">
-            <Button icon={Plus}>
+            <button className="inline-flex items-center bg-white text-sky-600 px-6 py-3 rounded-lg shadow-md font-semibold">
+              <Plus className="w-5 h-5 mr-2" />
               Create Request
-            </Button>
+            </button>
           </Link>
         </div>
       </div>
@@ -126,12 +127,12 @@ const CitizenDashboard: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Requests */}
-        <Card padding="none">
-          <div className="p-6 border-b border-gray-200">
+        <Card padding="none" hover>
+          <div className="p-6 border-b border-neutral-200 bg-gradient-to-r from-primary-50 to-secondary-50">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Recent Requests</h2>
-              <Link to="/requests" className="text-sm text-blue-600 hover:text-blue-500">
-                View all
+              <h2 className="text-lg font-bold text-gray-900">Recent Requests</h2>
+              <Link to="/requests" className="text-sm text-primary-600 hover:text-primary-700 font-semibold">
+                View all →
               </Link>
             </div>
           </div>
@@ -150,7 +151,7 @@ const CitizenDashboard: React.FC = () => {
                   <Link
                     key={request.requestId}
                     to={`/requests/${request.requestId}`}
-                    className="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-blue-300 transition-all"
+                    className="block p-4 border border-neutral-200 rounded-lg hover:bg-primary-50 hover:border-primary-300 hover:shadow-sm transition-all duration-200"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex-1 min-w-0">
@@ -171,12 +172,12 @@ const CitizenDashboard: React.FC = () => {
         </Card>
 
         {/* Recent Notifications */}
-        <Card padding="none">
-          <div className="p-6 border-b border-gray-200">
+        <Card padding="none" hover>
+          <div className="p-6 border-b border-neutral-200 bg-gradient-to-r from-accent-50 to-primary-50">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Recent Notifications</h2>
-              <Link to="/notifications" className="text-sm text-blue-600 hover:text-blue-500">
-                View all
+              <h2 className="text-lg font-bold text-gray-900">Recent Notifications</h2>
+              <Link to="/notifications" className="text-sm text-primary-600 hover:text-primary-700 font-semibold">
+                View all →
               </Link>
             </div>
           </div>
@@ -192,16 +193,16 @@ const CitizenDashboard: React.FC = () => {
                 {notifications.map((notification) => (
                   <div
                     key={notification.notificationId}
-                    className={`p-4 border rounded-lg transition-all ${
+                    className={`p-4 border rounded-lg transition-all duration-200 ${
                       notification.isRead
-                        ? 'border-gray-200 bg-white'
-                        : 'border-blue-200 bg-blue-50'
+                        ? 'border-neutral-200 bg-white'
+                        : 'border-primary-200 bg-primary-50 shadow-sm'
                     }`}
                   >
                     <div className="flex items-start justify-between">
                       <p className="text-sm text-gray-900 flex-1">{notification.message}</p>
                       {!notification.isRead && (
-                        <span className="ml-2 w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-1"></span>
+                        <span className="ml-2 w-2 h-2 bg-primary-600 rounded-full flex-shrink-0 mt-1 animate-pulse"></span>
                       )}
                     </div>
                     <p className="text-xs text-gray-500 mt-2">
