@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import type { User, Location, Skill } from '../types';
+import type { User } from '../types';
 import { UserRole } from '../types';
 import { authApi } from '../services/api';
 import toast from 'react-hot-toast';

@@ -3,7 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 
 interface ButtonProps {
   children: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'outline';
+  variant?: 'primary' | 'secondary' | 'accent' | 'danger' | 'success' | 'outline';
   size?: 'sm' | 'md' | 'lg';
   icon?: LucideIcon;
   iconPosition?: 'left' | 'right';
@@ -26,23 +26,24 @@ const Button: React.FC<ButtonProps> = ({
   type = 'button',
   className = '',
 }) => {
-  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2';
+  const baseClasses = 'inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2';
   
   const variantClasses = {
-    primary: 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500 shadow-sm',
-    secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-800 focus:ring-gray-500',
-    danger: 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500 shadow-sm',
-    success: 'bg-green-600 hover:bg-green-700 text-white focus:ring-green-500 shadow-sm',
-    outline: 'border-2 border-gray-300 bg-white hover:bg-gray-50 text-gray-700 focus:ring-blue-500',
+    primary: 'bg-sky-500 hover:bg-sky-600 text-white focus:ring-sky-400 shadow-sm hover:shadow-md',
+    secondary: 'bg-white hover:bg-gray-50 text-sky-600 border-2 border-sky-500 focus:ring-sky-400 shadow-sm hover:shadow-md',
+    accent: 'bg-sky-400 hover:bg-sky-500 text-white focus:ring-sky-300 shadow-sm hover:shadow-md',
+    danger: 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500 shadow-sm hover:shadow-md',
+    success: 'bg-sky-500 hover:bg-sky-600 text-white focus:ring-sky-400 shadow-sm hover:shadow-md',
+    outline: 'border-2 border-sky-500 bg-white hover:bg-sky-50 hover:border-sky-600 text-sky-600 focus:ring-sky-400',
   };
   
   const sizeClasses = {
     sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-sm',
+    md: 'px-5 py-2.5 text-sm',
     lg: 'px-6 py-3 text-base',
   };
   
-  const disabledClasses = 'opacity-50 cursor-not-allowed';
+  const disabledClasses = 'opacity-50 cursor-not-allowed hover:shadow-none';
   
   const classes = `
     ${baseClasses}
