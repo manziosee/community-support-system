@@ -12,7 +12,7 @@ const TwoFactorSettings: React.FC = () => {
   const [showDisableModal, setShowDisableModal] = useState(false);
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { user } = useAuth();
+  // const { user } = useAuth();
 
   const handleEnable2FA = () => {
     window.location.href = '/2fa-setup';

@@ -35,7 +35,7 @@ import NotificationsPage from './pages/notifications/NotificationsPage';
 
 // User Pages
 import ProfilePage from './pages/users/ProfilePage';
-import UsersPage from './pages/users/UsersPage';
+
 import MySkillsPage from './pages/users/MySkillsPage';
 
 // Landing Page

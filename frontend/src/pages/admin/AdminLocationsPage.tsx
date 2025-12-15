@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Search, Filter, Users, Plus, Edit, Trash2, Eye } from 'lucide-react';
+import { MapPin, Search, Users, Plus, Edit, Trash2, Eye } from 'lucide-react';
 import { locationsApi } from '../../services/api';
 import type { Location } from '../../types';
 import Card from '../../components/common/Card';
