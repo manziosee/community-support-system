@@ -34,7 +34,7 @@ services:
       DB_USERNAME: ${DB_USERNAME:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-postgres}
       JWT_SECRET: ${JWT_SECRET:-mySecretKeyForCommunitySupportSystemThatIsLongEnoughForSecurity}
-      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:3000}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:3000,https://community-support-system.vercel.app}
     ports:
       - "${SERVER_PORT:-8080}:${SERVER_PORT:-8080}"
     depends_on:
