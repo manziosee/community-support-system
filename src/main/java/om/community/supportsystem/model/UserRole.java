@@ -1,5 +1,5 @@
 package om.community.supportsystem.model;
 
 public enum UserRole {
-    CITIZEN, VOLUNTEER
+    CITIZEN, VOLUNTEER, ADMIN
 }

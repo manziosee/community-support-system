@@ -52,6 +52,22 @@ export const authApi = {
   
   resendVerification: (email: string) => 
     api.post('/auth/resend-verification', { email }),
+  
+  // Two-Factor Authentication
+  send2FACode: () => 
+    api.post('/auth/2fa/send-code'),
+  
+  verify2FASetup: (code: string) => 
+    api.post('/auth/2fa/verify-setup', { code }),
+  
+  verify2FA: (data: { email: string; password: string; code: string; isBackupCode?: boolean }) => 
+    api.post<AuthResponse>('/auth/2fa/verify', data),
+  
+  resend2FACode: (email: string) => 
+    api.post('/auth/2fa/resend', { email }),
+  
+  disable2FA: (password: string) => 
+    api.post('/auth/2fa/disable', { password }),
 };
 
 // Users API

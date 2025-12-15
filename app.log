@@ -14,7 +14,7 @@
 [[1;34mINFO[m] Nothing to compile - all classes are up to date.
 [[1;34mINFO[m] 
 [[1;34mINFO[m] [1m--- [0;32mmaven-resources-plugin:3.3.1:testResources[m [1m(default-testResources)[m @ [36msupportsystem[0;1m ---[m
-[[1;34mINFO[m] skip non existing resourceDirectory /home/manzi/WEBTECH/community-support-system/supportsystem/src/test/resources
+[[1;34mINFO[m] skip non existing resourceDirectory /home/manzi/WEBTECH/community-support-system/src/test/resources
 [[1;34mINFO[m] 
 [[1;34mINFO[m] [1m--- [0;32mmaven-compiler-plugin:3.14.0:testCompile[m [1m(default-testCompile)[m @ [36msupportsystem[0;1m ---[m
 [[1;34mINFO[m] Nothing to compile - all classes are up to date.
@@ -34,332 +34,55 @@
 
  :: Spring Boot ::                (v3.5.6)
 
-2025-10-31T12:00:45.220+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] o.c.s.CommunitySupportSystemApplication  : Starting CommunitySupportSystemApplication using Java 21.0.8 with PID 127251 (/home/manzi/WEBTECH/community-support-system/supportsystem/target/classes started by manzi in /home/manzi/WEBTECH/community-support-system/supportsystem)
-2025-10-31T12:00:45.223+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] o.c.s.CommunitySupportSystemApplication  : Running with Spring Boot v3.5.6, Spring v6.2.11
-2025-10-31T12:00:45.224+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] o.c.s.CommunitySupportSystemApplication  : No active profile set, falling back to 1 default profile: "default"
-2025-10-31T12:00:45.224+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] o.s.boot.SpringApplication               : Loading source class om.community.supportsystem.CommunitySupportSystemApplication
-2025-10-31T12:00:45.254+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] ConfigServletWebServerApplicationContext : Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@797b0699
-2025-10-31T12:00:45.684+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-10-31T12:00:45.698+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] o.s.b.a.AutoConfigurationPackages        : @EnableAutoConfiguration was declared on a class in the package 'om.community.supportsystem'. Automatic @Repository and @Entity scanning is enabled.
-2025-10-31T12:00:45.733+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 41 ms. Found 6 JPA repository interfaces.
-2025-10-31T12:00:46.014+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] .s.b.w.e.t.TomcatServletWebServerFactory : Code archive: /home/manzi/.m2/repository/org/springframework/boot/spring-boot/3.5.6/spring-boot-3.5.6.jar
-2025-10-31T12:00:46.014+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] .s.b.w.e.t.TomcatServletWebServerFactory : Code archive: /home/manzi/.m2/repository/org/springframework/boot/spring-boot/3.5.6/spring-boot-3.5.6.jar
-2025-10-31T12:00:46.014+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] .s.b.w.e.t.TomcatServletWebServerFactory : None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
-2025-10-31T12:00:46.032+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-10-31T12:00:46.043+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-10-31T12:00:46.043+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
-2025-10-31T12:00:46.077+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-10-31T12:00:46.077+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] w.s.c.ServletWebServerApplicationContext : Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
-2025-10-31T12:00:46.078+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 823 ms
-2025-10-31T12:00:46.094+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] o.s.b.w.s.ServletContextInitializerBeans : Mapping filters: characterEncodingFilter urls=[/*] order=-2147483648, formContentFilter urls=[/*] order=-9900, requestContextFilter urls=[/*] order=-105
-2025-10-31T12:00:46.095+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] o.s.b.w.s.ServletContextInitializerBeans : Mapping servlets: dispatcherServlet urls=[/]
-2025-10-31T12:00:46.112+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] o.s.b.w.s.f.OrderedRequestContextFilter  : Filter 'requestContextFilter' configured for use
-2025-10-31T12:00:46.113+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] s.b.w.s.f.OrderedCharacterEncodingFilter : Filter 'characterEncodingFilter' configured for use
-2025-10-31T12:00:46.113+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] o.s.b.w.s.f.OrderedFormContentFilter     : Filter 'formContentFilter' configured for use
-2025-10-31T12:00:46.225+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-10-31T12:00:46.263+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
-2025-10-31T12:00:46.282+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-10-31T12:00:46.463+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-10-31T12:00:46.481+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-10-31T12:00:46.714+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@3ad847f8
-2025-10-31T12:00:46.715+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-10-31T12:00:46.736+02:00  WARN 127251 --- [CommunitySupportSystem] [           main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-10-31T12:00:46.748+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2025-12-15T15:39:06.175+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] o.c.s.CommunitySupportSystemApplication  : Starting CommunitySupportSystemApplication using Java 21.0.9 with PID 145536 (/home/manzi/WEBTECH/community-support-system/target/classes started by manzi in /home/manzi/WEBTECH/community-support-system)
+2025-12-15T15:39:06.177+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] o.c.s.CommunitySupportSystemApplication  : Running with Spring Boot v3.5.6, Spring v6.2.11
+2025-12-15T15:39:06.178+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] o.c.s.CommunitySupportSystemApplication  : No active profile set, falling back to 1 default profile: "default"
+2025-12-15T15:39:06.179+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] o.s.boot.SpringApplication               : Loading source class om.community.supportsystem.CommunitySupportSystemApplication
+2025-12-15T15:39:06.210+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] ConfigServletWebServerApplicationContext : Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@797b0699
+2025-12-15T15:39:06.622+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-15T15:39:06.637+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] o.s.b.a.AutoConfigurationPackages        : @EnableAutoConfiguration was declared on a class in the package 'om.community.supportsystem'. Automatic @Repository and @Entity scanning is enabled.
+2025-12-15T15:39:06.674+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 46 ms. Found 6 JPA repository interfaces.
+2025-12-15T15:39:07.005+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] .s.b.w.e.t.TomcatServletWebServerFactory : Code archive: /home/manzi/.m2/repository/org/springframework/boot/spring-boot/3.5.6/spring-boot-3.5.6.jar
+2025-12-15T15:39:07.005+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] .s.b.w.e.t.TomcatServletWebServerFactory : Code archive: /home/manzi/.m2/repository/org/springframework/boot/spring-boot/3.5.6/spring-boot-3.5.6.jar
+2025-12-15T15:39:07.006+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] .s.b.w.e.t.TomcatServletWebServerFactory : None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
+2025-12-15T15:39:07.024+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-12-15T15:39:07.035+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-12-15T15:39:07.035+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
+2025-12-15T15:39:07.064+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-12-15T15:39:07.064+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] w.s.c.ServletWebServerApplicationContext : Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
+2025-12-15T15:39:07.065+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 854 ms
+2025-12-15T15:39:07.084+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] o.s.b.w.s.ServletContextInitializerBeans : Mapping filters: characterEncodingFilter urls=[/*] order=-2147483648, formContentFilter urls=[/*] order=-9900, requestContextFilter urls=[/*] order=-105, corsFilter urls=[/*] order=2147483647
+2025-12-15T15:39:07.084+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] o.s.b.w.s.ServletContextInitializerBeans : Mapping servlets: dispatcherServlet urls=[/]
+2025-12-15T15:39:07.099+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] o.s.b.w.s.f.OrderedRequestContextFilter  : Filter 'requestContextFilter' configured for use
+2025-12-15T15:39:07.101+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] o.springframework.web.filter.CorsFilter  : Filter 'corsFilter' configured for use
+2025-12-15T15:39:07.101+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] s.b.w.s.f.OrderedCharacterEncodingFilter : Filter 'characterEncodingFilter' configured for use
+2025-12-15T15:39:07.101+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] o.s.b.w.s.f.OrderedFormContentFilter     : Filter 'formContentFilter' configured for use
+2025-12-15T15:39:07.189+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-15T15:39:07.217+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
+2025-12-15T15:39:07.237+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-12-15T15:39:07.458+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-15T15:39:07.486+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-12-15T15:39:07.727+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1716c037
+2025-12-15T15:39:07.728+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-12-15T15:39:07.748+02:00  WARN 145536 --- [CommunitySupportSystem] [           main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-15T15:39:07.761+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
-	Database version: 18.0
+	Database version: 18.1
 	Autocommit mode: undefined/unknown
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-10-31T12:00:47.459+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-10-31T12:00:47.470+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    set client_min_messages = WARNING
-Hibernate: 
-    set client_min_messages = WARNING
-2025-10-31T12:00:47.472+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    alter table if exists assignments 
-       drop constraint if exists FKa18x54t3tt6w8lao5pe2ljawu
-Hibernate: 
-    alter table if exists assignments 
-       drop constraint if exists FKa18x54t3tt6w8lao5pe2ljawu
-2025-10-31T12:00:47.476+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    alter table if exists assignments 
-       drop constraint if exists FKfth4cdurrrwcflnle3b3jiqxn
-Hibernate: 
-    alter table if exists assignments 
-       drop constraint if exists FKfth4cdurrrwcflnle3b3jiqxn
-2025-10-31T12:00:47.478+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    alter table if exists notifications 
-       drop constraint if exists FK9y21adhxn0ayjhfocscqox7bh
-Hibernate: 
-    alter table if exists notifications 
-       drop constraint if exists FK9y21adhxn0ayjhfocscqox7bh
-2025-10-31T12:00:47.480+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    alter table if exists requests 
-       drop constraint if exists FKnhmqfktrhs0k6fadu032oqhh1
-Hibernate: 
-    alter table if exists requests 
-       drop constraint if exists FKnhmqfktrhs0k6fadu032oqhh1
-2025-10-31T12:00:47.481+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    alter table if exists user_skills 
-       drop constraint if exists FKh223y61gwijpgqt6nlsuti07g
-Hibernate: 
-    alter table if exists user_skills 
-       drop constraint if exists FKh223y61gwijpgqt6nlsuti07g
-2025-10-31T12:00:47.483+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    alter table if exists user_skills 
-       drop constraint if exists FKro13if9r7fwkr5115715127ai
-Hibernate: 
-    alter table if exists user_skills 
-       drop constraint if exists FKro13if9r7fwkr5115715127ai
-2025-10-31T12:00:47.485+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    alter table if exists users 
-       drop constraint if exists FKdk0xfnnthbj8afp1ira6sndte
-Hibernate: 
-    alter table if exists users 
-       drop constraint if exists FKdk0xfnnthbj8afp1ira6sndte
-2025-10-31T12:00:47.487+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    drop table if exists assignments cascade
-Hibernate: 
-    drop table if exists assignments cascade
-2025-10-31T12:00:47.489+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    drop table if exists locations cascade
-Hibernate: 
-    drop table if exists locations cascade
-2025-10-31T12:00:47.491+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    drop table if exists notifications cascade
-Hibernate: 
-    drop table if exists notifications cascade
-2025-10-31T12:00:47.493+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    drop table if exists requests cascade
-Hibernate: 
-    drop table if exists requests cascade
-2025-10-31T12:00:47.497+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    drop table if exists skills cascade
-Hibernate: 
-    drop table if exists skills cascade
-2025-10-31T12:00:47.500+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    drop table if exists user_skills cascade
-Hibernate: 
-    drop table if exists user_skills cascade
-2025-10-31T12:00:47.505+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    drop table if exists users cascade
-Hibernate: 
-    drop table if exists users cascade
-2025-10-31T12:00:47.524+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    create table assignments (
-        accepted_at timestamp(6) not null,
-        assignment_id bigint generated by default as identity,
-        completed_at timestamp(6),
-        request_id bigint not null,
-        volunteer_id bigint not null,
-        primary key (assignment_id)
-    )
-Hibernate: 
-    create table assignments (
-        accepted_at timestamp(6) not null,
-        assignment_id bigint generated by default as identity,
-        completed_at timestamp(6),
-        request_id bigint not null,
-        volunteer_id bigint not null,
-        primary key (assignment_id)
-    )
-2025-10-31T12:00:47.532+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    create table locations (
-        location_id bigint generated by default as identity,
-        cell varchar(255),
-        district varchar(255) not null,
-        province varchar(255) not null,
-        province_code varchar(255) unique,
-        sector varchar(255),
-        village varchar(255),
-        primary key (location_id)
-    )
-Hibernate: 
-    create table locations (
-        location_id bigint generated by default as identity,
-        cell varchar(255),
-        district varchar(255) not null,
-        province varchar(255) not null,
-        province_code varchar(255) unique,
-        sector varchar(255),
-        village varchar(255),
-        primary key (location_id)
-    )
-2025-10-31T12:00:47.539+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    create table notifications (
-        is_read boolean not null,
-        created_at timestamp(6) not null,
-        notification_id bigint generated by default as identity,
-        user_id bigint not null,
-        message varchar(500) not null,
-        primary key (notification_id)
-    )
-Hibernate: 
-    create table notifications (
-        is_read boolean not null,
-        created_at timestamp(6) not null,
-        notification_id bigint generated by default as identity,
-        user_id bigint not null,
-        message varchar(500) not null,
-        primary key (notification_id)
-    )
-2025-10-31T12:00:47.545+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    create table requests (
-        citizen_id bigint not null,
-        created_at timestamp(6) not null,
-        request_id bigint generated by default as identity,
-        updated_at timestamp(6),
-        description varchar(1000) not null,
-        status varchar(255) not null check (status in ('PENDING','ACCEPTED','COMPLETED','CANCELLED')),
-        title varchar(255) not null,
-        primary key (request_id)
-    )
-Hibernate: 
-    create table requests (
-        citizen_id bigint not null,
-        created_at timestamp(6) not null,
-        request_id bigint generated by default as identity,
-        updated_at timestamp(6),
-        description varchar(1000) not null,
-        status varchar(255) not null check (status in ('PENDING','ACCEPTED','COMPLETED','CANCELLED')),
-        title varchar(255) not null,
-        primary key (request_id)
-    )
-2025-10-31T12:00:47.550+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    create table skills (
-        skill_id bigint generated by default as identity,
-        description varchar(500),
-        skill_name varchar(255) not null unique,
-        primary key (skill_id)
-    )
-Hibernate: 
-    create table skills (
-        skill_id bigint generated by default as identity,
-        description varchar(500),
-        skill_name varchar(255) not null unique,
-        primary key (skill_id)
-    )
-2025-10-31T12:00:47.555+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    create table user_skills (
-        skill_id bigint not null,
-        user_id bigint not null,
-        primary key (skill_id, user_id)
-    )
-Hibernate: 
-    create table user_skills (
-        skill_id bigint not null,
-        user_id bigint not null,
-        primary key (skill_id, user_id)
-    )
-2025-10-31T12:00:47.559+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    create table users (
-        created_at timestamp(6) not null,
-        location_id bigint,
-        user_id bigint generated by default as identity,
-        phone_number varchar(10) not null unique,
-        cell varchar(255),
-        email varchar(255) not null unique,
-        name varchar(255) not null,
-        role varchar(255) not null check (role in ('CITIZEN','VOLUNTEER')),
-        sector varchar(255),
-        village varchar(255),
-        primary key (user_id)
-    )
-Hibernate: 
-    create table users (
-        created_at timestamp(6) not null,
-        location_id bigint,
-        user_id bigint generated by default as identity,
-        phone_number varchar(10) not null unique,
-        cell varchar(255),
-        email varchar(255) not null unique,
-        name varchar(255) not null,
-        role varchar(255) not null check (role in ('CITIZEN','VOLUNTEER')),
-        sector varchar(255),
-        village varchar(255),
-        primary key (user_id)
-    )
-2025-10-31T12:00:47.566+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    alter table if exists assignments 
-       add constraint FKa18x54t3tt6w8lao5pe2ljawu 
-       foreign key (request_id) 
-       references requests
-Hibernate: 
-    alter table if exists assignments 
-       add constraint FKa18x54t3tt6w8lao5pe2ljawu 
-       foreign key (request_id) 
-       references requests
-2025-10-31T12:00:47.573+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    alter table if exists assignments 
-       add constraint FKfth4cdurrrwcflnle3b3jiqxn 
-       foreign key (volunteer_id) 
-       references users
-Hibernate: 
-    alter table if exists assignments 
-       add constraint FKfth4cdurrrwcflnle3b3jiqxn 
-       foreign key (volunteer_id) 
-       references users
-2025-10-31T12:00:47.579+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    alter table if exists notifications 
-       add constraint FK9y21adhxn0ayjhfocscqox7bh 
-       foreign key (user_id) 
-       references users
-Hibernate: 
-    alter table if exists notifications 
-       add constraint FK9y21adhxn0ayjhfocscqox7bh 
-       foreign key (user_id) 
-       references users
-2025-10-31T12:00:47.585+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    alter table if exists requests 
-       add constraint FKnhmqfktrhs0k6fadu032oqhh1 
-       foreign key (citizen_id) 
-       references users
-Hibernate: 
-    alter table if exists requests 
-       add constraint FKnhmqfktrhs0k6fadu032oqhh1 
-       foreign key (citizen_id) 
-       references users
-2025-10-31T12:00:47.591+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    alter table if exists user_skills 
-       add constraint FKh223y61gwijpgqt6nlsuti07g 
-       foreign key (skill_id) 
-       references skills
-Hibernate: 
-    alter table if exists user_skills 
-       add constraint FKh223y61gwijpgqt6nlsuti07g 
-       foreign key (skill_id) 
-       references skills
-2025-10-31T12:00:47.596+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    alter table if exists user_skills 
-       add constraint FKro13if9r7fwkr5115715127ai 
-       foreign key (user_id) 
-       references users
-Hibernate: 
-    alter table if exists user_skills 
-       add constraint FKro13if9r7fwkr5115715127ai 
-       foreign key (user_id) 
-       references users
-2025-10-31T12:00:47.601+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    alter table if exists users 
-       add constraint FKdk0xfnnthbj8afp1ira6sndte 
-       foreign key (location_id) 
-       references locations
-Hibernate: 
-    alter table if exists users 
-       add constraint FKdk0xfnnthbj8afp1ira6sndte 
-       foreign key (location_id) 
-       references locations
-2025-10-31T12:00:47.613+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-10-31T12:00:47.833+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-10-31T12:00:48.504+02:00  WARN 127251 --- [CommunitySupportSystem] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-10-31T12:00:48.584+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : 87 mappings in 'requestMappingHandlerMapping'
-2025-10-31T12:00:48.643+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
-2025-10-31T12:00:48.661+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
-2025-10-31T12:00:48.691+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
-2025-10-31T12:00:48.763+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2025-10-31T12:00:48.772+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2025-12-15T15:39:08.479+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-15T15:39:08.935+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-15T15:39:09.165+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-12-15T15:39:09.858+02:00  WARN 145536 --- [CommunitySupportSystem] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-12-15T15:39:09.937+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : 94 mappings in 'requestMappingHandlerMapping'
+2025-12-15T15:39:09.992+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2025-12-15T15:39:10.009+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-12-15T15:39:10.038+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-12-15T15:39:10.106+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-12-15T15:39:10.113+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
 
 
 ============================
@@ -1487,845 +1210,104 @@ Unconditional classes:
 
 
 
-2025-10-31T12:00:48.774+02:00  INFO 127251 --- [CommunitySupportSystem] [           main] o.c.s.CommunitySupportSystemApplication  : Started CommunitySupportSystemApplication in 3.89 seconds (process running for 4.179)
-2025-10-31T12:00:48.774+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] o.s.b.a.ApplicationAvailabilityBean      : Application availability state LivenessState changed to CORRECT
-🗑️ CLEARING ALL DATABASE DATA...
-Clearing user_skills...
-Clearing assignments...
-Clearing notifications...
-Clearing requests...
-Clearing users...
-2025-10-31T12:00:48.818+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
+2025-12-15T15:39:10.115+02:00  INFO 145536 --- [CommunitySupportSystem] [           main] o.c.s.CommunitySupportSystemApplication  : Started CommunitySupportSystemApplication in 4.275 seconds (process running for 4.522)
+2025-12-15T15:39:10.116+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] o.s.b.a.ApplicationAvailabilityBean      : Application availability state LivenessState changed to CORRECT
+2025-12-15T15:39:10.160+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
     select
-        l1_0.location_id,
-        l1_0.cell,
-        l1_0.district,
-        l1_0.province,
-        l1_0.province_code,
-        l1_0.sector,
-        l1_0.village 
+        count(*) 
     from
         locations l1_0
 Hibernate: 
     select
-        l1_0.location_id,
-        l1_0.cell,
-        l1_0.district,
-        l1_0.province,
-        l1_0.province_code,
-        l1_0.sector,
-        l1_0.village 
+        count(*) 
     from
         locations l1_0
-2025-10-31T12:00:48.842+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
+📊 Database already contains data - skipping initialization
+2025-12-15T15:39:10.170+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
     select
-        s1_0.skill_id,
-        s1_0.description,
-        s1_0.skill_name 
+        count(*) 
+    from
+        locations l1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        locations l1_0
+   - Locations: 30
+2025-12-15T15:39:10.173+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
+    select
+        count(*) 
     from
         skills s1_0
 Hibernate: 
     select
-        s1_0.skill_id,
-        s1_0.description,
-        s1_0.skill_name 
+        count(*) 
     from
         skills s1_0
-✅ All data cleared successfully!
-🚀 Initializing fresh data...
-2025-10-31T12:00:48.857+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.871+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.875+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.877+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.880+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.882+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.885+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.889+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.892+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.894+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.896+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.899+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.902+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.905+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.907+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.910+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.912+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.915+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.921+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.926+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.929+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.932+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.936+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.940+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.943+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.945+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.948+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.950+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.954+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-2025-10-31T12:00:48.957+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Hibernate: 
-    insert 
-    into
-        locations
-        (cell, district, province, province_code, sector, village) 
-    values
-        (?, ?, ?, ?, ?, ?)
-Creating skills...
-2025-10-31T12:00:48.995+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    select
-        s1_0.skill_id 
-    from
-        skills s1_0 
-    where
-        s1_0.skill_name=? 
-    fetch
-        first ? rows only
-Hibernate: 
-    select
-        s1_0.skill_id 
-    from
-        skills s1_0 
-    where
-        s1_0.skill_name=? 
-    fetch
-        first ? rows only
-2025-10-31T12:00:48.997+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        skills
-        (description, skill_name) 
-    values
-        (?, ?)
-Hibernate: 
-    insert 
-    into
-        skills
-        (description, skill_name) 
-    values
-        (?, ?)
-2025-10-31T12:00:49.000+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    select
-        s1_0.skill_id 
-    from
-        skills s1_0 
-    where
-        s1_0.skill_name=? 
-    fetch
-        first ? rows only
-Hibernate: 
-    select
-        s1_0.skill_id 
-    from
-        skills s1_0 
-    where
-        s1_0.skill_name=? 
-    fetch
-        first ? rows only
-2025-10-31T12:00:49.002+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        skills
-        (description, skill_name) 
-    values
-        (?, ?)
-Hibernate: 
-    insert 
-    into
-        skills
-        (description, skill_name) 
-    values
-        (?, ?)
-2025-10-31T12:00:49.006+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    select
-        s1_0.skill_id 
-    from
-        skills s1_0 
-    where
-        s1_0.skill_name=? 
-    fetch
-        first ? rows only
-Hibernate: 
-    select
-        s1_0.skill_id 
-    from
-        skills s1_0 
-    where
-        s1_0.skill_name=? 
-    fetch
-        first ? rows only
-2025-10-31T12:00:49.007+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        skills
-        (description, skill_name) 
-    values
-        (?, ?)
-Hibernate: 
-    insert 
-    into
-        skills
-        (description, skill_name) 
-    values
-        (?, ?)
-2025-10-31T12:00:49.010+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    select
-        s1_0.skill_id 
-    from
-        skills s1_0 
-    where
-        s1_0.skill_name=? 
-    fetch
-        first ? rows only
-Hibernate: 
-    select
-        s1_0.skill_id 
-    from
-        skills s1_0 
-    where
-        s1_0.skill_name=? 
-    fetch
-        first ? rows only
-2025-10-31T12:00:49.011+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        skills
-        (description, skill_name) 
-    values
-        (?, ?)
-Hibernate: 
-    insert 
-    into
-        skills
-        (description, skill_name) 
-    values
-        (?, ?)
-2025-10-31T12:00:49.014+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    select
-        s1_0.skill_id 
-    from
-        skills s1_0 
-    where
-        s1_0.skill_name=? 
-    fetch
-        first ? rows only
-Hibernate: 
-    select
-        s1_0.skill_id 
-    from
-        skills s1_0 
-    where
-        s1_0.skill_name=? 
-    fetch
-        first ? rows only
-2025-10-31T12:00:49.015+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        skills
-        (description, skill_name) 
-    values
-        (?, ?)
-Hibernate: 
-    insert 
-    into
-        skills
-        (description, skill_name) 
-    values
-        (?, ?)
-2025-10-31T12:00:49.018+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    select
-        s1_0.skill_id 
-    from
-        skills s1_0 
-    where
-        s1_0.skill_name=? 
-    fetch
-        first ? rows only
-Hibernate: 
-    select
-        s1_0.skill_id 
-    from
-        skills s1_0 
-    where
-        s1_0.skill_name=? 
-    fetch
-        first ? rows only
-2025-10-31T12:00:49.020+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        skills
-        (description, skill_name) 
-    values
-        (?, ?)
-Hibernate: 
-    insert 
-    into
-        skills
-        (description, skill_name) 
-    values
-        (?, ?)
-2025-10-31T12:00:49.023+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    select
-        s1_0.skill_id 
-    from
-        skills s1_0 
-    where
-        s1_0.skill_name=? 
-    fetch
-        first ? rows only
-Hibernate: 
-    select
-        s1_0.skill_id 
-    from
-        skills s1_0 
-    where
-        s1_0.skill_name=? 
-    fetch
-        first ? rows only
-2025-10-31T12:00:49.025+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        skills
-        (description, skill_name) 
-    values
-        (?, ?)
-Hibernate: 
-    insert 
-    into
-        skills
-        (description, skill_name) 
-    values
-        (?, ?)
-2025-10-31T12:00:49.027+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    select
-        s1_0.skill_id 
-    from
-        skills s1_0 
-    where
-        s1_0.skill_name=? 
-    fetch
-        first ? rows only
-Hibernate: 
-    select
-        s1_0.skill_id 
-    from
-        skills s1_0 
-    where
-        s1_0.skill_name=? 
-    fetch
-        first ? rows only
-2025-10-31T12:00:49.029+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        skills
-        (description, skill_name) 
-    values
-        (?, ?)
-Hibernate: 
-    insert 
-    into
-        skills
-        (description, skill_name) 
-    values
-        (?, ?)
-2025-10-31T12:00:49.031+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    select
-        s1_0.skill_id 
-    from
-        skills s1_0 
-    where
-        s1_0.skill_name=? 
-    fetch
-        first ? rows only
-Hibernate: 
-    select
-        s1_0.skill_id 
-    from
-        skills s1_0 
-    where
-        s1_0.skill_name=? 
-    fetch
-        first ? rows only
-2025-10-31T12:00:49.032+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        skills
-        (description, skill_name) 
-    values
-        (?, ?)
-Hibernate: 
-    insert 
-    into
-        skills
-        (description, skill_name) 
-    values
-        (?, ?)
-2025-10-31T12:00:49.036+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    select
-        s1_0.skill_id 
-    from
-        skills s1_0 
-    where
-        s1_0.skill_name=? 
-    fetch
-        first ? rows only
-Hibernate: 
-    select
-        s1_0.skill_id 
-    from
-        skills s1_0 
-    where
-        s1_0.skill_name=? 
-    fetch
-        first ? rows only
-2025-10-31T12:00:49.037+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] org.hibernate.SQL                        : 
-    insert 
-    into
-        skills
-        (description, skill_name) 
-    values
-        (?, ?)
-Hibernate: 
-    insert 
-    into
-        skills
-        (description, skill_name) 
-    values
-        (?, ?)
-✅ Fresh database initialized successfully!
-📊 Data loaded:
-   - 30 Rwandan locations (5 provinces, 30 districts)
-   - 10 skills for volunteers
-🎯 Ready for API testing with clean database!
-2025-10-31T12:00:49.040+02:00 DEBUG 127251 --- [CommunitySupportSystem] [           main] o.s.b.a.ApplicationAvailabilityBean      : Application availability state ReadinessState changed to ACCEPTING_TRAFFIC
-2025-10-31T12:32:28.465+02:00  INFO 127251 --- [CommunitySupportSystem] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-10-31T12:32:28.466+02:00  INFO 127251 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2025-10-31T12:32:28.466+02:00 DEBUG 127251 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
-2025-10-31T12:32:28.466+02:00 DEBUG 127251 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
-2025-10-31T12:32:28.466+02:00 DEBUG 127251 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
-2025-10-31T12:32:28.467+02:00 DEBUG 127251 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@419fc1d6
-2025-10-31T12:32:28.467+02:00 DEBUG 127251 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@3662dc9b
-2025-10-31T12:32:28.468+02:00 DEBUG 127251 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
-2025-10-31T12:32:28.468+02:00  INFO 127251 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
-2025-10-31T12:32:28.473+02:00 DEBUG 127251 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/api/users", parameters={}
-2025-10-31T12:32:28.486+02:00 DEBUG 127251 --- [CommunitySupportSystem] [nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to om.community.supportsystem.controller.UserController#getAllUsers()
-2025-10-31T12:32:28.502+02:00 DEBUG 127251 --- [CommunitySupportSystem] [nio-8080-exec-1] org.hibernate.SQL                        : 
-    select
-        u1_0.user_id,
-        u1_0.cell,
-        u1_0.created_at,
-        u1_0.email,
-        u1_0.location_id,
-        u1_0.name,
-        u1_0.phone_number,
-        u1_0.role,
-        u1_0.sector,
-        u1_0.village 
-    from
-        users u1_0
-Hibernate: 
-    select
-        u1_0.user_id,
-        u1_0.cell,
-        u1_0.created_at,
-        u1_0.email,
-        u1_0.location_id,
-        u1_0.name,
-        u1_0.phone_number,
-        u1_0.role,
-        u1_0.sector,
-        u1_0.village 
-    from
-        users u1_0
-2025-10-31T12:32:28.521+02:00 DEBUG 127251 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
-2025-10-31T12:32:28.522+02:00 DEBUG 127251 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [[]]
-2025-10-31T12:32:28.535+02:00 DEBUG 127251 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
-2025-10-31T12:37:16.909+02:00 DEBUG 127251 --- [CommunitySupportSystem] [ionShutdownHook] o.s.b.a.ApplicationAvailabilityBean      : Application availability state ReadinessState changed from ACCEPTING_TRAFFIC to REFUSING_TRAFFIC
-2025-10-31T12:37:16.910+02:00 DEBUG 127251 --- [CommunitySupportSystem] [ionShutdownHook] ConfigServletWebServerApplicationContext : Closing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@797b0699, started on Fri Oct 31 12:00:45 CAT 2025
-2025-10-31T12:37:16.913+02:00  INFO 127251 --- [CommunitySupportSystem] [ionShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2025-10-31T12:37:16.917+02:00  INFO 127251 --- [CommunitySupportSystem] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2025-10-31T12:37:16.920+02:00  INFO 127251 --- [CommunitySupportSystem] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-10-31T12:37:16.922+02:00  INFO 127251 --- [CommunitySupportSystem] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-10-31T12:37:16.927+02:00  INFO 127251 --- [CommunitySupportSystem] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+   - Skills: 10
+✅ Using existing data!
+2025-12-15T15:39:10.175+02:00 DEBUG 145536 --- [CommunitySupportSystem] [           main] o.s.b.a.ApplicationAvailabilityBean      : Application availability state ReadinessState changed to ACCEPTING_TRAFFIC
+2025-12-15T15:39:13.616+02:00  INFO 145536 --- [CommunitySupportSystem] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-12-15T15:39:13.616+02:00  INFO 145536 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-12-15T15:39:13.617+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2025-12-15T15:39:13.617+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2025-12-15T15:39:13.617+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2025-12-15T15:39:13.619+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@35ff7336
+2025-12-15T15:39:13.619+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@8cc1bac
+2025-12-15T15:39:13.619+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-12-15T15:39:13.619+02:00  INFO 145536 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2025-12-15T15:39:13.628+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/", parameters={}
+2025-12-15T15:39:13.636+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to om.community.supportsystem.controller.HomeController#home()
+2025-12-15T15:39:13.679+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-12-15T15:39:13.681+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Writing [{description=A platform connecting citizens in need with volunteers for community assistance, docume (truncated)...]
+2025-12-15T15:39:13.696+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-12-15T15:39:33.265+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/api", parameters={}
+2025-12-15T15:39:33.266+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to om.community.supportsystem.controller.HomeController#apiInfo()
+2025-12-15T15:39:33.269+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json;q=0.8', given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7] and supported [application/json, application/*+json]
+2025-12-15T15:39:33.270+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Writing [{total_endpoints=85+, version=v1, entities=[Users, Locations, Requests, Assignments, Notifications,  (truncated)...]
+2025-12-15T15:39:33.272+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-12-15T15:39:37.391+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/", parameters={}
+2025-12-15T15:39:37.391+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to om.community.supportsystem.controller.HomeController#home()
+2025-12-15T15:39:37.393+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json;q=0.8', given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7] and supported [application/json, application/*+json]
+2025-12-15T15:39:37.393+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Writing [{description=A platform connecting citizens in need with volunteers for community assistance, docume (truncated)...]
+2025-12-15T15:39:37.395+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-12-15T15:53:46.256+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/api-docs", parameters={}
+2025-12-15T15:53:46.261+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-6] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-12-15T15:53:46.264+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-6] o.s.w.s.r.ResourceHttpRequestHandler     : Resource not found
+2025-12-15T15:53:46.268+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-6] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api-docs.]
+2025-12-15T15:53:46.269+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 404 NOT_FOUND
+2025-12-15T15:53:46.275+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : "ERROR" dispatch for GET "/error", parameters={}
+2025-12-15T15:53:46.277+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#errorHtml(HttpServletRequest, HttpServletResponse)
+2025-12-15T15:53:46.291+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-6] o.s.w.s.v.ContentNegotiatingViewResolver : Selected 'text/html' given [text/html, text/html;q=0.8]
+2025-12-15T15:53:46.299+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Exiting from "ERROR" dispatch, status 404
+2025-12-15T15:54:10.306+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/api-docs", parameters={}
+2025-12-15T15:54:10.307+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-7] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-12-15T15:54:10.309+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-7] o.s.w.s.r.ResourceHttpRequestHandler     : Resource not found
+2025-12-15T15:54:10.309+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-7] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api-docs.]
+2025-12-15T15:54:10.309+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 404 NOT_FOUND
+2025-12-15T15:54:10.310+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : "ERROR" dispatch for GET "/error", parameters={}
+2025-12-15T15:54:10.310+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#errorHtml(HttpServletRequest, HttpServletResponse)
+2025-12-15T15:54:10.311+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-7] o.s.w.s.v.ContentNegotiatingViewResolver : Selected 'text/html' given [text/html, text/html;q=0.8]
+2025-12-15T15:54:10.312+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : Exiting from "ERROR" dispatch, status 404
+2025-12-15T15:54:23.540+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui.html", parameters={}
+2025-12-15T15:54:23.541+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-8] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-12-15T15:54:23.542+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-8] o.s.w.s.r.ResourceHttpRequestHandler     : Resource not found
+2025-12-15T15:54:23.542+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-8] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource swagger-ui.html.]
+2025-12-15T15:54:23.542+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 404 NOT_FOUND
+2025-12-15T15:54:23.542+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : "ERROR" dispatch for GET "/error", parameters={}
+2025-12-15T15:54:23.543+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#errorHtml(HttpServletRequest, HttpServletResponse)
+2025-12-15T15:54:23.544+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-8] o.s.w.s.v.ContentNegotiatingViewResolver : Selected 'text/html' given [text/html, text/html;q=0.8]
+2025-12-15T15:54:23.544+02:00 DEBUG 145536 --- [CommunitySupportSystem] [nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Exiting from "ERROR" dispatch, status 404
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] [1;31mBUILD FAILURE[m
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] Total time:  16:32 min
+[[1;34mINFO[m] Finished at: 2025-12-15T15:55:37+02:00
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;31mERROR[m] Failed to execute goal [32morg.springframework.boot:spring-boot-maven-plugin:3.5.6:run[m [1m(default-cli)[m on project [36msupportsystem[m: [1;31mProcess terminated with exit code: 137[m -> [1m[Help 1][m
+[[1;31mERROR[m] 
+[[1;31mERROR[m] To see the full stack trace of the errors, re-run Maven with the [1m-e[m switch.
+[[1;31mERROR[m] Re-run Maven using the [1m-X[m switch to enable full debug logging.
+[[1;31mERROR[m] 
+[[1;31mERROR[m] For more information about the errors and possible solutions, please read the following articles:
+[[1;31mERROR[m] [1m[Help 1][m http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

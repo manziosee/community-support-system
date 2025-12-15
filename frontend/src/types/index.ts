@@ -119,6 +119,8 @@ export interface RegisterRequest {
 export interface AuthResponse {
   token: string;
   user: User;
+  backupCodes?: string[];
+  requires2FA?: boolean;
 }
 
 // Dashboard Stats

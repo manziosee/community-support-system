@@ -116,6 +116,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Check if it's a mock user
       const mockUser = mockUsers[email as keyof typeof mockUsers];
       if (mockUser && (password === 'admin123' || password === 'volunteer123' || password === 'citizen123')) {
+        // Simulate 2FA requirement for demo
+        if (email === 'admin@community.rw') {
+          throw { response: { data: { requires2FA: true } } };
+        }
+        
         const { token: authToken, user: userData } = mockUser;
         
         setToken(authToken);
@@ -130,7 +135,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       // Try real API if not a mock user
       const response = await authApi.login({ email, password });
-      const { token: authToken, user: userData } = response.data;
+      const { token: authToken, user: userData, requires2FA } = response.data;
+      
+      if (requires2FA) {
+        throw { response: { data: { requires2FA: true } } };
+      }
       
       setToken(authToken);
       setUser(userData);
@@ -140,6 +149,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       toast.success('Login successful!');
     } catch (error: any) {
+      if (error.response?.data?.requires2FA) {
+        throw { requires2FA: true, email, password };
+      }
       toast.error(error.response?.data?.message || 'Login failed');
       throw error;
     } finally {

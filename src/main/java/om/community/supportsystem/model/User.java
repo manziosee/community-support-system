@@ -24,12 +24,49 @@ public class User {
     @Column(nullable = false, length = 10, unique = true)
     private String phoneNumber;
     
+    @JsonIgnore
+    @Column(nullable = false, length = 255)
+    private String password;
+    
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role;
     
     @Column(nullable = false)
     private LocalDateTime createdAt;
+    
+    // Authentication fields
+    @Column(nullable = false)
+    private boolean emailVerified = false;
+    
+    @JsonIgnore
+    @Column(length = 255)
+    private String emailVerificationToken;
+    
+    @JsonIgnore
+    @Column(length = 255)
+    private String passwordResetToken;
+    
+    private LocalDateTime passwordResetTokenExpiry;
+    
+    @JsonIgnore
+    @Column(length = 255)
+    private String twoFactorSecret;
+    
+    @Column(nullable = false)
+    private boolean twoFactorEnabled = false;
+    
+    @JsonIgnore
+    @Column(length = 1000)
+    private String twoFactorBackupCodes;
+    
+    @Column(nullable = false)
+    private boolean accountLocked = false;
+    
+    @Column(nullable = false)
+    private int failedLoginAttempts = 0;
+    
+    private LocalDateTime lastLoginAt;
     
     // Many-to-One: Many users belong to one location
     @ManyToOne(fetch = FetchType.EAGER)
@@ -138,4 +175,42 @@ public class User {
     
     public String getVillage() { return village; }
     public void setVillage(String village) { this.village = village; }
+    
+    // Authentication getters and setters (password getter removed for security)
+    public void setPassword(String password) { this.password = password; }
+    
+    public boolean isEmailVerified() { return emailVerified; }
+    public void setEmailVerified(boolean emailVerified) { this.emailVerified = emailVerified; }
+    
+    public String getEmailVerificationToken() { return emailVerificationToken; }
+    public void setEmailVerificationToken(String emailVerificationToken) { this.emailVerificationToken = emailVerificationToken; }
+    
+    public String getPasswordResetToken() { return passwordResetToken; }
+    public void setPasswordResetToken(String passwordResetToken) { this.passwordResetToken = passwordResetToken; }
+    
+    public LocalDateTime getPasswordResetTokenExpiry() { return passwordResetTokenExpiry; }
+    public void setPasswordResetTokenExpiry(LocalDateTime passwordResetTokenExpiry) { this.passwordResetTokenExpiry = passwordResetTokenExpiry; }
+    
+    public String getTwoFactorSecret() { return twoFactorSecret; }
+    public void setTwoFactorSecret(String twoFactorSecret) { this.twoFactorSecret = twoFactorSecret; }
+    
+    public boolean isTwoFactorEnabled() { return twoFactorEnabled; }
+    public void setTwoFactorEnabled(boolean twoFactorEnabled) { this.twoFactorEnabled = twoFactorEnabled; }
+    
+    public String getTwoFactorBackupCodes() { return twoFactorBackupCodes; }
+    public void setTwoFactorBackupCodes(String twoFactorBackupCodes) { this.twoFactorBackupCodes = twoFactorBackupCodes; }
+    
+    public boolean isAccountLocked() { return accountLocked; }
+    public void setAccountLocked(boolean accountLocked) { this.accountLocked = accountLocked; }
+    
+    public int getFailedLoginAttempts() { return failedLoginAttempts; }
+    public void setFailedLoginAttempts(int failedLoginAttempts) { this.failedLoginAttempts = failedLoginAttempts; }
+    
+    public LocalDateTime getLastLoginAt() { return lastLoginAt; }
+    public void setLastLoginAt(LocalDateTime lastLoginAt) { this.lastLoginAt = lastLoginAt; }
+    
+    // Password verification method for security
+    public boolean verifyPassword(String candidatePassword, org.springframework.security.crypto.password.PasswordEncoder encoder) {
+        return encoder.matches(candidatePassword, this.password);
+    }
 }

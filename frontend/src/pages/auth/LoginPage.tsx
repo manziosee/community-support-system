@@ -39,8 +39,13 @@ const LoginPage: React.FC = () => {
       setIsLoading(true);
       await login(data.email, data.password);
       navigate('/dashboard');
-    } catch (error) {
-      // Error is handled by the auth context
+    } catch (error: any) {
+      if (error.requires2FA) {
+        navigate('/2fa-verify', { 
+          state: { email: error.email, password: error.password } 
+        });
+      }
+      // Other errors are handled by the auth context
     } finally {
       setIsLoading(false);
     }
@@ -79,7 +84,7 @@ const LoginPage: React.FC = () => {
                 }}
                 className="text-left p-2 bg-red-100 hover:bg-red-200 rounded border transition-colors"
               >
-                <div className="font-medium text-red-800">👑 Admin User</div>
+                <div className="font-medium text-red-800">👑 Admin User (2FA Demo)</div>
                 <div className="text-red-600">admin@community.rw / admin123</div>
               </button>
               
