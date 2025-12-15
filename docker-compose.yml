@@ -3,12 +3,12 @@ version: '3.8'
 services:
   # PostgreSQL Database
   database:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     container_name: community-db
     environment:
-      POSTGRES_DB: community_support_system_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${DB_NAME:-community_support_system_db}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
     ports:
       - "5432:5432"
     volumes:
@@ -16,7 +16,7 @@ services:
     networks:
       - community-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -28,23 +28,26 @@ services:
       dockerfile: Dockerfile
     container_name: community-backend
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/community_support_system_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_SHOW_SQL: false
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+      PORT: ${SERVER_PORT:-8080}
+      DB_URL: jdbc:postgresql://database:5432/${DB_NAME:-community_support_system_db}
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      JWT_SECRET: ${JWT_SECRET:-mySecretKeyForCommunitySupportSystemThatIsLongEnoughForSecurity}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:3000}
     ports:
-      - "8080:8080"
+      - "${SERVER_PORT:-8080}:${SERVER_PORT:-8080}"
     depends_on:
       database:
         condition: service_healthy
     networks:
       - community-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/api/locations"]
+      test: ["CMD", "curl", "-f", "http://localhost:${SERVER_PORT:-8080}/api/locations"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 40s
 
   # React Frontend
   frontend:
@@ -53,11 +56,14 @@ services:
       dockerfile: Dockerfile
     container_name: community-frontend
     ports:
-      - "80:80"
+      - "3000:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     networks:
       - community-network
+    environment:
+      - VITE_API_BASE_URL=http://localhost:${SERVER_PORT:-8080}/api
 
 volumes:
   postgres_data:

@@ -31,3 +31,25 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Environment Variables ###
+.env
+.env.local
+.env.production
+.env.development
+*.env
+
+### Logs ###
+*.log
+logs/
+
+### Database ###
+*.db
+*.sqlite
+
+### Sensitive Files ###
+secrets/
+keys/
+*.pem
+*.key
+*.crt

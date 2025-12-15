@@ -5,12 +5,19 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Spring%20Boot-3.5.6-brightgreen?style=for-the-badge&logo=spring" alt="Spring Boot">
   <img src="https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=java" alt="Java">
-  <img src="https://img.shields.io/badge/PostgreSQL-16-blue?style=for-the-badge&logo=postgresql" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/PostgreSQL-17-blue?style=for-the-badge&logo=postgresql" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/Neon-Database-00E599?style=for-the-badge" alt="Neon">
   <img src="https://img.shields.io/badge/Maven-3.9-red?style=for-the-badge&logo=apache-maven" alt="Maven">
+  <img src="https://img.shields.io/badge/Render-Deployed-46E3B7?style=for-the-badge" alt="Render">
+  <img src="https://img.shields.io/badge/Vercel-Frontend-000000?style=for-the-badge&logo=vercel" alt="Vercel">
 </p>
 
 <p align="center">
-  <strong>🌟 A comprehensive web platform connecting citizens in need with volunteers for community assistance 🌟</strong>
+  <strong>🌟 A comprehensive full-stack web platform connecting citizens in need with volunteers for community assistance 🌟</strong>
+</p>
+
+<p align="center">
+  <strong>✅ Production Ready | 🚀 Cloud Deployed | 🔒 Secure | 📱 Responsive</strong>
 </p>
 
 </div>
@@ -245,6 +252,21 @@ The **Community Help Portal** is a Spring Boot web application that bridges the 
 
 ---
 
+## 🌍 Live Deployment
+
+<div align="center">
+
+| Service | URL | Status |
+|---------|-----|--------|
+| 🚀 **Backend API** | [Render Deployment](https://community-support-system.onrender.com) | ✅ Live |
+| 🌐 **Frontend App** | [Vercel Deployment](https://community-support-frontend.vercel.app) | ✅ Live |
+| 🗺️ **API Docs** | [Swagger UI](http://localhost:8080/swagger-ui.html) | 🛠️ Dev Only |
+| 📄 **Postman** | [API Collection](./Community_Support_System_Updated.postman_collection.json) | 📚 Available |
+
+</div>
+
+---
+
 ## 🚀 Getting Started
 
 ### 📋 Prerequisites
@@ -255,37 +277,90 @@ The **Community Help Portal** is a Spring Boot web application that bridges the 
 |-------------|---------|---------------|
 | ☕ **Java** | 21+ | [Oracle JDK](https://www.oracle.com/java/technologies/downloads/) |
 | 📦 **Maven** | 3.9+ | [Apache Maven](https://maven.apache.org/download.cgi) |
-| 🗄️ **PostgreSQL** | 16+ | [PostgreSQL](https://www.postgresql.org/download/) |
+| 🗄️ **PostgreSQL** | 17+ | [PostgreSQL](https://www.postgresql.org/download/) |
 | 🖥️ **IDE** | Any | [IntelliJ IDEA](https://www.jetbrains.com/idea/) / [VS Code](https://code.visualstudio.com/) |
 
 </div>
 
 ### 🔧 Installation & Setup
 
+#### **Local Development**
 ```bash
 # 1. Clone the repository
 git clone https://github.com/manziosee/community-support-system.git
-cd community-support-system/supportsystem
+cd community-support-system
 
-# 2. Create PostgreSQL database
+# 2. Copy environment template
+cp .env.example .env
+# Edit .env with your local database credentials
+
+# 3. Create PostgreSQL database
 psql -U postgres -c "CREATE DATABASE community_support_system_db;"
 
-# 3. Build the project
-./mvnw clean compile
+# 4. Run with development profile
+SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run
+```
 
-# 4. Run the application
-./mvnw spring-boot:run
+#### **Production Deployment**
+```bash
+# 1. Set environment variables
+export SPRING_PROFILES_ACTIVE=prod
+export PROD_DB_URL=your_neon_database_url
+export JWT_SECRET=your_secure_jwt_secret
+
+# 2. Build and run
+./mvnw clean package -DskipTests
+java -jar target/supportsystem-0.0.1-SNAPSHOT.jar
 ```
 
 ### 🌐 Access Points
 
 <div align="center">
 
-| Service | URL | Description |
-|---------|-----|-------------|
-| 🌐 **Main Application** | http://localhost:8080 | API Base URL |
-| 📊 **API Documentation** | http://localhost:8080/api | REST Endpoints |
-| 🗄️ **Database** | localhost:5432 | PostgreSQL Connection |
+| Environment | Service | URL | Description |
+|-------------|---------|-----|-------------|
+| 🛠️ **Development** | API Server | http://localhost:8080 | Local API |
+| 🛠️ **Development** | Swagger UI | http://localhost:8080/swagger-ui.html | API Docs |
+| 🛠️ **Development** | Database | localhost:5432 | Local PostgreSQL |
+| 🚀 **Production** | API Server | https://your-app.onrender.com | Render Deployment |
+| 🚀 **Production** | Database | Neon PostgreSQL | Cloud Database |
+
+</div>
+
+---
+
+## 🔧 Environment Configuration
+
+### 📋 Required Environment Variables
+
+```bash
+# Database Configuration
+DB_URL=jdbc:postgresql://localhost:5432/community_support_system_db
+DB_USERNAME=postgres
+DB_PASSWORD=your_password
+
+# Production Database (Neon)
+PROD_DB_URL=jdbc:postgresql://your-neon-host/database?sslmode=require
+PROD_DB_USERNAME=your_username
+PROD_DB_PASSWORD=your_password
+
+# Security
+JWT_SECRET=your-256-bit-secret-key
+CORS_ALLOWED_ORIGINS=http://localhost:3000,https://your-frontend.com
+
+# Server
+SPRING_PROFILES_ACTIVE=dev
+SERVER_PORT=8080
+```
+
+### 📊 Profile Configuration
+
+<div align="center">
+
+| Profile | Database | Use Case | Swagger | Logging |
+|---------|----------|----------|---------|----------|
+| `dev` | Local PostgreSQL | Development | ✅ Enabled | 🔍 Debug |
+| `prod` | Neon PostgreSQL | Production | ❌ Disabled | ℹ️ Info |
 
 </div>
 
