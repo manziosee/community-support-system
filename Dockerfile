@@ -1,5 +1,5 @@
 # Multi-stage build for Spring Boot backend
-FROM maven:3.9.4-openjdk-17 AS build
+FROM maven:3.9.9-amazoncorretto-17 AS build
 
 WORKDIR /app
 COPY pom.xml .
@@ -7,10 +7,10 @@ COPY src ./src
 
 RUN mvn clean package -DskipTests
 
-FROM openjdk:17-jdk-slim
+FROM amazoncorretto:17
 
 # Install curl for health checks
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+RUN yum update -y && yum install -y curl && yum clean all
 
 WORKDIR /app
 
@@ -26,6 +26,6 @@ EXPOSE ${PORT}
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD curl -f http://localhost:${PORT}/api/locations || exit 1
+  CMD curl -f http://localhost:${PORT}/actuator/health || exit 1
 
 ENTRYPOINT ["sh", "-c", "java -Dserver.port=${PORT} -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE} -jar app.jar"]
