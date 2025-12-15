@@ -116,10 +116,16 @@ export const cspHelpers = {
 export class RateLimiter {
   private requests: Map<string, number[]> = new Map();
   
+  private maxRequests: number;
+  private windowMs: number;
+  
   constructor(
-    private maxRequests: number = 100,
-    private windowMs: number = 60000 // 1 minute
-  ) {}
+    maxRequests: number = 100,
+    windowMs: number = 60000 // 1 minute
+  ) {
+    this.maxRequests = maxRequests;
+    this.windowMs = windowMs;
+  }
   
   isAllowed(key: string): boolean {
     const now = Date.now();

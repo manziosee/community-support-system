@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Search, Filter, Eye, Edit, Trash2, Clock, CheckCircle, XCircle, MapPin, User } from 'lucide-react';
+import { FileText, Search, Eye, Edit, Trash2, Clock, CheckCircle, XCircle, MapPin, User } from 'lucide-react';
 import { requestsApi } from '../../services/api';
 import type { Request } from '../../types';
 import { RequestStatus } from '../../types';

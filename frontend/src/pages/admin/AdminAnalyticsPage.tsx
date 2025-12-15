@@ -8,7 +8,7 @@ const AdminAnalyticsPage: React.FC = () => {
   const [timeRange, setTimeRange] = useState('30d');
   
   // Mock analytics data
-  const [analytics, setAnalytics] = useState({
+  const [analytics] = useState({
     overview: {
       totalUsers: 156,
       totalRequests: 89,
@@ -199,7 +199,7 @@ const AdminAnalyticsPage: React.FC = () => {
           </div>
           <div className="p-6">
             <div className="space-y-4">
-              {analytics.byProvince.map((province, index) => (
+              {analytics.byProvince.map((province) => (
                 <div key={province.province} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div className="flex items-center">
                     <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
@@ -227,7 +227,7 @@ const AdminAnalyticsPage: React.FC = () => {
           </div>
           <div className="p-6">
             <div className="space-y-4">
-              {analytics.topSkills.map((skill, index) => (
+              {analytics.topSkills.map((skill) => (
                 <div key={skill.skill} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div className="flex items-center">
                     <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">

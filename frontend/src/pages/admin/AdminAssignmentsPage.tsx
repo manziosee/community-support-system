@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckSquare, Search, Filter, Eye, Edit, Trash2, Clock, CheckCircle, User, FileText, Award } from 'lucide-react';
+import { CheckSquare, Search, Eye, Edit, Trash2, Clock, CheckCircle, User, FileText, Award } from 'lucide-react';
 import { assignmentsApi } from '../../services/api';
 import type { Assignment } from '../../types';
 import Card from '../../components/common/Card';

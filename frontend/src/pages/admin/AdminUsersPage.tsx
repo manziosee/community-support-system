@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Search, Filter, UserPlus, Edit, Trash2, MapPin, Award, Eye } from 'lucide-react';
+import { Users, Search, UserPlus, Edit, Trash2, MapPin, Award, Eye } from 'lucide-react';
 import { usersApi } from '../../services/api';
 import type { User } from '../../types';
 import { UserRole } from '../../types';
