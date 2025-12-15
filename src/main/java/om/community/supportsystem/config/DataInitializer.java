@@ -5,10 +5,15 @@ import om.community.supportsystem.service.*;
 import om.community.supportsystem.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
+    
+    private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
     
     @Autowired
     private LocationService locationService;
@@ -22,22 +27,31 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private SkillRepository skillRepository;
     
+    @Autowired
+    private UserService userService;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
     @Override
     public void run(String... args) throws Exception {
-        initializeBasicData();
+        try {
+            initializeBasicData();
+        } catch (Exception e) {
+            logger.error("Failed to initialize data: {}", e.getMessage(), e);
+            throw e;
+        }
     }
     
     private void initializeBasicData() {
         // Only initialize if database is empty
         if (locationRepository.count() > 0) {
-            System.out.println("📊 Database already contains data - skipping initialization");
-            System.out.println("   - Locations: " + locationRepository.count());
-            System.out.println("   - Skills: " + skillRepository.count());
-            System.out.println("✅ Using existing data!");
+            logger.info("Database already contains data - skipping initialization");
+            logger.info("Locations: {}, Skills: {}", locationRepository.count(), skillRepository.count());
             return;
         }
         
-        System.out.println("🚀 Initializing fresh data (empty database detected)...");
+        logger.info("Initializing fresh data (empty database detected)...");
         // Create locations with Province + District only
         // Kigali City (3 Districts)
         locationService.createLocation(new Location("Kigali City", "Gasabo", "KG01"));
@@ -80,7 +94,7 @@ public class DataInitializer implements CommandLineRunner {
         locationService.createLocation(new Location("Northern Province", "Musanze", "NP05"));
         
         // Initialize skills
-        System.out.println("Creating skills...");
+        logger.info("Creating skills...");
             skillService.createSkill(new Skill("Programming", "Software development and coding"));
             skillService.createSkill(new Skill("Tutoring", "Academic tutoring and teaching"));
             skillService.createSkill(new Skill("Delivery", "Package and grocery delivery services"));
@@ -92,10 +106,26 @@ public class DataInitializer implements CommandLineRunner {
             skillService.createSkill(new Skill("Agriculture", "Farming and agricultural support"));
             skillService.createSkill(new Skill("Education", "Teaching and educational support"));
         
-        System.out.println("✅ Fresh database initialized successfully!");
-        System.out.println("📊 Data loaded:");
-        System.out.println("   - 30 Rwandan locations (5 provinces, 30 districts)");
-        System.out.println("   - 10 skills for volunteers");
-        System.out.println("🎯 Ready for API testing! Data will persist between restarts.");
+        // Create default admin user
+        if (!userService.existsByEmail("admin@community.rw")) {
+            logger.info("Creating default admin user...");
+            User admin = new User();
+            admin.setName("System Administrator");
+            admin.setEmail("admin@community.rw");
+            admin.setPhoneNumber("0788000000");
+            admin.setPassword(passwordEncoder.encode("admin123"));
+            admin.setRole(UserRole.ADMIN);
+            admin.setEmailVerified(true);
+            admin.setLocation(locationService.getLocationById(1L).orElse(null));
+            admin.setSector("Kimironko");
+            admin.setCell("Bibare");
+            admin.setVillage("Kamatamu");
+            
+            userService.createUser(admin);
+        }
+        
+        logger.info("Fresh database initialized successfully!");
+        logger.info("Data loaded: 30 locations, 10 skills, default admin user");
+        logger.info("Ready for API testing! Admin: admin@community.rw / admin123");
     }
 }

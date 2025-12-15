@@ -11,20 +11,38 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
+@Tag(name = "👥 User Management", description = "APIs for managing citizens and volunteers in the community support system")
 public class UserController {
     
     @Autowired
     private UserService userService;
     
     // Create
+    @Operation(summary = "Create a new user", description = "Register a new citizen or volunteer in the system")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "User created successfully", 
+                    content = @Content(schema = @Schema(implementation = User.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid user data or validation error",
+                    content = @Content(schema = @Schema(implementation = Map.class)))
+    })
     @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody User user) {
+    public ResponseEntity<?> createUser(
+            @Parameter(description = "User data for registration", required = true)
+            @RequestBody User user) {
         try {
             User createdUser = userService.createUser(user);
             return ResponseEntity.ok(createdUser);
@@ -34,17 +52,29 @@ public class UserController {
     }
     
     // Read
+    @Operation(summary = "Get all users", description = "Retrieve a list of all registered users (citizens and volunteers)")
+    @ApiResponse(responseCode = "200", description = "List of users retrieved successfully")
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
     
+    @Operation(summary = "Get user by ID", description = "Retrieve a specific user by their unique identifier")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "User found"),
+        @ApiResponse(responseCode = "404", description = "User not found")
+    })
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return userService.getUserById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> getUserById(
+            @Parameter(description = "User ID", required = true, example = "1")
+            @PathVariable Long id) {
+        try {
+            User user = userService.getUserById(id);
+            return ResponseEntity.ok(user);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
     
     @GetMapping("/email/{email}")

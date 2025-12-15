@@ -58,4 +58,11 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     // Delete old read notifications
     @Query("DELETE FROM Notification n WHERE n.isRead = true AND n.createdAt < :cutoffDate")
     void deleteOldReadNotifications(@Param("cutoffDate") LocalDateTime cutoffDate);
+    
+    // Dashboard statistics methods
+    @Query("SELECT COUNT(n) FROM Notification n WHERE n.isRead = false")
+    long countByIsReadFalse();
+    
+    @Query("SELECT COUNT(n) FROM Notification n WHERE n.isRead = true")
+    long countByIsReadTrue();
 }

@@ -1,0 +1,13 @@
+target/
+!target/*.jar
+.mvn/
+mvnw
+mvnw.cmd
+.git/
+.gitignore
+README.md
+*.md
+frontend/
+node_modules/
+.env
+.env.local

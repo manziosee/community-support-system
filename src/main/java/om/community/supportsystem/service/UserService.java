@@ -8,6 +8,7 @@ import om.community.supportsystem.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,9 @@ public class UserService {
     
     @Autowired
     private LocationService locationService;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     
     // Create
     public User createUser(User user) {
@@ -67,8 +71,9 @@ public class UserService {
         return userRepository.findAll();
     }
     
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
     
     public Optional<User> getUserByEmail(String email) {
@@ -168,4 +173,41 @@ public class UserService {
     public long getTotalCitizens() {
         return userRepository.countByRole(UserRole.CITIZEN);
     }
+    
+    // Admin methods
+    public Page<User> getAllUsersWithPagination(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+    
+    public void lockUserAccount(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        user.setAccountLocked(true);
+        userRepository.save(user);
+    }
+    
+    public void unlockUserAccount(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        user.setAccountLocked(false);
+        user.setFailedLoginAttempts(0);
+        userRepository.save(user);
+    }
+    
+    public void changeUserRole(Long userId, UserRole newRole) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        user.setRole(newRole);
+        userRepository.save(user);
+    }
+    
+    public void adminResetPassword(Long userId, String newPassword) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setAccountLocked(false);
+        user.setFailedLoginAttempts(0);
+        userRepository.save(user);
+    }
+    
 }

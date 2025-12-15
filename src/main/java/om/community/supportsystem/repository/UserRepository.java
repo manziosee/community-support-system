@@ -54,4 +54,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
     
     // Find user by phone number
     Optional<User> findByPhoneNumber(String phoneNumber);
+    
+    // Authentication methods
+    Optional<User> findByEmailVerificationToken(String token);
+    Optional<User> findByPasswordResetToken(String token);
+    
+    // Dashboard statistics methods
+    long countByAccountLockedFalse();
+    long countByAccountLockedTrue();
+    long countByEmailVerifiedTrue();
+    long countByEmailVerifiedFalse();
+    long countByTwoFactorEnabledTrue();
 }

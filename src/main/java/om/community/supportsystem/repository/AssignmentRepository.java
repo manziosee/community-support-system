@@ -59,4 +59,11 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     // Find top volunteers by assignment count
     @Query("SELECT a.volunteer, COUNT(a) as assignmentCount FROM Assignment a GROUP BY a.volunteer ORDER BY assignmentCount DESC")
     List<Object[]> findTopVolunteersByAssignmentCount();
+    
+    // Dashboard statistics methods
+    @Query("SELECT COUNT(a) FROM Assignment a WHERE a.completedAt IS NOT NULL")
+    long countByCompletedAtIsNotNull();
+    
+    @Query("SELECT COUNT(a) FROM Assignment a WHERE a.completedAt IS NULL")
+    long countByCompletedAtIsNull();
 }
