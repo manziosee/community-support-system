@@ -259,7 +259,7 @@ The **Community Help Portal** is a Spring Boot web application that bridges the 
 | Service | URL | Status |
 |---------|-----|--------|
 | 🚀 **Backend API** | [Render Deployment](https://community-support-system.onrender.com) | ✅ Live |
-| 🌐 **Frontend App** | [Vercel Deployment](https://community-support-frontend.vercel.app) | ✅ Live |
+| 🌐 **Frontend App** | [Vercel Deployment](https://community-support-system.vercel.app) | ✅ Live |
 | 🗺️ **API Docs** | [Swagger UI](http://localhost:8080/swagger-ui.html) | 🛠️ Dev Only |
 | 📄 **Postman** | [API Collection](./Community_Support_System_Updated.postman_collection.json) | 📚 Available |
 

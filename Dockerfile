@@ -1,5 +1,5 @@
 # Multi-stage build for Spring Boot backend
-FROM maven:3.9-openjdk-21 AS build
+FROM maven:3.9.4-openjdk-17 AS build
 
 WORKDIR /app
 COPY pom.xml .
@@ -7,7 +7,7 @@ COPY src ./src
 
 RUN mvn clean package -DskipTests
 
-FROM openjdk:21-jdk-slim
+FROM openjdk:17-jdk-slim
 
 # Install curl for health checks
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
@@ -20,7 +20,7 @@ COPY --from=build /app/target/*.jar app.jar
 ENV SPRING_PROFILES_ACTIVE=prod
 ENV PORT=8080
 ENV JWT_SECRET=default-secret-change-in-production
-ENV CORS_ALLOWED_ORIGINS=http://localhost:3000
+ENV CORS_ALLOWED_ORIGINS=http://localhost:3000,https://community-support-system.vercel.app
 
 EXPOSE ${PORT}
 
