@@ -9,13 +9,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
     
-    @Autowired
+    @Autowired(required = false)
     private JavaMailSender mailSender;
     
     @Value("${spring.mail.username:noreply@community.rw}")
     private String fromEmail;
     
     public void sendPasswordResetEmail(String toEmail, String resetToken) {
+        if (mailSender == null) {
+            System.out.println("Email not configured. Password reset email would be sent to: " + toEmail + " with token: " + resetToken);
+            return;
+        }
+        
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromEmail);
         message.setTo(toEmail);
@@ -28,6 +33,11 @@ public class EmailService {
     }
     
     public void sendEmailVerification(String toEmail, String verificationToken) {
+        if (mailSender == null) {
+            System.out.println("Email not configured. Verification email would be sent to: " + toEmail + " with token: " + verificationToken);
+            return;
+        }
+        
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromEmail);
         message.setTo(toEmail);
@@ -40,6 +50,11 @@ public class EmailService {
     }
     
     public void sendTwoFactorCode(String toEmail, String code) {
+        if (mailSender == null) {
+            System.out.println("Email not configured. 2FA code would be sent to: " + toEmail + " with code: " + code);
+            return;
+        }
+        
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromEmail);
         message.setTo(toEmail);
