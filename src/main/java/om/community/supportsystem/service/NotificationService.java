@@ -124,4 +124,27 @@ public class NotificationService {
     public long countUnreadNotificationsByUser(Long userId) {
         return notificationRepository.countByUserUserIdAndIsReadFalse(userId);
     }
+    
+    public Page<Notification> searchNotifications(Long userId, Boolean isRead, String search, Pageable pageable) {
+        if (search != null && !search.trim().isEmpty()) {
+            if (isRead != null) {
+                return notificationRepository.findByUserUserIdAndIsReadAndMessageContainingIgnoreCase(userId, isRead, search, pageable);
+            }
+            return notificationRepository.findByUserUserIdAndMessageContainingIgnoreCase(userId, search, pageable);
+        }
+        
+        if (isRead != null) {
+            return notificationRepository.findByUserUserIdAndIsRead(userId, isRead, pageable);
+        }
+        
+        return notificationRepository.findByUserUserIdOrderByCreatedAtDesc(userId, pageable);
+    }
+    
+    public java.util.Map<String, Long> getUserNotificationStats(Long userId) {
+        java.util.Map<String, Long> stats = new java.util.HashMap<>();
+        stats.put("total", notificationRepository.countByUserUserId(userId));
+        stats.put("unread", notificationRepository.countByUserUserIdAndIsReadFalse(userId));
+        stats.put("read", notificationRepository.countByUserUserIdAndIsReadTrue(userId));
+        return stats;
+    }
 }

@@ -112,4 +112,33 @@ public class RequestService {
     public long getTotalCompletedRequests() {
         return requestRepository.countByStatus(RequestStatus.COMPLETED);
     }
+    
+    public Page<Request> searchRequests(RequestStatus status, String province, String category, String title, Long citizenId, Pageable pageable) {
+        // For now, implement basic filtering - can be enhanced with Specifications
+        if (citizenId != null) {
+            if (status != null) {
+                return requestRepository.findByCitizenUserIdAndStatus(citizenId, status, pageable);
+            }
+            return requestRepository.findByCitizenUserId(citizenId, pageable);
+        }
+        
+        if (status != null && province != null) {
+            return requestRepository.findByStatusAndCitizen_Location_Province(status, province, pageable);
+        }
+        
+        if (status != null) {
+            return requestRepository.findByStatus(status, pageable);
+        }
+        
+        return requestRepository.findAll(pageable);
+    }
+    
+    public java.util.Map<String, Long> getCitizenRequestStats(Long citizenId) {
+        java.util.Map<String, Long> stats = new java.util.HashMap<>();
+        stats.put("total", requestRepository.countByCitizenUserId(citizenId));
+        stats.put("pending", requestRepository.countByCitizenUserIdAndStatus(citizenId, RequestStatus.PENDING));
+        stats.put("accepted", requestRepository.countByCitizenUserIdAndStatus(citizenId, RequestStatus.ACCEPTED));
+        stats.put("completed", requestRepository.countByCitizenUserIdAndStatus(citizenId, RequestStatus.COMPLETED));
+        return stats;
+    }
 }

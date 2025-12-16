@@ -1,5 +1,5 @@
 # Multi-stage build for Spring Boot backend
-FROM maven:3.9.9-amazoncorretto-17 AS build
+FROM maven:3.9.9-amazoncorretto-21 AS build
 
 WORKDIR /app
 COPY pom.xml .
@@ -7,7 +7,7 @@ COPY src ./src
 
 RUN mvn clean package -DskipTests
 
-FROM amazoncorretto:17
+FROM amazoncorretto:21
 
 # Install curl for health checks
 RUN yum update -y && yum install -y curl && yum clean all
@@ -19,8 +19,10 @@ COPY --from=build /app/target/*.jar app.jar
 # Environment variables with defaults
 ENV SPRING_PROFILES_ACTIVE=prod
 ENV PORT=8080
-ENV JWT_SECRET=default-secret-change-in-production
+ENV JWT_SECRET=5f566298b0ba4f8e38c1ff7c6e0844a1
 ENV CORS_ALLOWED_ORIGINS=http://localhost:3000,https://community-support-system.vercel.app
+ENV MAIL_USERNAME=darkosee23@gmail.com
+ENV MAIL_PASSWORD=pciv ygjl uvwk petm
 
 EXPOSE ${PORT}
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, Check, CheckCheck, Trash2, Filter, Eye, X } from 'lucide-react';
+import { Bell, Check, CheckCheck, Trash2, Filter, Eye, X, Search } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { notificationsApi } from '../../services/api';
 import type { Notification } from '../../types';
@@ -15,6 +15,7 @@ const NotificationsPage: React.FC = () => {
   const [filteredNotifications, setFilteredNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'unread' | 'read'>('all');
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
   const [stats, setStats] = useState({
     total: 0,
@@ -88,26 +89,41 @@ const NotificationsPage: React.FC = () => {
 
   useEffect(() => {
     let filtered = notifications;
+    console.log('Filtering notifications:', { totalNotifications: notifications.length, filter, searchTerm });
 
     // Filter by read status
     if (filter === 'unread') {
-      filtered = filtered.filter(n => !n.isRead);
+      const beforeFilter = filtered.length;
+      filtered = filtered.filter(n => n.isRead === false);
+      console.log(`Unread filter: ${beforeFilter} -> ${filtered.length}`);
     } else if (filter === 'read') {
-      filtered = filtered.filter(n => n.isRead);
+      const beforeFilter = filtered.length;
+      filtered = filtered.filter(n => n.isRead === true);
+      console.log(`Read filter: ${beforeFilter} -> ${filtered.length}`);
+    }
+
+    // Filter by search term
+    if (searchTerm.trim()) {
+      const beforeSearch = filtered.length;
+      filtered = filtered.filter(n => 
+        n.message.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      console.log(`Search filter '${searchTerm}': ${beforeSearch} -> ${filtered.length}`);
     }
 
     // Sort by creation date (newest first)
     filtered = filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
+    console.log('Final filtered notifications:', filtered.length);
     setFilteredNotifications(filtered);
 
     // Update stats
     setStats({
       total: notifications.length,
-      unread: notifications.filter(n => !n.isRead).length,
-      read: notifications.filter(n => n.isRead).length,
+      unread: notifications.filter(n => n.isRead === false).length,
+      read: notifications.filter(n => n.isRead === true).length,
     });
-  }, [notifications, filter]);
+  }, [notifications, filter, searchTerm]);
 
   const markAsRead = async (notificationId: number) => {
     try {
@@ -223,41 +239,69 @@ const NotificationsPage: React.FC = () => {
         </Card>
       </div>
 
-      {/* Filters */}
+      {/* Search and Filters */}
       <Card>
-        <div className="flex items-center space-x-4">
-          <Filter className="w-4 h-4 text-gray-400" />
-          <div className="flex space-x-2">
-            <button
-              onClick={() => setFilter('all')}
-              className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                filter === 'all'
-                  ? 'bg-blue-100 text-blue-800'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              All ({stats.total})
-            </button>
-            <button
-              onClick={() => setFilter('unread')}
-              className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                filter === 'unread'
-                  ? 'bg-red-100 text-red-800'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              Unread ({stats.unread})
-            </button>
-            <button
-              onClick={() => setFilter('read')}
-              className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                filter === 'read'
-                  ? 'bg-green-100 text-green-800'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              Read ({stats.read})
-            </button>
+        <div className="space-y-4">
+          {/* Search Bar */}
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search notifications..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="input-field pl-10"
+            />
+          </div>
+          
+          {/* Filter Buttons */}
+          <div className="flex items-center space-x-4">
+            <Filter className="w-4 h-4 text-gray-400" />
+            <div className="flex space-x-2">
+              <button
+                onClick={() => setFilter('all')}
+                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                  filter === 'all'
+                    ? 'bg-blue-100 text-blue-800'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                All ({stats.total})
+              </button>
+              <button
+                onClick={() => setFilter('unread')}
+                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                  filter === 'unread'
+                    ? 'bg-red-100 text-red-800'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                Unread ({stats.unread})
+              </button>
+              <button
+                onClick={() => setFilter('read')}
+                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                  filter === 'read'
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                Read ({stats.read})
+              </button>
+            </div>
+            {(searchTerm || filter !== 'all') && (
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setFilter('all');
+                }}
+                className="text-sm text-gray-500 hover:text-gray-700 underline"
+              >
+                Clear filters
+              </button>
+            )}
           </div>
         </div>
       </Card>
@@ -276,8 +320,12 @@ const NotificationsPage: React.FC = () => {
             <div className="p-6">
               <EmptyState
                 icon={Bell}
-                title="No notifications"
-                description={`No ${filter === 'all' ? '' : filter} notifications found`}
+                title="No notifications found"
+                description={
+                  searchTerm 
+                    ? `No notifications match "${searchTerm}"${filter !== 'all' ? ` in ${filter} notifications` : ''}`
+                    : `No ${filter === 'all' ? '' : filter} notifications found`
+                }
               />
             </div>
           ) : (
@@ -404,7 +452,7 @@ const NotificationsPage: React.FC = () => {
                 <div>
                   <span className="font-medium text-gray-600">Recipient:</span>
                   <span className="ml-2 text-gray-900">
-                    {selectedNotification.user.firstName} {selectedNotification.user.lastName}
+                    {selectedNotification.user.name}
                   </span>
                 </div>
               </div>

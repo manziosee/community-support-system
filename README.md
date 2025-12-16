@@ -36,7 +36,7 @@ The **Community Help Portal** is a Spring Boot web application that bridges the 
   <img src="images/ERD.png" alt="Community Help Portal ERD" width="800">
 </div>
 
-### 🗃️ Database Entities (6 Core + 1 Junction = 7 Tables)
+### 🗃️ Database Entities (7 Core + 2 Junction = 9 Tables)
 
 | Entity | Description | Key Features |
 |--------|-------------|-------------|
@@ -47,6 +47,7 @@ The **Community Help Portal** is a Spring Boot web application that bridges the 
 | 🔔 **Notification** | System notifications | Read/unread status, user-specific |
 | 🎯 **Skill** | Volunteer capabilities | Categorized expertise |
 | 🔗 **User_Skills** | Many-to-Many junction | Skills-users mapping |
+| ⚙️ **User_Settings** | User preferences | Notification settings (1:1 with User) |
 
 ### 🔗 Relationship Types Implemented
 
@@ -120,7 +121,7 @@ The **Community Help Portal** is a Spring Boot web application that bridges the 
 
 ---
 
-## 🌐 API Endpoints (85 Total Mappings)
+## 🌐 API Endpoints (105+ Total Mappings)
 
 <details>
 <summary><strong>🏛️ Location Endpoints (11 endpoints)</strong></summary>
@@ -247,6 +248,27 @@ The **Community Help Portal** is a Spring Boot web application that bridges the 
 | ➕ `POST` | `/api/skills` | Create new skill |
 | ✏️ `PUT` | `/api/skills/{id}` | Update skill |
 | ✅ `DELETE` | `/api/skills/{id}` | Delete skill (validates no users) |
+
+</details>
+
+<details>
+<summary><strong>📂 Category Endpoints (1 endpoint)</strong></summary>
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| 🔍 `GET` | `/api/categories` | Get all request categories (8 categories) |
+
+</details>
+
+<details>
+<summary><strong>⚙️ Settings Endpoints (4 endpoints)</strong></summary>
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| 🔍 `GET` | `/api/settings/{userId}` | Get user settings and profile |
+| 🔄 `PATCH` | `/api/settings/profile/{userId}` | Update profile (name, phone, sector, cell, village) |
+| 🔄 `PATCH` | `/api/settings/password/{userId}` | Change password with validation |
+| 🔄 `PATCH` | `/api/settings/notifications/{userId}` | Update notification preferences |
 
 </details>
 
@@ -381,6 +403,7 @@ SERVER_PORT=8080
 | 🔔 `notifications` | User alerts | System notifications | Read/unread status |
 | 🎯 `skills` | Volunteer capabilities | Skill categories | Unique skill names |
 | 🔗 `user_skills` | Skill mappings | Many-to-many junction | Composite primary key |
+| ⚙️ `user_settings` | User preferences | Notification settings | One-to-one with users |
 
 </div>
 

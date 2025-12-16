@@ -15,7 +15,8 @@ const registerSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
   phoneNumber: z.string().regex(/^[0-9]{10}$/, 'Phone number must be exactly 10 digits'),
   role: z.enum([UserRole.CITIZEN, UserRole.VOLUNTEER]),
-  locationId: z.number().min(1, 'Please select a location'),
+  province: z.string().min(1, 'Please select a province'),
+  locationId: z.number().min(1, 'Please select a district'),
   sector: z.string().optional(),
   cell: z.string().optional(),
   village: z.string().optional(),
@@ -26,9 +27,12 @@ type RegisterFormData = z.infer<typeof registerSchema>;
 
 const RegisterPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [locations, setLocations] = useState<Location[]>([]);
+  const [provinces, setProvinces] = useState<string[]>([]);
+  const [districts, setDistricts] = useState<Location[]>([]);
+
   const [skills, setSkills] = useState<Skill[]>([]);
   const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.CITIZEN);
+  const [selectedProvince, setSelectedProvince] = useState<string>('');
   const { register: registerUser, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -42,11 +46,13 @@ const RegisterPage: React.FC = () => {
     resolver: zodResolver(registerSchema),
     defaultValues: {
       role: UserRole.CITIZEN,
+      province: '',
       skills: [],
     },
   });
 
   const watchedRole = watch('role');
+  const watchedProvince = watch('province');
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -57,12 +63,14 @@ const RegisterPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [locationsResponse, skillsResponse] = await Promise.all([
-          locationsApi.getAll(),
+        const [skillsResponse, provincesResponse] = await Promise.all([
           skillsApi.getAll(),
+          locationsApi.getProvinces(),
         ]);
-        setLocations(locationsResponse.data);
         setSkills(skillsResponse.data);
+        setProvinces(provincesResponse.data);
+        console.log('Loaded provinces:', provincesResponse.data);
+        console.log('Loaded skills:', skillsResponse.data);
       } catch (error) {
         console.error('Failed to fetch data:', error);
       }
@@ -75,12 +83,43 @@ const RegisterPage: React.FC = () => {
     setSelectedRole(watchedRole);
   }, [watchedRole]);
 
+  useEffect(() => {
+    const fetchDistricts = async () => {
+      if (watchedProvince && watchedProvince !== '') {
+        try {
+          console.log('Fetching districts for province:', watchedProvince);
+          setSelectedProvince(watchedProvince);
+          const response = await locationsApi.getDistrictsByProvince(watchedProvince);
+          console.log('API Response:', response);
+          console.log('Districts data:', response.data);
+          setDistricts(response.data || []);
+          setValue('locationId', 0); // Reset district selection
+        } catch (error) {
+          console.error('Failed to fetch districts for', watchedProvince, ':', error);
+          setDistricts([]);
+        }
+      } else {
+        console.log('No province selected, clearing districts');
+        setDistricts([]);
+        setValue('locationId', 0);
+      }
+    };
+
+    fetchDistricts();
+  }, [watchedProvince, setValue]);
+
   const onSubmit = async (data: RegisterFormData) => {
     try {
       setIsLoading(true);
       const userData = {
-        ...data,
-        location: { locationId: data.locationId },
+        name: data.name,
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+        role: data.role,
+        locationId: data.locationId,
+        sector: data.sector || '',
+        cell: data.cell || '',
+        village: data.village || '',
         skills: data.skills?.map(skillId => ({ skillId })) || [],
       };
       await registerUser(userData);
@@ -213,65 +252,102 @@ const RegisterPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Location */}
-          <div>
-            <label htmlFor="locationId" className="block text-sm font-medium text-gray-700">
-              Location (District)
-            </label>
-            <div className="mt-1 relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <MapPin className="h-5 w-5 text-gray-400" />
+          {/* Location - Province and District */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Province */}
+            <div>
+              <label htmlFor="province" className="block text-sm font-medium text-gray-700">
+                Province
+              </label>
+              <div className="mt-1 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <MapPin className="h-5 w-5 text-gray-400" />
+                </div>
+                <select
+                  {...register('province')}
+                  className="input-field pl-10"
+                >
+                  <option value="">Select province</option>
+                  {provinces.map((province) => (
+                    <option key={province} value={province}>
+                      {province}
+                    </option>
+                  ))}
+                </select>
               </div>
-              <select
-                {...register('locationId', { valueAsNumber: true })}
-                className="input-field pl-10"
-              >
-                <option value="">Select your district</option>
-                {locations.map((location) => (
-                  <option key={location.locationId} value={location.locationId}>
-                    {location.district}, {location.province}
-                  </option>
-                ))}
-              </select>
+              {errors.province && (
+                <p className="mt-1 text-sm text-red-600">{errors.province.message}</p>
+              )}
             </div>
-            {errors.locationId && (
-              <p className="mt-1 text-sm text-red-600">{errors.locationId.message}</p>
-            )}
+
+            {/* District */}
+            <div>
+              <label htmlFor="locationId" className="block text-sm font-medium text-gray-700">
+                District {districts.length > 0 && `(${districts.length} available)`}
+              </label>
+              <div className="mt-1 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <MapPin className="h-5 w-5 text-gray-400" />
+                </div>
+                <select
+                  {...register('locationId', { valueAsNumber: true })}
+                  className="input-field pl-10"
+                  disabled={!selectedProvince || districts.length === 0}
+                >
+                  <option value={0}>
+                    {!selectedProvince 
+                      ? 'Select province first' 
+                      : districts.length === 0 
+                        ? 'Loading districts...' 
+                        : 'Select district'
+                    }
+                  </option>
+                  {districts.map((location) => (
+                    <option key={location.locationId} value={location.locationId}>
+                      {location.district}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {errors.locationId && (
+                <p className="mt-1 text-sm text-red-600">{errors.locationId.message}</p>
+              )}
+            </div>
           </div>
 
           {/* Additional Location Details */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label htmlFor="sector" className="block text-sm font-medium text-gray-700">
-                Sector (Optional)
+                Sector
               </label>
               <input
                 {...register('sector')}
                 type="text"
                 className="mt-1 input-field"
-                placeholder="Enter sector"
+                placeholder="Enter your sector"
               />
             </div>
             <div>
               <label htmlFor="cell" className="block text-sm font-medium text-gray-700">
-                Cell (Optional)
+                Cell
               </label>
               <input
                 {...register('cell')}
                 type="text"
                 className="mt-1 input-field"
-                placeholder="Enter cell"
+                placeholder="Enter your cell"
               />
             </div>
             <div>
               <label htmlFor="village" className="block text-sm font-medium text-gray-700">
-                Village (Optional)
+                Village
               </label>
               <input
                 {...register('village')}
                 type="text"
                 className="mt-1 input-field"
-                placeholder="Enter village"
+                placeholder="Enter your village"
               />
             </div>
           </div>

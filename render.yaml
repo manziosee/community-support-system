@@ -17,9 +17,13 @@ services:
       - key: PROD_DB_PASSWORD
         value: npg_0hEk5QoiUsKO
       - key: JWT_SECRET
-        generateValue: true
+        value: 5f566298b0ba4f8e38c1ff7c6e0844a1
       - key: CORS_ALLOWED_ORIGINS
-        value: https://community-support-frontend.vercel.app,http://localhost:3000
+        value: https://community-support-system.vercel.app,http://localhost:3000
+      - key: MAIL_USERNAME
+        value: darkosee23@gmail.com
+      - key: MAIL_PASSWORD
+        value: pciv ygjl uvwk petm
       - key: LOGGING_LEVEL_ROOT
         value: INFO
       - key: LOGGING_LEVEL_APP

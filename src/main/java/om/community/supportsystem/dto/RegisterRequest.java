@@ -28,6 +28,14 @@ public class RegisterRequest {
     private String sector;
     private String cell;
     private String village;
+    private java.util.List<SkillRequest> skills;
+    
+    public static class SkillRequest {
+        private Long skillId;
+        
+        public Long getSkillId() { return skillId; }
+        public void setSkillId(Long skillId) { this.skillId = skillId; }
+    }
     
     // Getters and setters
     public String getName() { return name; }
@@ -56,4 +64,7 @@ public class RegisterRequest {
     
     public String getVillage() { return village; }
     public void setVillage(String village) { this.village = village; }
+    
+    public java.util.List<SkillRequest> getSkills() { return skills; }
+    public void setSkills(java.util.List<SkillRequest> skills) { this.skills = skills; }
 }

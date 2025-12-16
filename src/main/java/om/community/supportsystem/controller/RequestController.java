@@ -81,15 +81,20 @@ public class RequestController {
     }
     
     @GetMapping("/search")
-    public ResponseEntity<Page<Request>> getRequestsByStatusAndProvince(
-            @RequestParam RequestStatus status,
-            @RequestParam String province,
+    public ResponseEntity<Page<Request>> searchRequests(
+            @RequestParam(required = false) RequestStatus status,
+            @RequestParam(required = false) String province,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) Long citizenId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sortBy) {
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir) {
         
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortBy));
-        Page<Request> requests = requestService.getRequestsByStatusAndProvince(status, province, pageable);
+        Sort.Direction direction = sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        Page<Request> requests = requestService.searchRequests(status, province, category, title, citizenId, pageable);
         return ResponseEntity.ok(requests);
     }
     
@@ -144,5 +149,11 @@ public class RequestController {
     public ResponseEntity<Long> countRequestsByStatus(@PathVariable RequestStatus status) {
         long count = requestService.countRequestsByStatus(status);
         return ResponseEntity.ok(count);
+    }
+    
+    @GetMapping("/citizen/{citizenId}/stats")
+    public ResponseEntity<java.util.Map<String, Long>> getCitizenRequestStats(@PathVariable Long citizenId) {
+        java.util.Map<String, Long> stats = requestService.getCitizenRequestStats(citizenId);
+        return ResponseEntity.ok(stats);
     }
 }

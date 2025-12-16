@@ -74,8 +74,8 @@ public class LocationController {
     }
     
     @GetMapping("/districts/{province}")
-    public ResponseEntity<List<String>> getDistrictsByProvince(@PathVariable String province) {
-        List<String> districts = locationService.getDistrictsByProvince(province);
+    public ResponseEntity<List<Location>> getDistrictsByProvince(@PathVariable String province) {
+        List<Location> districts = locationService.getLocationsByProvince(province);
         return ResponseEntity.ok(districts);
     }
     

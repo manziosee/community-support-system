@@ -21,6 +21,10 @@ public class Request {
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    private RequestCategory category;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private RequestStatus status;
     
     @Column(nullable = false)
@@ -45,11 +49,13 @@ public class Request {
     public Request() {
         this.createdAt = LocalDateTime.now();
         this.status = RequestStatus.PENDING;
+        this.category = RequestCategory.GENERAL_HELP;
     }
     
-    public Request(String title, String description, User citizen) {
+    public Request(String title, String description, RequestCategory category, User citizen) {
         this.title = title;
         this.description = description;
+        this.category = category;
         this.citizen = citizen;
         this.createdAt = LocalDateTime.now();
         this.status = RequestStatus.PENDING;
@@ -64,6 +70,9 @@ public class Request {
     
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+    
+    public RequestCategory getCategory() { return category; }
+    public void setCategory(RequestCategory category) { this.category = category; }
     
     public RequestStatus getStatus() { return status; }
     public void setStatus(RequestStatus status) { 

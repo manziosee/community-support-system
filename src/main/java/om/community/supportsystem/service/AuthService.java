@@ -34,6 +34,9 @@ public class AuthService {
     @Autowired
     private JwtUtil jwtUtil;
     
+    @Autowired
+    private SkillService skillService;
+    
     private final Random random = new Random();
     
     public AuthResponse register(RegisterRequest request) {
@@ -63,6 +66,16 @@ public class AuthService {
             if (location.isPresent()) {
                 user.setLocation(location.get());
             }
+        }
+        
+        // Set skills if provided (for volunteers)
+        if (request.getSkills() != null && !request.getSkills().isEmpty()) {
+            java.util.Set<om.community.supportsystem.model.Skill> userSkills = new java.util.HashSet<>();
+            for (RegisterRequest.SkillRequest skillRequest : request.getSkills()) {
+                Optional<om.community.supportsystem.model.Skill> skill = skillService.getSkillById(skillRequest.getSkillId());
+                skill.ifPresent(userSkills::add);
+            }
+            user.setSkills(userSkills);
         }
         
         // Generate email verification token

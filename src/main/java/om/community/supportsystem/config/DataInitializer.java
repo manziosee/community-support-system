@@ -3,6 +3,8 @@ package om.community.supportsystem.config;
 import om.community.supportsystem.model.*;
 import om.community.supportsystem.service.*;
 import om.community.supportsystem.repository.*;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,6 +35,9 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
     
+    @Autowired
+    private UserSettingsRepository userSettingsRepository;
+    
     @Override
     public void run(String... args) throws Exception {
         try {
@@ -53,10 +58,10 @@ public class DataInitializer implements CommandLineRunner {
         
         logger.info("Initializing fresh data (empty database detected)...");
         // Create locations with Province + District only
-        // Kigali City (3 Districts)
-        locationService.createLocation(new Location("Kigali City", "Gasabo", "KG01"));
-        locationService.createLocation(new Location("Kigali City", "Kicukiro", "KG02"));
-        locationService.createLocation(new Location("Kigali City", "Nyarugenge", "KG03"));
+        // City of Kigali (3 Districts)
+        locationService.createLocation(new Location("City of Kigali", "Gasabo", "KG01"));
+        locationService.createLocation(new Location("City of Kigali", "Kicukiro", "KG02"));
+        locationService.createLocation(new Location("City of Kigali", "Nyarugenge", "KG03"));
         
         // Eastern Province (7 Districts)
         locationService.createLocation(new Location("Eastern Province", "Nyagatare", "EP01"));
@@ -124,8 +129,30 @@ public class DataInitializer implements CommandLineRunner {
             userService.createUser(admin);
         }
         
+        // Create default user settings for admin user
+        createDefaultUserSettings();
+        
         logger.info("Fresh database initialized successfully!");
-        logger.info("Data loaded: 30 locations, 10 skills, default admin user");
+        logger.info("Data loaded: 30 locations, 10 skills, default admin user with settings");
         logger.info("Ready for API testing! Admin: admin@community.rw / admin123");
+    }
+    
+    private void createDefaultUserSettings() {
+        try {
+            // Create default settings for all existing users who don't have settings
+            List<User> allUsers = userService.getAllUsers();
+            
+            for (User user : allUsers) {
+                if (!userSettingsRepository.existsByUserUserId(user.getUserId())) {
+                    UserSettings settings = new UserSettings(user);
+                    userSettingsRepository.save(settings);
+                    logger.info("Created default settings for user: {}", user.getEmail());
+                }
+            }
+            
+            logger.info("Default user settings verification completed");
+        } catch (Exception e) {
+            logger.warn("Could not create default user settings: {}", e.getMessage());
+        }
     }
 }

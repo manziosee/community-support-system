@@ -105,6 +105,11 @@ public class User {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<Skill> skills;
     
+    // One-to-One: User settings for notification preferences
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private UserSettings userSettings;
+    
 
     
     // Constructors
@@ -208,6 +213,9 @@ public class User {
     
     public LocalDateTime getLastLoginAt() { return lastLoginAt; }
     public void setLastLoginAt(LocalDateTime lastLoginAt) { this.lastLoginAt = lastLoginAt; }
+    
+    public UserSettings getUserSettings() { return userSettings; }
+    public void setUserSettings(UserSettings userSettings) { this.userSettings = userSettings; }
     
     // Password verification method for security
     public boolean verifyPassword(String candidatePassword, org.springframework.security.crypto.password.PasswordEncoder encoder) {
