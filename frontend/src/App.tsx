@@ -35,7 +35,7 @@ import NotificationsPage from './pages/notifications/NotificationsPage';
 
 // User Pages
 import ProfilePage from './pages/users/ProfilePage';
-
+import SettingsPage from './pages/users/SettingsPage';
 import MySkillsPage from './pages/users/MySkillsPage';
 
 // Landing Page
@@ -133,6 +133,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <ProfilePage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/settings"
+                  element={
+                    <ProtectedRoute>
+                      <SettingsPage />
                     </ProtectedRoute>
                   }
                 />

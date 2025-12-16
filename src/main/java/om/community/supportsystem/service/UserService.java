@@ -3,7 +3,9 @@ package om.community.supportsystem.service;
 import om.community.supportsystem.model.User;
 import om.community.supportsystem.model.UserRole;
 import om.community.supportsystem.model.Location;
+import om.community.supportsystem.model.UserSettings;
 import om.community.supportsystem.repository.UserRepository;
+import om.community.supportsystem.repository.UserSettingsRepository;
 import om.community.supportsystem.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,6 +25,9 @@ public class UserService {
     
     @Autowired
     private LocationService locationService;
+    
+    @Autowired
+    private UserSettingsRepository userSettingsRepository;
     
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -207,6 +212,108 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setAccountLocked(false);
         user.setFailedLoginAttempts(0);
+        userRepository.save(user);
+    }
+    
+    // Settings methods
+    public void updatePassword(Long userId, String currentPassword, String newPassword) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new RuntimeException("Current password is incorrect");
+        }
+        
+        if (newPassword == null || newPassword.length() < 8) {
+            throw new RuntimeException("New password must be at least 8 characters long");
+        }
+        
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+    
+    public void updateNotificationPreferences(Long userId, java.util.Map<String, Boolean> preferences) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        
+        UserSettings settings = userSettingsRepository.findByUserUserId(userId)
+            .orElse(new UserSettings(user));
+        
+        if (preferences.containsKey("emailNotifications")) {
+            settings.setEmailNotifications(preferences.get("emailNotifications"));
+        }
+        if (preferences.containsKey("pushNotifications")) {
+            settings.setPushNotifications(preferences.get("pushNotifications"));
+        }
+        if (preferences.containsKey("requestUpdates")) {
+            settings.setRequestUpdates(preferences.get("requestUpdates"));
+        }
+        if (preferences.containsKey("assignmentUpdates")) {
+            settings.setAssignmentUpdates(preferences.get("assignmentUpdates"));
+        }
+        
+        userSettingsRepository.save(settings);
+    }
+    
+    public java.util.Map<String, Object> getUserSettings(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        
+        UserSettings settings = userSettingsRepository.findByUserUserId(userId)
+            .orElse(new UserSettings(user));
+        
+        java.util.Map<String, Object> settingsMap = new java.util.HashMap<>();
+        settingsMap.put("emailNotifications", settings.getEmailNotifications());
+        settingsMap.put("pushNotifications", settings.getPushNotifications());
+        settingsMap.put("requestUpdates", settings.getRequestUpdates());
+        settingsMap.put("assignmentUpdates", settings.getAssignmentUpdates());
+        
+        // Include user profile data
+        settingsMap.put("name", user.getName());
+        settingsMap.put("phoneNumber", user.getPhoneNumber());
+        settingsMap.put("sector", user.getSector());
+        settingsMap.put("cell", user.getCell());
+        settingsMap.put("village", user.getVillage());
+        
+        return settingsMap;
+    }
+    
+    public void updateProfile(Long userId, java.util.Map<String, Object> profileData) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        
+        if (profileData.containsKey("name")) {
+            String name = (String) profileData.get("name");
+            if (name == null || name.trim().isEmpty()) {
+                throw new RuntimeException("Name cannot be empty");
+            }
+            user.setName(name.trim());
+        }
+        
+        if (profileData.containsKey("phoneNumber")) {
+            String phoneNumber = (String) profileData.get("phoneNumber");
+            if (phoneNumber != null && !phoneNumber.matches("^[0-9]{10}$")) {
+                throw new RuntimeException("Phone number must be exactly 10 digits");
+            }
+            // Check if phone number is already taken by another user
+            if (phoneNumber != null && !phoneNumber.equals(user.getPhoneNumber())) {
+                if (userRepository.existsByPhoneNumber(phoneNumber)) {
+                    throw new RuntimeException("Phone number is already taken by another user");
+                }
+            }
+            user.setPhoneNumber(phoneNumber);
+        }
+        
+        if (profileData.containsKey("sector")) {
+            user.setSector((String) profileData.get("sector"));
+        }
+        if (profileData.containsKey("cell")) {
+            user.setCell((String) profileData.get("cell"));
+        }
+        if (profileData.containsKey("village")) {
+            user.setVillage((String) profileData.get("village"));
+        }
+        
         userRepository.save(user);
     }
     

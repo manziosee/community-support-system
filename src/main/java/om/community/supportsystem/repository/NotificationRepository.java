@@ -65,4 +65,14 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     
     @Query("SELECT COUNT(n) FROM Notification n WHERE n.isRead = true")
     long countByIsReadTrue();
+    
+    // Paginated search methods
+    Page<Notification> findByUserUserIdOrderByCreatedAtDesc(Long userId, Pageable pageable);
+    Page<Notification> findByUserUserIdAndIsRead(Long userId, Boolean isRead, Pageable pageable);
+    Page<Notification> findByUserUserIdAndMessageContainingIgnoreCase(Long userId, String message, Pageable pageable);
+    Page<Notification> findByUserUserIdAndIsReadAndMessageContainingIgnoreCase(Long userId, Boolean isRead, String message, Pageable pageable);
+    
+    // Count methods for stats
+    long countByUserUserId(Long userId);
+    long countByUserUserIdAndIsReadTrue(Long userId);
 }

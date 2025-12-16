@@ -50,4 +50,13 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     // Find recent requests (last 7 days)
     @Query("SELECT r FROM Request r WHERE r.createdAt >= :weekAgo ORDER BY r.createdAt DESC")
     List<Request> findRecentRequests(@Param("weekAgo") LocalDateTime weekAgo);
+    
+    // Paginated queries
+    Page<Request> findByStatus(RequestStatus status, Pageable pageable);
+    Page<Request> findByCitizenUserId(Long citizenId, Pageable pageable);
+    Page<Request> findByCitizenUserIdAndStatus(Long citizenId, RequestStatus status, Pageable pageable);
+    
+    // Count methods for stats
+    long countByCitizenUserId(Long citizenId);
+    long countByCitizenUserIdAndStatus(Long citizenId, RequestStatus status);
 }

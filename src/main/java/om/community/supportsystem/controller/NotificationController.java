@@ -49,12 +49,17 @@ public class NotificationController {
     @GetMapping("/user/{userId}/paginated")
     public ResponseEntity<Page<Notification>> getNotificationsByUserPaginated(
             @PathVariable Long userId,
+            @RequestParam(required = false) Boolean isRead,
+            @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir) {
         
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        List<Notification> notifications = notificationService.getNotificationsByUserId(userId);
-        return ResponseEntity.ok(Page.empty());
+        Sort.Direction direction = sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        Page<Notification> notifications = notificationService.searchNotifications(userId, isRead, search, pageable);
+        return ResponseEntity.ok(notifications);
     }
     
     @GetMapping("/unread")
@@ -120,5 +125,11 @@ public class NotificationController {
     public ResponseEntity<Long> countUnreadNotificationsByUser(@PathVariable Long userId) {
         long count = notificationService.countUnreadNotificationsByUser(userId);
         return ResponseEntity.ok(count);
+    }
+    
+    @GetMapping("/user/{userId}/stats")
+    public ResponseEntity<java.util.Map<String, Long>> getUserNotificationStats(@PathVariable Long userId) {
+        java.util.Map<String, Long> stats = notificationService.getUserNotificationStats(userId);
+        return ResponseEntity.ok(stats);
     }
 }

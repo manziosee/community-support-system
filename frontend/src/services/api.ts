@@ -2,6 +2,7 @@ import axios from 'axios';
 import type { AuthResponse, LoginRequest, RegisterRequest } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+console.log('API Base URL:', API_BASE_URL);
 
 // Create axios instance
 export const api = axios.create({
@@ -105,10 +106,10 @@ export const requestsApi = {
   getById: (id: number) => 
     api.get(`/requests/${id}`),
   
-  create: (requestData: { title: string; description: string; citizen: { userId: number } }) => 
+  create: (requestData: { title: string; description: string; category: string; citizen: { userId: number } }) => 
     api.post('/requests', requestData),
   
-  update: (id: number, requestData: Partial<{ title: string; description: string }>) => 
+  update: (id: number, requestData: Partial<{ title: string; description: string; category: string }>) => 
     api.put(`/requests/${id}`, requestData),
   
   delete: (id: number) => 
@@ -126,8 +127,28 @@ export const requestsApi = {
   getByProvince: (province: string) => 
     api.get(`/requests/province/${province}`),
   
-  searchByTitle: (title: string) => 
-    api.get(`/requests/search/title/${title}`),
+  search: (params: {
+    status?: string;
+    province?: string;
+    category?: string;
+    title?: string;
+    citizenId?: number;
+    page?: number;
+    size?: number;
+    sortBy?: string;
+    sortDir?: string;
+  }) => {
+    const queryParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        queryParams.append(key, value.toString());
+      }
+    });
+    return api.get(`/requests/search?${queryParams.toString()}`);
+  },
+  
+  getCitizenStats: (citizenId: number) => 
+    api.get(`/requests/citizen/${citizenId}/stats`),
   
   updateStatus: (id: number, status: string) => 
     api.patch(`/requests/${id}/status?status=${status}`),
@@ -183,6 +204,23 @@ export const notificationsApi = {
   getByUser: (userId: number) => 
     api.get(`/notifications/user/${userId}`),
   
+  getByUserPaginated: (userId: number, params: {
+    isRead?: boolean;
+    search?: string;
+    page?: number;
+    size?: number;
+    sortBy?: string;
+    sortDir?: string;
+  }) => {
+    const queryParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        queryParams.append(key, value.toString());
+      }
+    });
+    return api.get(`/notifications/user/${userId}/paginated?${queryParams.toString()}`);
+  },
+  
   getUnreadByUser: (userId: number) => 
     api.get(`/notifications/user/${userId}/unread`),
   
@@ -194,6 +232,9 @@ export const notificationsApi = {
   
   getUnreadCount: (userId: number) => 
     api.get(`/notifications/user/${userId}/unread/count`),
+  
+  getUserStats: (userId: number) => 
+    api.get(`/notifications/user/${userId}/stats`),
 };
 
 // Locations API
@@ -204,16 +245,37 @@ export const locationsApi = {
   getById: (id: number) => 
     api.get(`/locations/${id}`),
   
-  getProvinces: () => 
-    api.get('/locations/provinces'),
+  getProvinces: async () => {
+    try {
+      console.log('Fetching provinces from:', `${API_BASE_URL}/locations/provinces`);
+      const response = await api.get('/locations/provinces');
+      console.log('Provinces response:', response);
+      return response;
+    } catch (error) {
+      console.error('Error fetching provinces:', error);
+      throw error;
+    }
+  },
   
-  getDistrictsByProvince: (province: string) => 
-    api.get(`/locations/districts/${province}`),
+  getDistrictsByProvince: async (province: string) => {
+    try {
+      const encodedProvince = encodeURIComponent(province);
+      const url = `/locations/districts/${encodedProvince}`;
+      console.log('Fetching districts from:', `${API_BASE_URL}${url}`);
+      const response = await api.get(url);
+      console.log('Districts response for', province, ':', response);
+      return response;
+    } catch (error) {
+      console.error('Error fetching districts for', province, ':', error);
+      throw error;
+    }
+  },
   
   getByProvince: (province: string) => 
     api.get(`/locations/province/${province}`),
 };
 
+// Skills API
 // Skills API
 export const skillsApi = {
   getAll: () => 
@@ -233,6 +295,27 @@ export const skillsApi = {
   
   getPopular: () => 
     api.get('/skills/popular'),
+};
+
+// Categories API
+export const categoriesApi = {
+  getAll: () => 
+    api.get('/categories'),
+};
+
+// Settings API
+export const settingsApi = {
+  getUserSettings: (userId: number) => 
+    api.get(`/settings/${userId}`),
+  
+  updatePassword: (userId: number, passwordData: { currentPassword: string; newPassword: string }) => 
+    api.patch(`/settings/password/${userId}`, passwordData),
+  
+  updateNotificationPreferences: (userId: number, preferences: Record<string, boolean>) => 
+    api.patch(`/settings/notifications/${userId}`, preferences),
+  
+  updateProfile: (userId: number, profileData: Record<string, any>) => 
+    api.patch(`/settings/profile/${userId}`, profileData),
 };
 
 // Admin API

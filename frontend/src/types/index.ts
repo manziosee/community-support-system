@@ -49,6 +49,20 @@ export const RequestStatus = {
 
 export type RequestStatus = typeof RequestStatus[keyof typeof RequestStatus];
 
+// Request Category
+export const RequestCategory = {
+  GENERAL_HELP: 'GENERAL_HELP',
+  TRANSPORTATION: 'TRANSPORTATION',
+  TECHNOLOGY_SUPPORT: 'TECHNOLOGY_SUPPORT',
+  SHOPPING_AND_ERRANDS: 'SHOPPING_AND_ERRANDS',
+  TUTORING_AND_EDUCATION: 'TUTORING_AND_EDUCATION',
+  HOUSEHOLD_TASKS: 'HOUSEHOLD_TASKS',
+  HEALTHCARE_ASSISTANCE: 'HEALTHCARE_ASSISTANCE',
+  OTHERS: 'OTHERS'
+} as const;
+
+export type RequestCategory = typeof RequestCategory[keyof typeof RequestCategory];
+
 // Assignment Types (defined before Request to avoid circular reference)
 export interface Assignment {
   assignmentId: number;
@@ -63,6 +77,7 @@ export interface Request {
   requestId: number;
   title: string;
   description: string;
+  category: RequestCategory;
   status: RequestStatus;
   createdAt: string;
   updatedAt?: string;
@@ -107,9 +122,7 @@ export interface RegisterRequest {
   email: string;
   phoneNumber: string;
   role: UserRole;
-  location: {
-    locationId: number;
-  };
+  locationId: number;
   sector?: string;
   cell?: string;
   village?: string;
