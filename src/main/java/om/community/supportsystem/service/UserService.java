@@ -220,7 +220,7 @@ public class UserService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
         
-        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+        if (!user.verifyPassword(currentPassword, passwordEncoder)) {
             throw new RuntimeException("Current password is incorrect");
         }
         
