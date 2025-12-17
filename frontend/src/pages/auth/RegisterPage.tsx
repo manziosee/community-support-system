@@ -29,7 +29,6 @@ const RegisterPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [provinces, setProvinces] = useState<string[]>([]);
   const [districts, setDistricts] = useState<Location[]>([]);
-
   const [skills, setSkills] = useState<Skill[]>([]);
   const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.CITIZEN);
   const [selectedProvince, setSelectedProvince] = useState<string>('');
@@ -93,7 +92,7 @@ const RegisterPage: React.FC = () => {
           console.log('API Response:', response);
           console.log('Districts data:', response.data);
           setDistricts(response.data || []);
-          setValue('locationId', 0); // Reset district selection
+          setValue('locationId', '' as any); // Reset district selection
         } catch (error) {
           console.error('Failed to fetch districts for', watchedProvince, ':', error);
           setDistricts([]);
@@ -101,7 +100,7 @@ const RegisterPage: React.FC = () => {
       } else {
         console.log('No province selected, clearing districts');
         setDistricts([]);
-        setValue('locationId', 0);
+        setValue('locationId', '' as any);
       }
     };
 
@@ -294,7 +293,7 @@ const RegisterPage: React.FC = () => {
                   className="input-field pl-10"
                   disabled={!selectedProvince || districts.length === 0}
                 >
-                  <option value={0}>
+                  <option value="">
                     {!selectedProvince 
                       ? 'Select province first' 
                       : districts.length === 0 
