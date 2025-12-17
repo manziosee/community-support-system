@@ -20,7 +20,7 @@ COPY --from=build /app/target/*.jar app.jar
 ENV SPRING_PROFILES_ACTIVE=prod
 ENV PORT=8080
 ENV JWT_SECRET=5f566298b0ba4f8e38c1ff7c6e0844a1
-ENV CORS_ALLOWED_ORIGINS=http://localhost:3000,https://community-support-system.vercel.app
+ENV CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001,https://community-support-system.vercel.app
 ENV MAIL_USERNAME=darkosee23@gmail.com
 ENV MAIL_PASSWORD="pciv ygjl uvwk petm"
 
