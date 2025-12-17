@@ -14,6 +14,7 @@ const registerSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
   phoneNumber: z.string().regex(/^[0-9]{10}$/, 'Phone number must be exactly 10 digits'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
   role: z.enum([UserRole.CITIZEN, UserRole.VOLUNTEER]),
   province: z.string().min(1, 'Please select a province'),
   locationId: z.number().min(1, 'Please select a district'),
@@ -114,6 +115,7 @@ const RegisterPage: React.FC = () => {
         name: data.name,
         email: data.email,
         phoneNumber: data.phoneNumber,
+        password: data.password,
         role: data.role,
         locationId: data.locationId,
         sector: data.sector || '',
@@ -223,6 +225,26 @@ const RegisterPage: React.FC = () => {
               </div>
               {errors.phoneNumber && (
                 <p className="mt-1 text-sm text-red-600">{errors.phoneNumber.message}</p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <div className="mt-1 relative">
+                <input
+                  {...register('password')}
+                  id="password"
+                  type="password"
+                  autoComplete="new-password"
+                  className="input-field"
+                  placeholder="Enter your password"
+                />
+              </div>
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
               )}
             </div>
 
