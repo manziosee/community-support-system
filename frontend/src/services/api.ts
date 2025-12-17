@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { AuthResponse, LoginRequest, RegisterRequest } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://community-support-system.onrender.com/api' : '/api');
 console.log('API Base URL:', API_BASE_URL);
 
 // Create axios instance

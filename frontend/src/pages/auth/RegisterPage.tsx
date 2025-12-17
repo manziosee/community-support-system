@@ -168,7 +168,9 @@ const RegisterPage: React.FC = () => {
                 </div>
                 <input
                   {...register('name')}
+                  id="name"
                   type="text"
+                  autoComplete="name"
                   className="input-field pl-10"
                   placeholder="Enter your full name"
                 />
@@ -189,7 +191,9 @@ const RegisterPage: React.FC = () => {
                 </div>
                 <input
                   {...register('email')}
+                  id="email"
                   type="email"
+                  autoComplete="email"
                   className="input-field pl-10"
                   placeholder="Enter your email"
                 />
@@ -210,7 +214,9 @@ const RegisterPage: React.FC = () => {
                 </div>
                 <input
                   {...register('phoneNumber')}
+                  id="phoneNumber"
                   type="tel"
+                  autoComplete="tel"
                   className="input-field pl-10"
                   placeholder="0788123456"
                 />
@@ -264,6 +270,8 @@ const RegisterPage: React.FC = () => {
                 </div>
                 <select
                   {...register('province')}
+                  id="province"
+                  autoComplete="address-level1"
                   className="input-field pl-10"
                 >
                   <option value="">Select province</option>
@@ -290,6 +298,8 @@ const RegisterPage: React.FC = () => {
                 </div>
                 <select
                   {...register('locationId', { valueAsNumber: true })}
+                  id="locationId"
+                  autoComplete="address-level2"
                   className="input-field pl-10"
                   disabled={!selectedProvince || districts.length === 0}
                 >
@@ -322,7 +332,9 @@ const RegisterPage: React.FC = () => {
               </label>
               <input
                 {...register('sector')}
+                id="sector"
                 type="text"
+                autoComplete="address-level3"
                 className="mt-1 input-field"
                 placeholder="Enter your sector"
               />
@@ -333,7 +345,9 @@ const RegisterPage: React.FC = () => {
               </label>
               <input
                 {...register('cell')}
+                id="cell"
                 type="text"
+                autoComplete="address-level4"
                 className="mt-1 input-field"
                 placeholder="Enter your cell"
               />
@@ -344,7 +358,9 @@ const RegisterPage: React.FC = () => {
               </label>
               <input
                 {...register('village')}
+                id="village"
                 type="text"
+                autoComplete="address-line1"
                 className="mt-1 input-field"
                 placeholder="Enter your village"
               />
