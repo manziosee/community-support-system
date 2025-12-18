@@ -30,12 +30,16 @@ public class CorsConfig {
         
         // Allow all headers
         config.addAllowedHeader("*");
+        config.addAllowedOriginPattern("*");
         
         // Allow all HTTP methods
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         
+        // Set max age for preflight requests
+        config.setMaxAge(3600L);
+        
         // Apply CORS configuration to all endpoints
-        source.registerCorsConfiguration("/api/**", config);
+        source.registerCorsConfiguration("/**", config);
         
         return new CorsFilter(source);
     }

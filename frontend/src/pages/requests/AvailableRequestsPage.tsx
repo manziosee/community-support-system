@@ -19,86 +19,15 @@ const AvailableRequestsPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [locationFilter, setLocationFilter] = useState<string>('ALL');
 
-  // Mock available requests
-  const mockRequests: Request[] = [
-    {
-      requestId: 1,
-      title: 'Grocery Shopping Assistance',
-      description: 'Need help with weekly grocery shopping due to mobility issues. Looking for someone who can help with transportation and carrying groceries.',
-      status: RequestStatus.PENDING,
-      createdAt: '2024-03-15T10:00:00Z',
-      citizen: {
-        userId: 3,
-        name: 'Jane Citizen',
-        email: 'citizen@community.rw',
-        phoneNumber: '+250788987654',
-        role: 'CITIZEN' as any,
-        createdAt: '2024-02-01T00:00:00Z',
-        location: {
-          locationId: 3,
-          province: 'Southern Province',
-          district: 'Huye',
-          provinceCode: 'SP03'
-        }
-      }
-    },
-    {
-      requestId: 4,
-      title: 'Transportation to Hospital',
-      description: 'Need ride to hospital for medical appointment next week. Appointment is at 9 AM and should take about 2 hours.',
-      status: RequestStatus.PENDING,
-      createdAt: '2024-03-15T08:45:00Z',
-      citizen: {
-        userId: 5,
-        name: 'Jean Baptiste Nzeyimana',
-        email: 'jean.nzeyimana@email.rw',
-        phoneNumber: '+250788333444',
-        role: 'CITIZEN' as any,
-        createdAt: '2024-03-01T00:00:00Z',
-        location: {
-          locationId: 4,
-          province: 'Western Province',
-          district: 'Rubavu',
-          provinceCode: 'WP02'
-        }
-      }
-    },
-    {
-      requestId: 6,
-      title: 'Computer Setup Help',
-      description: 'Need assistance setting up new laptop and installing necessary software for online work.',
-      status: RequestStatus.PENDING,
-      createdAt: '2024-03-14T16:30:00Z',
-      citizen: {
-        userId: 7,
-        name: 'Alice Mukamana',
-        email: 'alice.mukamana@email.rw',
-        phoneNumber: '+250788555666',
-        role: 'CITIZEN' as any,
-        createdAt: '2024-02-20T00:00:00Z',
-        location: {
-          locationId: 1,
-          province: 'Kigali City',
-          district: 'Gasabo',
-          provinceCode: 'KG01'
-        }
-      }
-    }
-  ];
-
   useEffect(() => {
     const fetchRequests = async () => {
       try {
         setIsLoading(true);
-        try {
-          const response = await requestsApi.getPending();
-          setRequests(response.data);
-        } catch (error) {
-          setRequests(mockRequests);
-        }
+        const response = await requestsApi.getPending();
+        setRequests(response.data);
       } catch (error) {
         console.error('Failed to fetch requests:', error);
-        setRequests(mockRequests);
+        setRequests([]);
       } finally {
         setIsLoading(false);
       }
@@ -128,20 +57,16 @@ const AvailableRequestsPage: React.FC = () => {
     if (!user) return;
     
     try {
-      // Create assignment
       await assignmentsApi.create({
         request: { requestId },
         volunteer: { userId: user.userId }
       });
       
-      // Remove from available requests
       setRequests(prev => prev.filter(r => r.requestId !== requestId));
-      
       alert('Request accepted successfully! You can view it in your assignments.');
     } catch (error) {
-      // For demo, just remove from list
-      setRequests(prev => prev.filter(r => r.requestId !== requestId));
-      alert('Request accepted successfully! You can view it in your assignments.');
+      console.error('Failed to accept request:', error);
+      alert('Failed to accept request. Please try again.');
     }
   };
 

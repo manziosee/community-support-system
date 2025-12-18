@@ -16,51 +16,17 @@ const AssignmentDetailsPage: React.FC = () => {
   const [assignment, setAssignment] = useState<Assignment | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const mockAssignment: Assignment = {
-    assignmentId: parseInt(id || '1'),
-    acceptedAt: '2024-03-15T09:00:00Z',
-    volunteer: user!,
-    request: {
-      requestId: 1,
-      title: 'Grocery Shopping Assistance',
-      description: 'I need help with weekly grocery shopping due to mobility issues. I have a detailed shopping list and can provide money upfront. The grocery store is about 10 minutes walk from my location.',
-      status: 'ACCEPTED' as any,
-      createdAt: '2024-03-15T10:00:00Z',
-      citizen: {
-        userId: 3,
-        name: 'Jane Citizen',
-        email: 'jane.citizen@example.com',
-        phoneNumber: '+250788987654',
-        role: 'CITIZEN' as any,
-        createdAt: '2024-02-01T00:00:00Z',
-        location: {
-          locationId: 3,
-          province: 'Southern Province',
-          district: 'Huye',
-          provinceCode: 'SP03'
-        },
-        sector: 'Tumba',
-        cell: 'Matyazo',
-        village: 'Cyarwa'
-      }
-    }
-  };
-
   useEffect(() => {
     const fetchAssignment = async () => {
       if (!id) return;
 
       try {
         setIsLoading(true);
-        try {
-          const response = await assignmentsApi.getById(parseInt(id));
-          setAssignment(response.data);
-        } catch (error) {
-          setAssignment(mockAssignment);
-        }
+        const response = await assignmentsApi.getById(parseInt(id));
+        setAssignment(response.data);
       } catch (error) {
         console.error('Failed to fetch assignment:', error);
-        setAssignment(mockAssignment);
+        setAssignment(null);
       } finally {
         setIsLoading(false);
       }
@@ -76,7 +42,7 @@ const AssignmentDetailsPage: React.FC = () => {
       await assignmentsApi.complete(assignment.assignmentId);
       setAssignment(prev => prev ? { ...prev, completedAt: new Date().toISOString() } : null);
     } catch (error) {
-      setAssignment(prev => prev ? { ...prev, completedAt: new Date().toISOString() } : null);
+      console.error('Failed to complete assignment:', error);
     }
   };
 

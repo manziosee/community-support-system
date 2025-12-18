@@ -23,62 +23,17 @@ const NotificationsPage: React.FC = () => {
     read: 0,
   });
 
-  // Mock notifications for demonstration
-  const mockNotifications: Notification[] = [
-    {
-      notificationId: 1,
-      message: 'Your request "Grocery Shopping Help" has been accepted by John Volunteer',
-      isRead: false,
-      createdAt: '2024-03-15T10:30:00Z',
-      user: user!
-    },
-    {
-      notificationId: 2,
-      message: 'New request available in your area: "Computer Setup Assistance"',
-      isRead: false,
-      createdAt: '2024-03-15T09:15:00Z',
-      user: user!
-    },
-    {
-      notificationId: 3,
-      message: 'Your assignment "Tutoring Session" has been marked as completed',
-      isRead: true,
-      createdAt: '2024-03-14T16:45:00Z',
-      user: user!
-    },
-    {
-      notificationId: 4,
-      message: 'Welcome to Community Support System! Complete your profile to get started.',
-      isRead: true,
-      createdAt: '2024-03-10T08:00:00Z',
-      user: user!
-    },
-    {
-      notificationId: 5,
-      message: 'System maintenance scheduled for tonight at 2:00 AM',
-      isRead: false,
-      createdAt: '2024-03-15T14:20:00Z',
-      user: user!
-    }
-  ];
-
   useEffect(() => {
     const fetchNotifications = async () => {
       if (!user) return;
 
       try {
         setIsLoading(true);
-        // Try to fetch from API, fallback to mock data
-        try {
-          const response = await notificationsApi.getByUser(user.userId);
-          setNotifications(response.data);
-        } catch (error) {
-          // Use mock data if API fails
-          setNotifications(mockNotifications);
-        }
+        const response = await notificationsApi.getByUser(user.userId);
+        setNotifications(response.data);
       } catch (error) {
         console.error('Failed to fetch notifications:', error);
-        setNotifications(mockNotifications);
+        setNotifications([]);
       } finally {
         setIsLoading(false);
       }
@@ -136,14 +91,7 @@ const NotificationsPage: React.FC = () => {
         )
       );
     } catch (error) {
-      // For demo, just update locally
-      setNotifications(prev => 
-        prev.map(n => 
-          n.notificationId === notificationId 
-            ? { ...n, isRead: true }
-            : n
-        )
-      );
+      console.error('Failed to mark notification as read:', error);
     }
   };
 
@@ -154,8 +102,7 @@ const NotificationsPage: React.FC = () => {
       await notificationsApi.markAllAsRead(user.userId);
       setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
     } catch (error) {
-      // For demo, just update locally
-      setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+      console.error('Failed to mark all notifications as read:', error);
     }
   };
 
@@ -164,8 +111,7 @@ const NotificationsPage: React.FC = () => {
       await notificationsApi.delete(notificationId);
       setNotifications(prev => prev.filter(n => n.notificationId !== notificationId));
     } catch (error) {
-      // For demo, just update locally
-      setNotifications(prev => prev.filter(n => n.notificationId !== notificationId));
+      console.error('Failed to delete notification:', error);
     }
   };
 

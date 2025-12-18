@@ -17,45 +17,17 @@ const RequestDetailsPage: React.FC = () => {
   const [request, setRequest] = useState<Request | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const mockRequest: Request = {
-    requestId: parseInt(id || '1'),
-    title: 'Grocery Shopping Assistance',
-    description: 'I need help with weekly grocery shopping due to mobility issues. I have a detailed shopping list and can provide money upfront. The grocery store is about 10 minutes walk from my location. I would prefer someone who can help on weekends, preferably Saturday morning around 9 AM.',
-    status: RequestStatus.PENDING,
-    createdAt: '2024-03-15T10:00:00Z',
-    citizen: {
-      userId: 1,
-      firstName: 'Marie',
-      lastName: 'Uwimana',
-      email: 'marie.uwimana@example.com',
-      role: 'CITIZEN',
-      location: {
-        locationId: 1,
-        district: 'Gasabo',
-        province: 'Kigali City',
-        provinceCode: 'KG01'
-      },
-      sector: 'Kimironko',
-      cell: 'Bibare',
-      village: 'Kabuga'
-    }
-  };
-
   useEffect(() => {
     const fetchRequest = async () => {
       if (!id) return;
 
       try {
         setIsLoading(true);
-        try {
-          const response = await requestsApi.getById(parseInt(id));
-          setRequest(response.data);
-        } catch (error) {
-          setRequest(mockRequest);
-        }
+        const response = await requestsApi.getById(parseInt(id));
+        setRequest(response.data);
       } catch (error) {
         console.error('Failed to fetch request:', error);
-        setRequest(mockRequest);
+        setRequest(null);
       } finally {
         setIsLoading(false);
       }
@@ -72,7 +44,6 @@ const RequestDetailsPage: React.FC = () => {
       navigate('/requests');
     } catch (error) {
       console.error('Failed to delete request:', error);
-      navigate('/requests');
     }
   };
 

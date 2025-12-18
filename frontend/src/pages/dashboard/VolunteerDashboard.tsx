@@ -62,13 +62,13 @@ const VolunteerDashboard: React.FC = () => {
         });
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
-        // Mock data for demo
+        // Set empty stats on error
         setStats({
-          totalAssignments: 12,
-          activeAssignments: 3,
-          completedAssignments: 9,
-          availableRequests: 8,
-          unreadNotifications: 2,
+          totalAssignments: 0,
+          activeAssignments: 0,
+          completedAssignments: 0,
+          availableRequests: 0,
+          unreadNotifications: 0,
         });
       } finally {
         setIsLoading(false);
