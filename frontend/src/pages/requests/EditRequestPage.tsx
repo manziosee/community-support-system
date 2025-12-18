@@ -35,45 +35,22 @@ const EditRequestPage: React.FC = () => {
     { value: 'other', label: 'Other' }
   ];
 
-  const mockRequest: Request = {
-    requestId: parseInt(id || '1'),
-    title: 'Grocery Shopping Assistance',
-    description: 'I need help with weekly grocery shopping due to mobility issues. I have a detailed shopping list and can provide money upfront.',
-    status: RequestStatus.PENDING,
-    createdAt: '2024-03-15T10:00:00Z',
-    citizen: user!
-  };
-
   useEffect(() => {
     const fetchRequest = async () => {
       if (!id) return;
 
       try {
         setIsLoading(true);
-        try {
-          const response = await requestsApi.getById(parseInt(id));
-          setRequest(response.data);
-          setFormData({
-            title: response.data.title,
-            description: response.data.description,
-            category: 'general' // Default category since it's not in the API
-          });
-        } catch (error) {
-          setRequest(mockRequest);
-          setFormData({
-            title: mockRequest.title,
-            description: mockRequest.description,
-            category: 'general'
-          });
-        }
-      } catch (error) {
-        console.error('Failed to fetch request:', error);
-        setRequest(mockRequest);
+        const response = await requestsApi.getById(parseInt(id));
+        setRequest(response.data);
         setFormData({
-          title: mockRequest.title,
-          description: mockRequest.description,
+          title: response.data.title,
+          description: response.data.description,
           category: 'general'
         });
+      } catch (error) {
+        console.error('Failed to fetch request:', error);
+        setRequest(null);
       } finally {
         setIsLoading(false);
       }
@@ -114,11 +91,7 @@ const EditRequestPage: React.FC = () => {
         description: formData.description.trim(),
       };
       
-      try {
-        await requestsApi.update(request.requestId, updateData);
-      } catch (error) {
-        console.log('Request updated:', updateData);
-      }
+      await requestsApi.update(request.requestId, updateData);
       
       alert('Request updated successfully!');
       navigate(`/requests/${request.requestId}`);

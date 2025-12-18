@@ -13,6 +13,7 @@ import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 import TwoFactorSetupPage from './pages/auth/TwoFactorSetupPage';
 import TwoFactorVerifyPage from './pages/auth/TwoFactorVerifyPage';
+import EmailVerificationPage from './pages/auth/EmailVerificationPage';
 
 // Dashboard Pages
 import CitizenDashboard from './pages/dashboard/CitizenDashboard';
@@ -114,6 +115,7 @@ function App() {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
+                <Route path="/verify-email" element={<EmailVerificationPage />} />
                 <Route path="/2fa-setup" element={<TwoFactorSetupPage />} />
                 <Route path="/2fa-verify" element={<TwoFactorVerifyPage />} />
 

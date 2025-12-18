@@ -93,13 +93,7 @@ const AdminDashboard: React.FC = () => {
       color: 'indigo',
       link: '/admin/assignments',
     },
-    {
-      title: 'System Health',
-      value: '99.9%',
-      icon: Activity,
-      color: 'green',
-      link: '/admin/settings',
-    },
+
   ];
 
   if (isLoading) {
@@ -229,46 +223,7 @@ const AdminDashboard: React.FC = () => {
         </Card>
       </div>
 
-      {/* Recent Activity */}
-      <Card padding="none">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Recent System Activity</h2>
-        </div>
-        <div className="p-6">
-          <div className="space-y-3">
-            <div className="flex items-start p-4 bg-green-50 rounded-lg border border-green-100">
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <CheckSquare className="w-5 h-5 text-green-600" />
-              </div>
-              <div className="ml-4 flex-1">
-                <p className="text-sm font-medium text-gray-900">Request completed</p>
-                <p className="text-xs text-gray-600 mt-1">Grocery shopping assistance completed by Jean Baptiste</p>
-                <span className="text-xs text-gray-500 mt-2 inline-block">2 minutes ago</span>
-              </div>
-            </div>
-            <div className="flex items-start p-4 bg-blue-50 rounded-lg border border-blue-100">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Users className="w-5 h-5 text-blue-600" />
-              </div>
-              <div className="ml-4 flex-1">
-                <p className="text-sm font-medium text-gray-900">New volunteer registered</p>
-                <p className="text-xs text-gray-600 mt-1">Marie Claire joined as a healthcare volunteer</p>
-                <span className="text-xs text-gray-500 mt-2 inline-block">15 minutes ago</span>
-              </div>
-            </div>
-            <div className="flex items-start p-4 bg-yellow-50 rounded-lg border border-yellow-100">
-              <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <FileText className="w-5 h-5 text-yellow-600" />
-              </div>
-              <div className="ml-4 flex-1">
-                <p className="text-sm font-medium text-gray-900">New request created</p>
-                <p className="text-xs text-gray-600 mt-1">Computer setup assistance needed in Gasabo</p>
-                <span className="text-xs text-gray-500 mt-2 inline-block">1 hour ago</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Card>
+
     </div>
   );
 };

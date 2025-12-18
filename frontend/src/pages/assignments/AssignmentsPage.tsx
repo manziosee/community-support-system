@@ -22,78 +22,17 @@ const AssignmentsPage: React.FC = () => {
     completed: 0
   });
 
-  // Mock assignments for the volunteer
-  const mockAssignments: Assignment[] = [
-    {
-      assignmentId: 1,
-      acceptedAt: '2024-03-14T15:00:00Z',
-      completedAt: '2024-03-15T10:30:00Z',
-      volunteer: user!,
-      request: {
-        requestId: 3,
-        title: 'Math Tutoring for High School',
-        description: 'Looking for math tutor for Grade 12 student preparing for national exams',
-        status: 'COMPLETED' as any,
-        createdAt: '2024-03-10T09:15:00Z',
-        citizen: {
-          userId: 3,
-          name: 'Jane Citizen',
-          email: 'citizen@community.rw',
-          phoneNumber: '+250788987654',
-          role: 'CITIZEN' as any,
-          createdAt: '2024-02-01T00:00:00Z',
-          location: {
-            locationId: 3,
-            province: 'Southern Province',
-            district: 'Huye',
-            provinceCode: 'SP03'
-          }
-        }
-      }
-    },
-    {
-      assignmentId: 3,
-      acceptedAt: '2024-03-15T09:00:00Z',
-      volunteer: user!,
-      request: {
-        requestId: 1,
-        title: 'Grocery Shopping Assistance',
-        description: 'Need help with weekly grocery shopping due to mobility issues',
-        status: 'ACCEPTED' as any,
-        createdAt: '2024-03-15T10:00:00Z',
-        citizen: {
-          userId: 3,
-          name: 'Jane Citizen',
-          email: 'citizen@community.rw',
-          phoneNumber: '+250788987654',
-          role: 'CITIZEN' as any,
-          createdAt: '2024-02-01T00:00:00Z',
-          location: {
-            locationId: 3,
-            province: 'Southern Province',
-            district: 'Huye',
-            provinceCode: 'SP03'
-          }
-        }
-      }
-    }
-  ];
-
   useEffect(() => {
     const fetchAssignments = async () => {
       if (!user) return;
       
       try {
         setIsLoading(true);
-        try {
-          const response = await assignmentsApi.getByVolunteer(user.userId);
-          setAssignments(response.data);
-        } catch (error) {
-          setAssignments(mockAssignments);
-        }
+        const response = await assignmentsApi.getByVolunteer(user.userId);
+        setAssignments(response.data);
       } catch (error) {
         console.error('Failed to fetch assignments:', error);
-        setAssignments(mockAssignments);
+        setAssignments([]);
       } finally {
         setIsLoading(false);
       }
@@ -130,13 +69,7 @@ const AssignmentsPage: React.FC = () => {
           : a
       ));
     } catch (error) {
-      // For demo, just update locally
-      const now = new Date().toISOString();
-      setAssignments(prev => prev.map(a => 
-        a.assignmentId === assignmentId 
-          ? { ...a, completedAt: now }
-          : a
-      ));
+      console.error('Failed to complete assignment:', error);
     }
   };
 

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { requestsApi } from '../../services/api';
+import { requestsApi, api } from '../../services/api';
 import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
@@ -14,20 +14,46 @@ const CreateRequestPage: React.FC = () => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    category: 'general'
+    category: ''
   });
   const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [categories, setCategories] = useState<{value: string, label: string}[]>([]);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
 
-  const categories = [
-    { value: 'general', label: 'General Help' },
-    { value: 'transportation', label: 'Transportation' },
-    { value: 'shopping', label: 'Shopping & Errands' },
-    { value: 'technology', label: 'Technology Support' },
-    { value: 'tutoring', label: 'Tutoring & Education' },
-    { value: 'healthcare', label: 'Healthcare Assistance' },
-    { value: 'household', label: 'Household Tasks' },
-    { value: 'other', label: 'Other' }
-  ];
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await api.get('/categories');
+        const categoryData = response.data.map((cat: string) => ({
+          value: cat.toLowerCase().replace(/\s+/g, '_'),
+          label: cat
+        }));
+        setCategories(categoryData);
+        if (categoryData.length > 0) {
+          setFormData(prev => ({ ...prev, category: categoryData[0].value }));
+        }
+      } catch (error) {
+        console.error('Failed to fetch categories:', error);
+        // Fallback categories if API fails
+        const fallbackCategories = [
+          { value: 'general', label: 'General Help' },
+          { value: 'transportation', label: 'Transportation' },
+          { value: 'shopping', label: 'Shopping & Errands' },
+          { value: 'technology', label: 'Technology Support' },
+          { value: 'tutoring', label: 'Tutoring & Education' },
+          { value: 'healthcare', label: 'Healthcare Assistance' },
+          { value: 'household', label: 'Household Tasks' },
+          { value: 'other', label: 'Other' }
+        ];
+        setCategories(fallbackCategories);
+        setFormData(prev => ({ ...prev, category: fallbackCategories[0].value }));
+      } finally {
+        setIsLoadingCategories(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const validateForm = () => {
     const newErrors: {[key: string]: string} = {};
@@ -137,12 +163,17 @@ const CreateRequestPage: React.FC = () => {
                 value={formData.category}
                 onChange={(e) => handleInputChange('category', e.target.value)}
                 required
+                disabled={isLoadingCategories}
               >
-                {categories.map(category => (
-                  <option key={category.value} value={category.value}>
-                    {category.label}
-                  </option>
-                ))}
+                {isLoadingCategories ? (
+                  <option value="">Loading categories...</option>
+                ) : (
+                  categories.map(category => (
+                    <option key={category.value} value={category.value}>
+                      {category.label}
+                    </option>
+                  ))
+                )}
               </select>
             </div>
 
