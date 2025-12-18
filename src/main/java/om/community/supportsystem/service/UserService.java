@@ -257,10 +257,10 @@ public class UserService {
         
         UserSettings userSettings = user.getUserSettings();
         if (userSettings != null) {
-            settings.put("emailNotifications", userSettings.isEmailNotifications());
-            settings.put("pushNotifications", userSettings.isPushNotifications());
-            settings.put("requestUpdates", userSettings.isRequestUpdates());
-            settings.put("assignmentUpdates", userSettings.isAssignmentUpdates());
+            settings.put("emailNotifications", userSettings.getEmailNotifications());
+            settings.put("pushNotifications", userSettings.getPushNotifications());
+            settings.put("requestUpdates", userSettings.getRequestUpdates());
+            settings.put("assignmentUpdates", userSettings.getAssignmentUpdates());
         } else {
             settings.put("emailNotifications", true);
             settings.put("pushNotifications", true);
