@@ -2,15 +2,20 @@ package om.community.supportsystem.service;
 
 import om.community.supportsystem.model.User;
 import om.community.supportsystem.model.UserRole;
+import om.community.supportsystem.model.UserSettings;
 import om.community.supportsystem.model.Location;
 import om.community.supportsystem.repository.UserRepository;
+import om.community.supportsystem.repository.UserSettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -18,6 +23,12 @@ public class UserService {
     
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private UserSettingsRepository userSettingsRepository;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     
     // Create
     public User createUser(User user) {
@@ -156,5 +167,135 @@ public class UserService {
     
     public long getTotalCitizens() {
         return userRepository.countByRole(UserRole.CITIZEN);
+    }
+    
+    // Admin methods
+    public Page<User> getAllUsersWithPagination(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+    
+    public void lockUserAccount(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        user.setAccountLocked(true);
+        userRepository.save(user);
+    }
+    
+    public void unlockUserAccount(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        user.setAccountLocked(false);
+        user.setFailedLoginAttempts(0);
+        userRepository.save(user);
+    }
+    
+    public void changeUserRole(Long userId, UserRole role) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        user.setRole(role);
+        userRepository.save(user);
+    }
+    
+    public void adminResetPassword(Long userId, String newPassword) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setFailedLoginAttempts(0);
+        user.setAccountLocked(false);
+        userRepository.save(user);
+    }
+    
+    // Settings methods
+    public void updatePassword(Long userId, String currentPassword, String newPassword) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        
+        if (!user.verifyPassword(currentPassword, passwordEncoder)) {
+            throw new RuntimeException("Current password is incorrect");
+        }
+        
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+    
+    public void updateNotificationPreferences(Long userId, Map<String, Boolean> preferences) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        
+        UserSettings settings = user.getUserSettings();
+        if (settings == null) {
+            settings = new UserSettings();
+            settings.setUser(user);
+        }
+        
+        if (preferences.containsKey("emailNotifications")) {
+            settings.setEmailNotifications(preferences.get("emailNotifications"));
+        }
+        if (preferences.containsKey("pushNotifications")) {
+            settings.setPushNotifications(preferences.get("pushNotifications"));
+        }
+        if (preferences.containsKey("requestUpdates")) {
+            settings.setRequestUpdates(preferences.get("requestUpdates"));
+        }
+        if (preferences.containsKey("assignmentUpdates")) {
+            settings.setAssignmentUpdates(preferences.get("assignmentUpdates"));
+        }
+        
+        userSettingsRepository.save(settings);
+    }
+    
+    public Map<String, Object> getUserSettings(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        
+        Map<String, Object> settings = new HashMap<>();
+        settings.put("name", user.getName());
+        settings.put("phoneNumber", user.getPhoneNumber());
+        settings.put("sector", user.getSector());
+        settings.put("cell", user.getCell());
+        settings.put("village", user.getVillage());
+        
+        UserSettings userSettings = user.getUserSettings();
+        if (userSettings != null) {
+            settings.put("emailNotifications", userSettings.isEmailNotifications());
+            settings.put("pushNotifications", userSettings.isPushNotifications());
+            settings.put("requestUpdates", userSettings.isRequestUpdates());
+            settings.put("assignmentUpdates", userSettings.isAssignmentUpdates());
+        } else {
+            settings.put("emailNotifications", true);
+            settings.put("pushNotifications", true);
+            settings.put("requestUpdates", true);
+            settings.put("assignmentUpdates", true);
+        }
+        
+        return settings;
+    }
+    
+    public void updateProfile(Long userId, Map<String, Object> profileData) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        
+        if (profileData.containsKey("name")) {
+            user.setName((String) profileData.get("name"));
+        }
+        if (profileData.containsKey("phoneNumber")) {
+            String phoneNumber = (String) profileData.get("phoneNumber");
+            if (userRepository.existsByPhoneNumber(phoneNumber) && 
+                !phoneNumber.equals(user.getPhoneNumber())) {
+                throw new RuntimeException("Phone number already exists");
+            }
+            user.setPhoneNumber(phoneNumber);
+        }
+        if (profileData.containsKey("sector")) {
+            user.setSector((String) profileData.get("sector"));
+        }
+        if (profileData.containsKey("cell")) {
+            user.setCell((String) profileData.get("cell"));
+        }
+        if (profileData.containsKey("village")) {
+            user.setVillage((String) profileData.get("village"));
+        }
+        
+        userRepository.save(user);
     }
 }

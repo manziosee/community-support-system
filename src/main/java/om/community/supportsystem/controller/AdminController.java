@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -139,8 +140,12 @@ public class AdminController {
     @GetMapping("/users/{userId}")
     public ResponseEntity<?> getUserDetails(@PathVariable Long userId) {
         try {
-            User user = userService.getUserById(userId);
-            return ResponseEntity.ok(user);
+            Optional<User> userOpt = userService.getUserById(userId);
+            if (userOpt.isPresent()) {
+                return ResponseEntity.ok(userOpt.get());
+            } else {
+                return ResponseEntity.badRequest().body(Map.of("error", "User not found with id: " + userId));
+            }
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
