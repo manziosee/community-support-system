@@ -4,6 +4,7 @@ import om.community.supportsystem.model.*;
 import om.community.supportsystem.service.*;
 import om.community.supportsystem.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -22,9 +23,16 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private SkillRepository skillRepository;
     
+    @Value("${app.data.initialize:true}")
+    private boolean initializeData;
+    
     @Override
     public void run(String... args) throws Exception {
-        initializeBasicData();
+        if (initializeData) {
+            initializeBasicData();
+        } else {
+            System.out.println("🚫 Data initialization disabled by configuration");
+        }
     }
     
     private void initializeBasicData() {
@@ -37,8 +45,20 @@ public class DataInitializer implements CommandLineRunner {
             return;
         }
         
-        System.out.println("🚀 Initializing fresh data (empty database detected)...");
-        // Create locations with Province + District only
+        System.out.println("🚀 Initializing essential system data (empty database detected)...");
+        initializeLocations();
+        initializeSkills();
+        
+        System.out.println("✅ Essential system data initialized successfully!");
+        System.out.println("📊 Data loaded:");
+        System.out.println("   - 30 Rwandan locations (5 provinces, 30 districts)");
+        System.out.println("   - 10 basic skills for volunteers");
+        System.out.println("🎯 System ready! Users can now register and create content.");
+    }
+    
+    private void initializeLocations() {
+        System.out.println("Creating Rwanda administrative locations...");
+        
         // Kigali City (3 Districts)
         locationService.createLocation(new Location("Kigali City", "Gasabo", "KG01"));
         locationService.createLocation(new Location("Kigali City", "Kicukiro", "KG02"));
@@ -78,24 +98,19 @@ public class DataInitializer implements CommandLineRunner {
         locationService.createLocation(new Location("Northern Province", "Burera", "NP03"));
         locationService.createLocation(new Location("Northern Province", "Rulindo", "NP04"));
         locationService.createLocation(new Location("Northern Province", "Musanze", "NP05"));
-        
-        // Initialize skills
-        System.out.println("Creating skills...");
-            skillService.createSkill(new Skill("Programming", "Software development and coding"));
-            skillService.createSkill(new Skill("Tutoring", "Academic tutoring and teaching"));
-            skillService.createSkill(new Skill("Delivery", "Package and grocery delivery services"));
-            skillService.createSkill(new Skill("Tech Support", "Computer and technology assistance"));
-            skillService.createSkill(new Skill("Cooking", "Meal preparation and cooking assistance"));
-            skillService.createSkill(new Skill("Healthcare", "Medical assistance and health support"));
-            skillService.createSkill(new Skill("Construction", "Building and repair services"));
-            skillService.createSkill(new Skill("Transportation", "Vehicle and transport services"));
-            skillService.createSkill(new Skill("Agriculture", "Farming and agricultural support"));
-            skillService.createSkill(new Skill("Education", "Teaching and educational support"));
-        
-        System.out.println("✅ Fresh database initialized successfully!");
-        System.out.println("📊 Data loaded:");
-        System.out.println("   - 30 Rwandan locations (5 provinces, 30 districts)");
-        System.out.println("   - 10 skills for volunteers");
-        System.out.println("🎯 Ready for API testing! Data will persist between restarts.");
+    }
+    
+    private void initializeSkills() {
+        System.out.println("Creating basic skill categories...");
+        skillService.createSkill(new Skill("Programming", "Software development and coding"));
+        skillService.createSkill(new Skill("Tutoring", "Academic tutoring and teaching"));
+        skillService.createSkill(new Skill("Delivery", "Package and grocery delivery services"));
+        skillService.createSkill(new Skill("Tech Support", "Computer and technology assistance"));
+        skillService.createSkill(new Skill("Cooking", "Meal preparation and cooking assistance"));
+        skillService.createSkill(new Skill("Healthcare", "Medical assistance and health support"));
+        skillService.createSkill(new Skill("Construction", "Building and repair services"));
+        skillService.createSkill(new Skill("Transportation", "Vehicle and transport services"));
+        skillService.createSkill(new Skill("Agriculture", "Farming and agricultural support"));
+        skillService.createSkill(new Skill("Education", "Teaching and educational support"));
     }
 }
