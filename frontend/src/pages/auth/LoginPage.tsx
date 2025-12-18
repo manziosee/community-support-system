@@ -68,59 +68,7 @@ const LoginPage: React.FC = () => {
             </p>
           </div>
 
-          {/* Test Users Section */}
-          <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-            <h3 className="text-sm font-medium text-gray-700 text-center">Test Users (Click to auto-fill)</h3>
-            <div className="grid grid-cols-1 gap-2 text-xs">
-              <button
-                type="button"
-                onClick={() => {
-                  const emailInput = document.querySelector('input[type="email"]') as HTMLInputElement;
-                  const passwordInput = document.querySelector('input[type="password"]') as HTMLInputElement;
-                  if (emailInput && passwordInput) {
-                    emailInput.value = 'admin@community.rw';
-                    passwordInput.value = 'admin123';
-                  }
-                }}
-                className="text-left p-2 bg-red-100 hover:bg-red-200 rounded border transition-colors"
-              >
-                <div className="font-medium text-red-800">👑 Admin User (2FA Demo)</div>
-                <div className="text-red-600">admin@community.rw / admin123</div>
-              </button>
-              
-              <button
-                type="button"
-                onClick={() => {
-                  const emailInput = document.querySelector('input[type="email"]') as HTMLInputElement;
-                  const passwordInput = document.querySelector('input[type="password"]') as HTMLInputElement;
-                  if (emailInput && passwordInput) {
-                    emailInput.value = 'volunteer@community.rw';
-                    passwordInput.value = 'volunteer123';
-                  }
-                }}
-                className="text-left p-2 bg-green-100 hover:bg-green-200 rounded border transition-colors"
-              >
-                <div className="font-medium text-green-800">🤝 Volunteer User</div>
-                <div className="text-green-600">volunteer@community.rw / volunteer123</div>
-              </button>
-              
-              <button
-                type="button"
-                onClick={() => {
-                  const emailInput = document.querySelector('input[type="email"]') as HTMLInputElement;
-                  const passwordInput = document.querySelector('input[type="password"]') as HTMLInputElement;
-                  if (emailInput && passwordInput) {
-                    emailInput.value = 'citizen@community.rw';
-                    passwordInput.value = 'citizen123';
-                  }
-                }}
-                className="text-left p-2 bg-blue-100 hover:bg-blue-200 rounded border transition-colors"
-              >
-                <div className="font-medium text-blue-800">👤 Citizen User</div>
-                <div className="text-blue-600">citizen@community.rw / citizen123</div>
-              </button>
-            </div>
-          </div>
+
 
         {/* Form */}
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>

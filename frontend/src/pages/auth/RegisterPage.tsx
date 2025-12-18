@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { User, Mail, Phone, MapPin, HandHeart, Award } from 'lucide-react';
+import { User, Mail, Phone, MapPin, HandHeart, Award, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { locationsApi, skillsApi } from '../../services/api';
 import { UserRole } from '../../types';
@@ -33,6 +33,7 @@ const RegisterPage: React.FC = () => {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.CITIZEN);
   const [selectedProvince, setSelectedProvince] = useState<string>('');
+  const [showPassword, setShowPassword] = useState(false);
   const { register: registerUser, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -237,11 +238,22 @@ const RegisterPage: React.FC = () => {
                 <input
                   {...register('password')}
                   id="password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   autoComplete="new-password"
-                  className="input-field"
+                  className="input-field pr-10"
                   placeholder="Enter your password"
                 />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                  )}
+                </button>
               </div>
               {errors.password && (
                 <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
