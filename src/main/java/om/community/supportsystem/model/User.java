@@ -64,8 +64,7 @@ public class User {
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
-    @JsonIgnoreProperties("users")
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonIgnore
     private Set<Skill> skills;
     
 
