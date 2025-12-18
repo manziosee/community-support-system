@@ -3,14 +3,10 @@ package om.community.supportsystem.service;
 import om.community.supportsystem.model.User;
 import om.community.supportsystem.model.UserRole;
 import om.community.supportsystem.model.Location;
-import om.community.supportsystem.model.UserSettings;
 import om.community.supportsystem.repository.UserRepository;
-import om.community.supportsystem.repository.UserSettingsRepository;
-import om.community.supportsystem.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,15 +18,6 @@ public class UserService {
     
     @Autowired
     private UserRepository userRepository;
-    
-    @Autowired
-    private LocationService locationService;
-    
-    @Autowired
-    private UserSettingsRepository userSettingsRepository;
-    
-    @Autowired
-    private PasswordEncoder passwordEncoder;
     
     // Create
     public User createUser(User user) {
@@ -61,12 +48,7 @@ public class UserService {
             throw new RuntimeException("User with phone number " + user.getPhoneNumber() + " already exists");
         }
         
-        // Ensure location is properly loaded
-        if (user.getLocation() != null && user.getLocation().getLocationId() != null) {
-            Location location = locationService.getLocationById(user.getLocation().getLocationId())
-                .orElseThrow(() -> new RuntimeException("Location not found with id: " + user.getLocation().getLocationId()));
-            user.setLocation(location);
-        }
+        // Location will be handled by JPA automatically
         
         return userRepository.save(user);
     }
@@ -76,9 +58,8 @@ public class UserService {
         return userRepository.findAll();
     }
     
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+    public Optional<User> getUserById(Long id) {
+        return userRepository.findById(id);
     }
     
     public Optional<User> getUserByEmail(String email) {
@@ -123,10 +104,8 @@ public class UserService {
                     user.setRole(userDetails.getRole());
                     
                     // Handle location update
-                    if (userDetails.getLocation() != null && userDetails.getLocation().getLocationId() != null) {
-                        Location location = locationService.getLocationById(userDetails.getLocation().getLocationId())
-                            .orElseThrow(() -> new RuntimeException("Location not found with id: " + userDetails.getLocation().getLocationId()));
-                        user.setLocation(location);
+                    if (userDetails.getLocation() != null) {
+                        user.setLocation(userDetails.getLocation());
                     }
                     
                     user.setSector(userDetails.getSector());
@@ -178,143 +157,4 @@ public class UserService {
     public long getTotalCitizens() {
         return userRepository.countByRole(UserRole.CITIZEN);
     }
-    
-    // Admin methods
-    public Page<User> getAllUsersWithPagination(Pageable pageable) {
-        return userRepository.findAll(pageable);
-    }
-    
-    public void lockUserAccount(Long userId) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
-        user.setAccountLocked(true);
-        userRepository.save(user);
-    }
-    
-    public void unlockUserAccount(Long userId) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
-        user.setAccountLocked(false);
-        user.setFailedLoginAttempts(0);
-        userRepository.save(user);
-    }
-    
-    public void changeUserRole(Long userId, UserRole newRole) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
-        user.setRole(newRole);
-        userRepository.save(user);
-    }
-    
-    public void adminResetPassword(Long userId, String newPassword) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
-        user.setPassword(passwordEncoder.encode(newPassword));
-        user.setAccountLocked(false);
-        user.setFailedLoginAttempts(0);
-        userRepository.save(user);
-    }
-    
-    // Settings methods
-    public void updatePassword(Long userId, String currentPassword, String newPassword) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
-        
-        if (!user.verifyPassword(currentPassword, passwordEncoder)) {
-            throw new RuntimeException("Current password is incorrect");
-        }
-        
-        if (newPassword == null || newPassword.length() < 8) {
-            throw new RuntimeException("New password must be at least 8 characters long");
-        }
-        
-        user.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(user);
-    }
-    
-    public void updateNotificationPreferences(Long userId, java.util.Map<String, Boolean> preferences) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
-        
-        UserSettings settings = userSettingsRepository.findByUserUserId(userId)
-            .orElse(new UserSettings(user));
-        
-        if (preferences.containsKey("emailNotifications")) {
-            settings.setEmailNotifications(preferences.get("emailNotifications"));
-        }
-        if (preferences.containsKey("pushNotifications")) {
-            settings.setPushNotifications(preferences.get("pushNotifications"));
-        }
-        if (preferences.containsKey("requestUpdates")) {
-            settings.setRequestUpdates(preferences.get("requestUpdates"));
-        }
-        if (preferences.containsKey("assignmentUpdates")) {
-            settings.setAssignmentUpdates(preferences.get("assignmentUpdates"));
-        }
-        
-        userSettingsRepository.save(settings);
-    }
-    
-    public java.util.Map<String, Object> getUserSettings(Long userId) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
-        
-        UserSettings settings = userSettingsRepository.findByUserUserId(userId)
-            .orElse(new UserSettings(user));
-        
-        java.util.Map<String, Object> settingsMap = new java.util.HashMap<>();
-        settingsMap.put("emailNotifications", settings.getEmailNotifications());
-        settingsMap.put("pushNotifications", settings.getPushNotifications());
-        settingsMap.put("requestUpdates", settings.getRequestUpdates());
-        settingsMap.put("assignmentUpdates", settings.getAssignmentUpdates());
-        
-        // Include user profile data
-        settingsMap.put("name", user.getName());
-        settingsMap.put("phoneNumber", user.getPhoneNumber());
-        settingsMap.put("sector", user.getSector());
-        settingsMap.put("cell", user.getCell());
-        settingsMap.put("village", user.getVillage());
-        
-        return settingsMap;
-    }
-    
-    public void updateProfile(Long userId, java.util.Map<String, Object> profileData) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
-        
-        if (profileData.containsKey("name")) {
-            String name = (String) profileData.get("name");
-            if (name == null || name.trim().isEmpty()) {
-                throw new RuntimeException("Name cannot be empty");
-            }
-            user.setName(name.trim());
-        }
-        
-        if (profileData.containsKey("phoneNumber")) {
-            String phoneNumber = (String) profileData.get("phoneNumber");
-            if (phoneNumber != null && !phoneNumber.matches("^[0-9]{10}$")) {
-                throw new RuntimeException("Phone number must be exactly 10 digits");
-            }
-            // Check if phone number is already taken by another user
-            if (phoneNumber != null && !phoneNumber.equals(user.getPhoneNumber())) {
-                if (userRepository.existsByPhoneNumber(phoneNumber)) {
-                    throw new RuntimeException("Phone number is already taken by another user");
-                }
-            }
-            user.setPhoneNumber(phoneNumber);
-        }
-        
-        if (profileData.containsKey("sector")) {
-            user.setSector((String) profileData.get("sector"));
-        }
-        if (profileData.containsKey("cell")) {
-            user.setCell((String) profileData.get("cell"));
-        }
-        if (profileData.containsKey("village")) {
-            user.setVillage((String) profileData.get("village"));
-        }
-        
-        userRepository.save(user);
-    }
-    
 }

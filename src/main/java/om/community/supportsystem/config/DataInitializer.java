@@ -3,19 +3,13 @@ package om.community.supportsystem.config;
 import om.community.supportsystem.model.*;
 import om.community.supportsystem.service.*;
 import om.community.supportsystem.repository.*;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
-    
-    private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
     
     @Autowired
     private LocationService locationService;
@@ -29,39 +23,46 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private SkillRepository skillRepository;
     
-    @Autowired
-    private UserService userService;
-    
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    
-    @Autowired
-    private UserSettingsRepository userSettingsRepository;
+    @Value("${app.data.initialize:true}")
+    private boolean initializeData;
     
     @Override
     public void run(String... args) throws Exception {
-        try {
+        if (initializeData) {
             initializeBasicData();
-        } catch (Exception e) {
-            logger.error("Failed to initialize data: {}", e.getMessage(), e);
-            throw e;
+        } else {
+            System.out.println("🚫 Data initialization disabled by configuration");
         }
     }
     
     private void initializeBasicData() {
         // Only initialize if database is empty
         if (locationRepository.count() > 0) {
-            logger.info("Database already contains data - skipping initialization");
-            logger.info("Locations: {}, Skills: {}", locationRepository.count(), skillRepository.count());
+            System.out.println("📊 Database already contains data - skipping initialization");
+            System.out.println("   - Locations: " + locationRepository.count());
+            System.out.println("   - Skills: " + skillRepository.count());
+            System.out.println("✅ Using existing data!");
             return;
         }
         
-        logger.info("Initializing fresh data (empty database detected)...");
-        // Create locations with Province + District only
-        // City of Kigali (3 Districts)
-        locationService.createLocation(new Location("City of Kigali", "Gasabo", "KG01"));
-        locationService.createLocation(new Location("City of Kigali", "Kicukiro", "KG02"));
-        locationService.createLocation(new Location("City of Kigali", "Nyarugenge", "KG03"));
+        System.out.println("🚀 Initializing essential system data (empty database detected)...");
+        initializeLocations();
+        initializeSkills();
+        
+        System.out.println("✅ Essential system data initialized successfully!");
+        System.out.println("📊 Data loaded:");
+        System.out.println("   - 30 Rwandan locations (5 provinces, 30 districts)");
+        System.out.println("   - 10 basic skills for volunteers");
+        System.out.println("🎯 System ready! Users can now register and create content.");
+    }
+    
+    private void initializeLocations() {
+        System.out.println("Creating Rwanda administrative locations...");
+        
+        // Kigali City (3 Districts)
+        locationService.createLocation(new Location("Kigali City", "Gasabo", "KG01"));
+        locationService.createLocation(new Location("Kigali City", "Kicukiro", "KG02"));
+        locationService.createLocation(new Location("Kigali City", "Nyarugenge", "KG03"));
         
         // Eastern Province (7 Districts)
         locationService.createLocation(new Location("Eastern Province", "Nyagatare", "EP01"));
@@ -97,62 +98,19 @@ public class DataInitializer implements CommandLineRunner {
         locationService.createLocation(new Location("Northern Province", "Burera", "NP03"));
         locationService.createLocation(new Location("Northern Province", "Rulindo", "NP04"));
         locationService.createLocation(new Location("Northern Province", "Musanze", "NP05"));
-        
-        // Initialize skills
-        logger.info("Creating skills...");
-            skillService.createSkill(new Skill("Programming", "Software development and coding"));
-            skillService.createSkill(new Skill("Tutoring", "Academic tutoring and teaching"));
-            skillService.createSkill(new Skill("Delivery", "Package and grocery delivery services"));
-            skillService.createSkill(new Skill("Tech Support", "Computer and technology assistance"));
-            skillService.createSkill(new Skill("Cooking", "Meal preparation and cooking assistance"));
-            skillService.createSkill(new Skill("Healthcare", "Medical assistance and health support"));
-            skillService.createSkill(new Skill("Construction", "Building and repair services"));
-            skillService.createSkill(new Skill("Transportation", "Vehicle and transport services"));
-            skillService.createSkill(new Skill("Agriculture", "Farming and agricultural support"));
-            skillService.createSkill(new Skill("Education", "Teaching and educational support"));
-        
-        // Create default admin user
-        if (!userService.existsByEmail("admin@community.rw")) {
-            logger.info("Creating default admin user...");
-            User admin = new User();
-            admin.setName("System Administrator");
-            admin.setEmail("admin@community.rw");
-            admin.setPhoneNumber("0788000000");
-            admin.setPassword(passwordEncoder.encode("admin123"));
-            admin.setRole(UserRole.ADMIN);
-            admin.setEmailVerified(true);
-            admin.setLocation(locationService.getLocationById(1L).orElse(null));
-            admin.setSector("Kimironko");
-            admin.setCell("Bibare");
-            admin.setVillage("Kamatamu");
-            
-            userService.createUser(admin);
-        }
-        
-        // Create default user settings for admin user
-        createDefaultUserSettings();
-        
-        logger.info("Fresh database initialized successfully!");
-        logger.info("Data loaded: 30 locations, 10 skills, default admin user with settings");
-        logger.info("Ready for API testing! Admin: admin@community.rw / admin123");
     }
     
-    private void createDefaultUserSettings() {
-        try {
-            // Create default settings for all existing users who don't have settings
-            List<User> allUsers = userService.getAllUsers();
-            
-            for (User user : allUsers) {
-                if (!userSettingsRepository.existsByUserUserId(user.getUserId())) {
-                    UserSettings settings = new UserSettings(user);
-                    userSettingsRepository.save(settings);
-                    logger.info("Created default settings for user: {}", user.getEmail());
-                }
-            }
-            
-            logger.info("Default user settings verification completed");
-        } catch (Exception e) {
-            logger.warn("Could not create default user settings: {}", e.getMessage());
-        }
+    private void initializeSkills() {
+        System.out.println("Creating basic skill categories...");
+        skillService.createSkill(new Skill("Programming", "Software development and coding"));
+        skillService.createSkill(new Skill("Tutoring", "Academic tutoring and teaching"));
+        skillService.createSkill(new Skill("Delivery", "Package and grocery delivery services"));
+        skillService.createSkill(new Skill("Tech Support", "Computer and technology assistance"));
+        skillService.createSkill(new Skill("Cooking", "Meal preparation and cooking assistance"));
+        skillService.createSkill(new Skill("Healthcare", "Medical assistance and health support"));
+        skillService.createSkill(new Skill("Construction", "Building and repair services"));
+        skillService.createSkill(new Skill("Transportation", "Vehicle and transport services"));
+        skillService.createSkill(new Skill("Agriculture", "Farming and agricultural support"));
+        skillService.createSkill(new Skill("Education", "Teaching and educational support"));
     }
 }

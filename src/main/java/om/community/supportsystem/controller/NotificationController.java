@@ -3,10 +3,7 @@ package om.community.supportsystem.controller;
 import om.community.supportsystem.model.Notification;
 import om.community.supportsystem.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/notifications")
+@CrossOrigin(origins = {"http://localhost:3001", "http://localhost:5173", "https://community-support-system.vercel.app"}, allowCredentials = "true")
 public class NotificationController {
     
     @Autowired
@@ -47,18 +45,12 @@ public class NotificationController {
     }
     
     @GetMapping("/user/{userId}/paginated")
-    public ResponseEntity<Page<Notification>> getNotificationsByUserPaginated(
+    public ResponseEntity<List<Notification>> getNotificationsByUserPaginated(
             @PathVariable Long userId,
-            @RequestParam(required = false) Boolean isRead,
-            @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortDir) {
+            @RequestParam(defaultValue = "10") int size) {
         
-        Sort.Direction direction = sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        Page<Notification> notifications = notificationService.searchNotifications(userId, isRead, search, pageable);
+        List<Notification> notifications = notificationService.getNotificationsByUserId(userId);
         return ResponseEntity.ok(notifications);
     }
     
@@ -125,11 +117,5 @@ public class NotificationController {
     public ResponseEntity<Long> countUnreadNotificationsByUser(@PathVariable Long userId) {
         long count = notificationService.countUnreadNotificationsByUser(userId);
         return ResponseEntity.ok(count);
-    }
-    
-    @GetMapping("/user/{userId}/stats")
-    public ResponseEntity<java.util.Map<String, Long>> getUserNotificationStats(@PathVariable Long userId) {
-        java.util.Map<String, Long> stats = notificationService.getUserNotificationStats(userId);
-        return ResponseEntity.ok(stats);
     }
 }

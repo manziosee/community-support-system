@@ -10,38 +10,24 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/locations")
-@Tag(name = "🏛️ Location Management", description = "APIs for managing Rwandan administrative locations (Provinces, Districts, Sectors, Cells, Villages)")
+@CrossOrigin(origins = {"http://localhost:3001", "http://localhost:5173", "https://community-support-system.vercel.app"}, allowCredentials = "true")
 public class LocationController {
     
     @Autowired
     private LocationService locationService;
     
     // Create
-    @Operation(summary = "Create a new location", description = "Add a new administrative location to the system")
-    @ApiResponse(responseCode = "200", description = "Location created successfully")
     @PostMapping
-    public ResponseEntity<Location> createLocation(
-            @Parameter(description = "Location data", required = true)
-            @RequestBody Location location) {
+    public ResponseEntity<Location> createLocation(@RequestBody Location location) {
         Location createdLocation = locationService.createLocation(location);
         return ResponseEntity.ok(createdLocation);
     }
     
     // Read
-    @Operation(summary = "Get all locations", description = "Retrieve all 30 Rwandan administrative locations (5 provinces, 30 districts)")
-    @ApiResponse(responseCode = "200", description = "List of all locations retrieved successfully")
     @GetMapping
     public ResponseEntity<List<Location>> getAllLocations() {
         List<Location> locations = locationService.getAllLocations();
@@ -74,8 +60,8 @@ public class LocationController {
     }
     
     @GetMapping("/districts/{province}")
-    public ResponseEntity<List<Location>> getDistrictsByProvince(@PathVariable String province) {
-        List<Location> districts = locationService.getLocationsByProvince(province);
+    public ResponseEntity<List<String>> getDistrictsByProvince(@PathVariable String province) {
+        List<String> districts = locationService.getDistrictsByProvince(province);
         return ResponseEntity.ok(districts);
     }
     
