@@ -11,19 +11,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/requests")
-@Tag(name = "📝 Request Management", description = "APIs for managing help requests from citizens (PENDING → ACCEPTED → COMPLETED → CANCELLED)")
+@CrossOrigin(origins = {"http://localhost:3001", "http://localhost:5173", "https://community-support-system.vercel.app"}, allowCredentials = "true")
 public class RequestController {
     
     @Autowired
@@ -81,20 +73,15 @@ public class RequestController {
     }
     
     @GetMapping("/search")
-    public ResponseEntity<Page<Request>> searchRequests(
-            @RequestParam(required = false) RequestStatus status,
-            @RequestParam(required = false) String province,
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) Long citizenId,
+    public ResponseEntity<Page<Request>> getRequestsByStatusAndProvince(
+            @RequestParam RequestStatus status,
+            @RequestParam String province,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortDir) {
+            @RequestParam(defaultValue = "createdAt") String sortBy) {
         
-        Sort.Direction direction = sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        Page<Request> requests = requestService.searchRequests(status, province, category, title, citizenId, pageable);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortBy));
+        Page<Request> requests = requestService.getRequestsByStatusAndProvince(status, province, pageable);
         return ResponseEntity.ok(requests);
     }
     
@@ -149,11 +136,5 @@ public class RequestController {
     public ResponseEntity<Long> countRequestsByStatus(@PathVariable RequestStatus status) {
         long count = requestService.countRequestsByStatus(status);
         return ResponseEntity.ok(count);
-    }
-    
-    @GetMapping("/citizen/{citizenId}/stats")
-    public ResponseEntity<java.util.Map<String, Long>> getCitizenRequestStats(@PathVariable Long citizenId) {
-        java.util.Map<String, Long> stats = requestService.getCitizenRequestStats(citizenId);
-        return ResponseEntity.ok(stats);
     }
 }
