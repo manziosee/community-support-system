@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { User, Mail, Phone, MapPin, HandHeart, Award, Eye, EyeOff } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 import { useAuth } from '../../contexts/AuthContext';
 import { locationsApi, skillsApi } from '../../services/api';
 import { UserRole } from '../../types';
@@ -17,6 +18,7 @@ const registerSchema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters'),
   role: z.enum([UserRole.CITIZEN, UserRole.VOLUNTEER]),
   province: z.string().min(1, 'Please select a province'),
+  district: z.string().min(1, 'Please select a district'),
   locationId: z.number().min(1, 'Please select a district'),
   sector: z.string().optional(),
   cell: z.string().optional(),
@@ -32,7 +34,7 @@ const RegisterPage: React.FC = () => {
   const [districts, setDistricts] = useState<Location[]>([]);
   const [skills, setSkills] = useState<Skill[]>([]);
   const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.CITIZEN);
-  const [selectedProvince, setSelectedProvince] = useState<string>('');
+
   const [showPassword, setShowPassword] = useState(false);
   const { register: registerUser, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -70,8 +72,7 @@ const RegisterPage: React.FC = () => {
         ]);
         setSkills(skillsResponse.data);
         setProvinces(provincesResponse.data);
-        console.log('Loaded provinces:', provincesResponse.data);
-        console.log('Loaded skills:', skillsResponse.data);
+
       } catch (error) {
         console.error('Failed to fetch data:', error);
       }
@@ -88,23 +89,14 @@ const RegisterPage: React.FC = () => {
     const fetchDistricts = async () => {
       if (watchedProvince && watchedProvince !== '') {
         try {
-          console.log('Fetching districts for province:', watchedProvince);
-          setSelectedProvince(watchedProvince);
           const response = await locationsApi.getDistrictsByProvince(watchedProvince);
-          console.log('API Response:', response);
-          console.log('Districts data:', response.data);
-          console.log('Districts array length:', response.data?.length);
-          if (response.data && response.data.length > 0) {
-            console.log('First district:', response.data[0]);
-          }
           setDistricts(response.data || []);
-          setValue('locationId', '' as any); // Reset district selection
+          setValue('locationId', '' as any);
         } catch (error) {
-          console.error('Failed to fetch districts for', watchedProvince, ':', error);
+          toast.error('Failed to load districts');
           setDistricts([]);
         }
       } else {
-        console.log('No province selected, clearing districts');
         setDistricts([]);
         setValue('locationId', '' as any);
       }
@@ -131,12 +123,10 @@ const RegisterPage: React.FC = () => {
         }))
       };
       
-      console.log('Submitting registration data:', userData);
       await registerUser(userData);
-      toast.success('Registration successful! Redirecting to dashboard...');
+      toast.success('Registration successful!');
       navigate('/dashboard');
     } catch (error: any) {
-      console.error('Registration error:', error);
       const errorMessage = error.response?.data?.message || 'Registration failed. Please try again.';
       toast.error(errorMessage);
     } finally {
@@ -341,10 +331,10 @@ const RegisterPage: React.FC = () => {
                   {...register('locationId', { valueAsNumber: true })}
                   id="locationId"
                   className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white"
-                  disabled={!selectedProvince || districts.length === 0}
+                  disabled={!watchedProvince || districts.length === 0}
                 >
                   <option value="">
-                    {!selectedProvince 
+                    {!watchedProvince 
                       ? 'Select province first' 
                       : districts.length === 0 
                         ? 'Loading districts...' 

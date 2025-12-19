@@ -56,17 +56,11 @@ public class AuthService {
         user.setPhoneNumber(request.getPhoneNumber());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(request.getRole());
+        user.setProvince(request.getProvince());
+        user.setDistrict(request.getDistrict());
         user.setSector(request.getSector());
         user.setCell(request.getCell());
         user.setVillage(request.getVillage());
-        
-        // Set location if provided
-        if (request.getLocationId() != null) {
-            Optional<Location> location = locationService.getLocationById(request.getLocationId());
-            if (location.isPresent()) {
-                user.setLocation(location.get());
-            }
-        }
         
         // Set skills if provided (for volunteers)
         if (request.getSkills() != null && !request.getSkills().isEmpty()) {
@@ -83,8 +77,12 @@ public class AuthService {
         
         user = userRepository.save(user);
         
-        // Send verification email
-        emailService.sendEmailVerification(user.getEmail(), user.getEmailVerificationToken());
+        // Send verification email - optional, don't fail registration if email fails
+        try {
+            emailService.sendEmailVerification(user.getEmail(), user.getEmailVerificationToken());
+        } catch (Exception e) {
+            System.err.println("Failed to send verification email, but registration continues: " + e.getMessage());
+        }
         
         // Generate JWT token
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name(), user.getUserId());

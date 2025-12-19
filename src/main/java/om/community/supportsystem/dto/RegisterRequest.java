@@ -24,10 +24,22 @@ public class RegisterRequest {
     private String password;
     
     private UserRole role = UserRole.CITIZEN;
-    private Long locationId;
+    
+    @NotBlank(message = "Province is required")
+    private String province;
+    
+    @NotBlank(message = "District is required")
+    private String district;
+    
+    @NotBlank(message = "Sector is required")
     private String sector;
+    
+    @NotBlank(message = "Cell is required")
     private String cell;
+    
+    @NotBlank(message = "Village is required")
     private String village;
+    
     private java.util.List<SkillRequest> skills;
     
     public static class SkillRequest {
@@ -53,8 +65,11 @@ public class RegisterRequest {
     public UserRole getRole() { return role; }
     public void setRole(UserRole role) { this.role = role; }
     
-    public Long getLocationId() { return locationId; }
-    public void setLocationId(Long locationId) { this.locationId = locationId; }
+    public String getProvince() { return province; }
+    public void setProvince(String province) { this.province = province; }
+    
+    public String getDistrict() { return district; }
+    public void setDistrict(String district) { this.district = district; }
     
     public String getSector() { return sector; }
     public void setSector(String sector) { this.sector = sector; }

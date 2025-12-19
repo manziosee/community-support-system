@@ -75,6 +75,8 @@ public class User {
     private Location location;
     
     // User-specific location details
+    private String province;
+    private String district;
     private String sector;
     private String cell;
     private String village;
@@ -125,12 +127,14 @@ public class User {
         this.createdAt = LocalDateTime.now();
     }
     
-    public User(String name, String email, String phoneNumber, UserRole role, Location location, String sector, String cell, String village) {
+    public User(String name, String email, String phoneNumber, UserRole role, Location location, String province, String district, String sector, String cell, String village) {
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.role = role;
         this.location = location;
+        this.province = province;
+        this.district = district;
         this.sector = sector;
         this.cell = cell;
         this.village = village;
@@ -170,6 +174,12 @@ public class User {
     
     public Set<Skill> getSkills() { return skills; }
     public void setSkills(Set<Skill> skills) { this.skills = skills; }
+    
+    public String getProvince() { return province; }
+    public void setProvince(String province) { this.province = province; }
+    
+    public String getDistrict() { return district; }
+    public void setDistrict(String district) { this.district = district; }
     
     public String getSector() { return sector; }
     public void setSector(String sector) { this.sector = sector; }

@@ -30,6 +30,24 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.location.province = :province")
     List<User> findByLocationProvince(@Param("province") String province);
     
+    // Find by user's province field
+    List<User> findByProvince(String province);
+    
+    // Find by user's district field
+    List<User> findByDistrict(String district);
+    
+    // Find by province and district
+    List<User> findByProvinceAndDistrict(String province, String district);
+    
+    // Find by sector
+    List<User> findBySector(String sector);
+    
+    // Find by cell
+    List<User> findByCell(String cell);
+    
+    // Find by village
+    List<User> findByVillage(String village);
+    
     // Check if user exists by email
     boolean existsByEmail(String email);
     

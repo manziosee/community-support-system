@@ -105,6 +105,31 @@ public class UserService {
         return userRepository.findByNameContainingIgnoreCase(name);
     }
     
+    // New location-based queries
+    public List<User> getUsersByProvince(String province) {
+        return userRepository.findByProvince(province);
+    }
+    
+    public List<User> getUsersByDistrict(String district) {
+        return userRepository.findByDistrict(district);
+    }
+    
+    public List<User> getUsersByProvinceAndDistrict(String province, String district) {
+        return userRepository.findByProvinceAndDistrict(province, district);
+    }
+    
+    public List<User> getUsersBySector(String sector) {
+        return userRepository.findBySector(sector);
+    }
+    
+    public List<User> getUsersByCell(String cell) {
+        return userRepository.findByCell(cell);
+    }
+    
+    public List<User> getUsersByVillage(String village) {
+        return userRepository.findByVillage(village);
+    }
+    
     // Update
     public User updateUser(Long id, User userDetails) {
         return userRepository.findById(id)
@@ -119,6 +144,8 @@ public class UserService {
                         user.setLocation(userDetails.getLocation());
                     }
                     
+                    user.setProvince(userDetails.getProvince());
+                    user.setDistrict(userDetails.getDistrict());
                     user.setSector(userDetails.getSector());
                     user.setCell(userDetails.getCell());
                     user.setVillage(userDetails.getVillage());
@@ -251,6 +278,8 @@ public class UserService {
         Map<String, Object> settings = new HashMap<>();
         settings.put("name", user.getName());
         settings.put("phoneNumber", user.getPhoneNumber());
+        settings.put("province", user.getProvince());
+        settings.put("district", user.getDistrict());
         settings.put("sector", user.getSector());
         settings.put("cell", user.getCell());
         settings.put("village", user.getVillage());
@@ -285,6 +314,12 @@ public class UserService {
                 throw new RuntimeException("Phone number already exists");
             }
             user.setPhoneNumber(phoneNumber);
+        }
+        if (profileData.containsKey("province")) {
+            user.setProvince((String) profileData.get("province"));
+        }
+        if (profileData.containsKey("district")) {
+            user.setDistrict((String) profileData.get("district"));
         }
         if (profileData.containsKey("sector")) {
             user.setSector((String) profileData.get("sector"));

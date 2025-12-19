@@ -80,6 +80,38 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
     
+    @GetMapping("/district/{district}")
+    public ResponseEntity<List<User>> getUsersByDistrict(@PathVariable String district) {
+        List<User> users = userService.getUsersByDistrict(district);
+        return ResponseEntity.ok(users);
+    }
+    
+    @GetMapping("/location/{province}/{district}")
+    public ResponseEntity<List<User>> getUsersByProvinceAndDistrict(
+            @PathVariable String province, 
+            @PathVariable String district) {
+        List<User> users = userService.getUsersByProvinceAndDistrict(province, district);
+        return ResponseEntity.ok(users);
+    }
+    
+    @GetMapping("/sector/{sector}")
+    public ResponseEntity<List<User>> getUsersBySector(@PathVariable String sector) {
+        List<User> users = userService.getUsersBySector(sector);
+        return ResponseEntity.ok(users);
+    }
+    
+    @GetMapping("/cell/{cell}")
+    public ResponseEntity<List<User>> getUsersByCell(@PathVariable String cell) {
+        List<User> users = userService.getUsersByCell(cell);
+        return ResponseEntity.ok(users);
+    }
+    
+    @GetMapping("/village/{village}")
+    public ResponseEntity<List<User>> getUsersByVillage(@PathVariable String village) {
+        List<User> users = userService.getUsersByVillage(village);
+        return ResponseEntity.ok(users);
+    }
+    
     @GetMapping("/volunteers/province/{province}")
     public ResponseEntity<List<User>> getVolunteersByProvince(@PathVariable String province) {
         List<User> volunteers = userService.getVolunteersByProvince(province);
