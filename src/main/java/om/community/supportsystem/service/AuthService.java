@@ -146,8 +146,11 @@ public class AuthService {
     }
     
     public void requestPasswordReset(String email) {
+        System.out.println("🔄 Password reset requested for email: " + email);
+        
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isEmpty()) {
+            System.out.println("⚠️ Email not found in database: " + email);
             // Don't reveal if email exists
             return;
         }
@@ -157,8 +160,19 @@ public class AuthService {
         user.setPasswordResetToken(resetToken);
         user.setPasswordResetTokenExpiry(LocalDateTime.now().plusHours(1));
         
+        System.out.println("💾 Saving reset token for user: " + user.getUserId());
         userRepository.save(user);
-        emailService.sendPasswordResetEmail(email, resetToken);
+        
+        try {
+            System.out.println("📧 Attempting to send password reset email...");
+            emailService.sendPasswordResetEmail(email, resetToken);
+            System.out.println("✅ Password reset process completed successfully");
+        } catch (Exception e) {
+            System.err.println("❌ Failed to send password reset email: " + e.getMessage());
+            e.printStackTrace();
+            // Still save the token so user can try again
+            throw new RuntimeException("Failed to send password reset email. Please try again later.");
+        }
     }
     
     public void resetPassword(String token, String newPassword) {

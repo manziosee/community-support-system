@@ -4,8 +4,10 @@ import om.community.supportsystem.model.User;
 import om.community.supportsystem.model.UserRole;
 import om.community.supportsystem.model.UserSettings;
 import om.community.supportsystem.model.Location;
+import om.community.supportsystem.model.Skill;
 import om.community.supportsystem.repository.UserRepository;
 import om.community.supportsystem.repository.UserSettingsRepository;
+import om.community.supportsystem.repository.SkillRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,6 +29,9 @@ public class UserService {
     
     @Autowired
     private UserSettingsRepository userSettingsRepository;
+    
+    @Autowired
+    private SkillRepository skillRepository;
     
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -329,5 +335,48 @@ public class UserService {
         }
         
         userRepository.save(user);
+    }
+    
+    // Skills Management
+    public User addSkillToUser(Long userId, Long skillId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        
+        // Check if user already has this skill
+        if (user.getSkills() != null && user.getSkills().stream().anyMatch(s -> s.getSkillId().equals(skillId))) {
+            throw new RuntimeException("User already has this skill");
+        }
+        
+        // Find the skill
+        Skill skill = skillRepository.findById(skillId)
+            .orElseThrow(() -> new RuntimeException("Skill not found with id: " + skillId));
+        
+        // Initialize skills set if null
+        if (user.getSkills() == null) {
+            user.setSkills(new HashSet<>());
+        }
+        
+        // Add skill to user
+        user.getSkills().add(skill);
+        
+        return userRepository.save(user);
+    }
+    
+    public User removeSkillFromUser(Long userId, Long skillId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        
+        if (user.getSkills() == null) {
+            throw new RuntimeException("User has no skills to remove");
+        }
+        
+        // Remove skill from user
+        boolean removed = user.getSkills().removeIf(skill -> skill.getSkillId().equals(skillId));
+        
+        if (!removed) {
+            throw new RuntimeException("User does not have this skill");
+        }
+        
+        return userRepository.save(user);
     }
 }

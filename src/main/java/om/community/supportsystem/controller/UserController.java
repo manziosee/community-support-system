@@ -11,12 +11,19 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
+@Tag(name = "👥 Users", description = "User management operations including CRUD, location-based queries, and skills management")
 @CrossOrigin(origins = {"http://localhost:3001", "http://localhost:5173", "https://community-support-system.vercel.app"}, allowCredentials = "true")
 public class UserController {
     
@@ -185,5 +192,59 @@ public class UserController {
     public ResponseEntity<Boolean> existsByPhoneNumber(@PathVariable String phoneNumber) {
         boolean exists = userService.existsByPhoneNumber(phoneNumber);
         return ResponseEntity.ok(exists);
+    }
+    
+    // User Skills Management
+    @Operation(summary = "Add skill to user", description = "Add a skill to a user's skill set (for volunteers)")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Skill added successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid request or skill already exists"),
+        @ApiResponse(responseCode = "404", description = "User or skill not found")
+    })
+    @PostMapping("/{userId}/skills/{skillId}")
+    public ResponseEntity<?> addSkillToUser(
+            @Parameter(description = "User ID") @PathVariable Long userId, 
+            @Parameter(description = "Skill ID to add") @PathVariable Long skillId) {
+        try {
+            User updatedUser = userService.addSkillToUser(userId, skillId);
+            return ResponseEntity.ok(updatedUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+    
+    @Operation(summary = "Remove skill from user", description = "Remove a skill from a user's skill set")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Skill removed successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid request or skill not found on user"),
+        @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    @DeleteMapping("/{userId}/skills/{skillId}")
+    public ResponseEntity<?> removeSkillFromUser(
+            @Parameter(description = "User ID") @PathVariable Long userId, 
+            @Parameter(description = "Skill ID to remove") @PathVariable Long skillId) {
+        try {
+            User updatedUser = userService.removeSkillFromUser(userId, skillId);
+            return ResponseEntity.ok(updatedUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+    
+    @Operation(summary = "Get user skills", description = "Retrieve all skills associated with a user")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "User skills retrieved successfully"),
+        @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    @GetMapping("/{userId}/skills")
+    public ResponseEntity<?> getUserSkills(
+            @Parameter(description = "User ID") @PathVariable Long userId) {
+        try {
+            return userService.getUserById(userId)
+                    .map(user -> ResponseEntity.ok(user.getSkills()))
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 }

@@ -182,7 +182,7 @@ const RequestDetailsPage: React.FC = () => {
                 <User className="w-4 h-4 text-gray-400" />
                 <div>
                   <p className="font-medium text-gray-900">
-                    {request.citizen.firstName} {request.citizen.lastName}
+                    {request.citizen.name || `${request.citizen.firstName || ''} ${request.citizen.lastName || ''}`.trim() || 'Unknown User'}
                   </p>
                   <p className="text-sm text-gray-600">{request.citizen.email}</p>
                 </div>
@@ -192,7 +192,10 @@ const RequestDetailsPage: React.FC = () => {
                 <div>
                   <p className="font-medium text-gray-900">Location</p>
                   <p className="text-sm text-gray-600">
-                    {request.citizen.location.district}, {request.citizen.location.province}
+                    {request.citizen.location ? 
+                      `${request.citizen.location.district}, ${request.citizen.location.province}` :
+                      `${request.citizen.district || 'N/A'}, ${request.citizen.province || 'N/A'}`
+                    }
                   </p>
                   {request.citizen.sector && (
                     <p className="text-sm text-gray-600">

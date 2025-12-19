@@ -125,7 +125,7 @@ The **Community Help Portal** is a Spring Boot web application that bridges the 
 
 ---
 
-## 🌐 API Endpoints (130+ Total Mappings)
+## 🌐 API Endpoints (133+ Total Mappings)
 
 <details>
 <summary><strong>🏛️ Location Endpoints (11 endpoints)</strong></summary>
@@ -147,7 +147,7 @@ The **Community Help Portal** is a Spring Boot web application that bridges the 
 </details>
 
 <details>
-<summary><strong>👥 User Endpoints (21 endpoints)</strong></summary>
+<summary><strong>👥 User Endpoints (24 endpoints)</strong></summary>
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -171,6 +171,11 @@ The **Community Help Portal** is a Spring Boot web application that bridges the 
 | ➕ `POST` | `/api/users` | Create new user |
 | ✏️ `PUT` | `/api/users/{id}` | Update user |
 | ✅ `DELETE` | `/api/users/{id}` | Delete user (validates no requests/assignments) |
+| 🔍 `GET` | `/api/users/{userId}/skills` | Get user's skills |
+| ➕ `POST` | `/api/users/{userId}/skills/{skillId}` | Add skill to user |
+| ✅ `DELETE` | `/api/users/{userId}/skills/{skillId}` | Remove skill from user |
+| ✅ `GET` | `/api/users/exists/email/{email}` | Check if email exists |
+| ✅ `GET` | `/api/users/exists/phone/{phone}` | Check if phone exists |
 
 </details>
 

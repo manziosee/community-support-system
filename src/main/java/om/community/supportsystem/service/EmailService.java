@@ -17,19 +17,34 @@ public class EmailService {
     
     public void sendPasswordResetEmail(String toEmail, String resetToken) {
         try {
+            System.out.println("🔄 Attempting to send password reset email to: " + toEmail);
+            System.out.println("📧 Using from email: " + fromEmail);
+            
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
             message.setTo(toEmail);
             message.setSubject("Password Reset - Community Support System");
-            message.setText("Click the link to reset your password: " +
-                    "https://community-support-system.vercel.app/reset-password?token=" + resetToken +
-                    "\n\nThis link will expire in 1 hour.");
             
+            // Use environment variable for frontend URL or fallback
+            String frontendUrl = System.getenv("FRONTEND_URL");
+            if (frontendUrl == null || frontendUrl.isEmpty()) {
+                frontendUrl = "https://community-support-system.vercel.app";
+            }
+            
+            message.setText("Hello,\n\n" +
+                    "You requested a password reset for your Community Support System account.\n\n" +
+                    "Click the link below to reset your password:\n" +
+                    frontendUrl + "/reset-password?token=" + resetToken +
+                    "\n\nThis link will expire in 1 hour.\n\n" +
+                    "If you didn't request this reset, please ignore this email.");
+            
+            System.out.println("📤 Sending password reset email...");
             mailSender.send(message);
-            System.out.println("Password reset email sent to: " + toEmail);
+            System.out.println("✅ Password reset email sent successfully to: " + toEmail);
         } catch (Exception e) {
-            System.err.println("Failed to send password reset email: " + e.getMessage());
-            throw new RuntimeException("Failed to send email", e);
+            System.err.println("❌ Failed to send password reset email to " + toEmail + ": " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to send password reset email: " + e.getMessage(), e);
         }
     }
     

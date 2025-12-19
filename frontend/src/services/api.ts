@@ -115,6 +115,16 @@ export const usersApi = {
   
   getByVillage: (village: string) => 
     api.get(`/users/village/${encodeURIComponent(village)}`),
+  
+  // Skills management
+  addSkill: (userId: number, skillId: number) => 
+    api.post(`/users/${userId}/skills/${skillId}`),
+  
+  removeSkill: (userId: number, skillId: number) => 
+    api.delete(`/users/${userId}/skills/${skillId}`),
+  
+  getSkills: (userId: number) => 
+    api.get(`/users/${userId}/skills`),
 };
 
 // Requests API

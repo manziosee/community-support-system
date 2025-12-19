@@ -243,7 +243,10 @@ const VolunteerDashboard: React.FC = () => {
                       <div className="flex-1 min-w-0">
                         <h3 className="font-medium text-gray-900 truncate">{request.title}</h3>
                         <p className="text-sm text-gray-500 mt-1">
-                          {request.citizen.location.district}, {request.citizen.location.province}
+                          {request.citizen.location ? 
+                            `${request.citizen.location.district}, ${request.citizen.location.province}` :
+                            `${request.citizen.district || 'N/A'}, ${request.citizen.province || 'N/A'}`
+                          }
                         </p>
                         <p className="text-xs text-gray-400 mt-1">
                           Posted: {new Date(request.createdAt).toLocaleDateString()}

@@ -59,10 +59,16 @@ const MySkillsPage: React.FC = () => {
     }
     
     try {
-      // Update local state immediately for better UX
+      // Call API to add skill
+      await usersApi.addSkill(user.userId, skill.skillId);
+      
+      // Update local state
       const updatedSkills = [...userSkills, skill];
       setUserSkills(updatedSkills);
       setShowAddModal(false);
+      
+      // Refresh user data to update context
+      await refreshUser();
       
       toast.success(`Added ${skill.skillName} to your skills`);
       
@@ -73,6 +79,8 @@ const MySkillsPage: React.FC = () => {
   };
 
   const removeSkill = async (skillId: number) => {
+    if (!user) return;
+    
     const skillToRemove = userSkills.find(s => s.skillId === skillId);
     if (!skillToRemove) return;
     
@@ -81,9 +89,15 @@ const MySkillsPage: React.FC = () => {
     }
     
     try {
-      // Update local state immediately
+      // Call API to remove skill
+      await usersApi.removeSkill(user.userId, skillId);
+      
+      // Update local state
       const updatedSkills = userSkills.filter(s => s.skillId !== skillId);
       setUserSkills(updatedSkills);
+      
+      // Refresh user data to update context
+      await refreshUser();
       
       toast.success(`Removed ${skillToRemove.skillName} from your skills`);
       
@@ -105,12 +119,21 @@ const MySkillsPage: React.FC = () => {
     }
     
     try {
+      // Call API to update skill
+      await skillsApi.update(editingSkill.skillId, {
+        skillName: editFormData.skillName.trim(),
+        description: editFormData.description.trim()
+      });
+      
       // Update local state
       setUserSkills(prev => prev.map(s => 
         s.skillId === editingSkill.skillId 
           ? { ...s, skillName: editFormData.skillName.trim(), description: editFormData.description.trim() }
           : s
       ));
+      
+      // Refresh skills data
+      await fetchSkills();
       
       setEditingSkill(null);
       toast.success('Skill updated successfully');
