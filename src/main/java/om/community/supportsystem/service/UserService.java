@@ -106,9 +106,6 @@ public class UserService {
     }
     
     // New location-based queries
-    public List<User> getUsersByProvince(String province) {
-        return userRepository.findByProvince(province);
-    }
     
     public List<User> getUsersByDistrict(String district) {
         return userRepository.findByDistrict(district);
