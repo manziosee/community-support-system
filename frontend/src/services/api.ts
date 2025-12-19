@@ -96,6 +96,25 @@ export const usersApi = {
   
   searchByName: (name: string) => 
     api.get(`/users/search/name/${name}`),
+  
+  // Location-based queries
+  getByProvince: (province: string) => 
+    api.get(`/users/province/${encodeURIComponent(province)}`),
+  
+  getByDistrict: (district: string) => 
+    api.get(`/users/district/${encodeURIComponent(district)}`),
+  
+  getByProvinceAndDistrict: (province: string, district: string) => 
+    api.get(`/users/location/${encodeURIComponent(province)}/${encodeURIComponent(district)}`),
+  
+  getBySector: (sector: string) => 
+    api.get(`/users/sector/${encodeURIComponent(sector)}`),
+  
+  getByCell: (cell: string) => 
+    api.get(`/users/cell/${encodeURIComponent(cell)}`),
+  
+  getByVillage: (village: string) => 
+    api.get(`/users/village/${encodeURIComponent(village)}`),
 };
 
 // Requests API
@@ -301,6 +320,18 @@ export const skillsApi = {
 export const categoriesApi = {
   getAll: () => 
     api.get('/categories'),
+};
+
+// Rwanda Locations API (External API)
+export const rwandaLocationsApi = {
+  getProvinces: () => api.get('/rwanda-locations/provinces'),
+  getDistricts: (province: string) => api.get(`/rwanda-locations/districts?province=${encodeURIComponent(province)}`),
+  getSectors: (province: string, district: string) => 
+    api.get(`/rwanda-locations/sectors?province=${encodeURIComponent(province)}&district=${encodeURIComponent(district)}`),
+  getCells: (province: string, district: string, sector: string) => 
+    api.get(`/rwanda-locations/cells?province=${encodeURIComponent(province)}&district=${encodeURIComponent(district)}&sector=${encodeURIComponent(sector)}`),
+  getVillages: (province: string, district: string, sector: string, cell: string) => 
+    api.get(`/rwanda-locations/villages?province=${encodeURIComponent(province)}&district=${encodeURIComponent(district)}&sector=${encodeURIComponent(sector)}&cell=${encodeURIComponent(cell)}`),
 };
 
 // Settings API

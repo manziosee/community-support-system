@@ -5,10 +5,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { User, Mail, Phone, MapPin, HandHeart, Award, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { locationsApi, skillsApi } from '../../services/api';
+import { rwandaLocationsApi, skillsApi } from '../../services/api';
 import { UserRole } from '../../types';
-import type { Location, Skill } from '../../types';
+import type { Skill } from '../../types';
 import Button from '../../components/common/Button';
+import { toast } from 'react-hot-toast';
 
 const registerSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -17,10 +18,10 @@ const registerSchema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters'),
   role: z.enum([UserRole.CITIZEN, UserRole.VOLUNTEER]),
   province: z.string().min(1, 'Please select a province'),
-  locationId: z.number().min(1, 'Please select a district'),
-  sector: z.string().optional(),
-  cell: z.string().optional(),
-  village: z.string().optional(),
+  district: z.string().min(1, 'Please select a district'),
+  sector: z.string().min(1, 'Please select a sector'),
+  cell: z.string().min(1, 'Please select a cell'),
+  village: z.string().min(1, 'Please select a village'),
   skills: z.array(z.number()).optional(),
 });
 
@@ -29,10 +30,12 @@ type RegisterFormData = z.infer<typeof registerSchema>;
 const RegisterPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [provinces, setProvinces] = useState<string[]>([]);
-  const [districts, setDistricts] = useState<Location[]>([]);
+  const [districts, setDistricts] = useState<string[]>([]);
+  const [sectors, setSectors] = useState<string[]>([]);
+  const [cells, setCells] = useState<string[]>([]);
+  const [villages, setVillages] = useState<string[]>([]);
   const [skills, setSkills] = useState<Skill[]>([]);
   const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.CITIZEN);
-  const [selectedProvince, setSelectedProvince] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
   const { register: registerUser, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -48,12 +51,19 @@ const RegisterPage: React.FC = () => {
     defaultValues: {
       role: UserRole.CITIZEN,
       province: '',
+      district: '',
+      sector: '',
+      cell: '',
+      village: '',
       skills: [],
     },
   });
 
   const watchedRole = watch('role');
   const watchedProvince = watch('province');
+  const watchedDistrict = watch('district');
+  const watchedSector = watch('sector');
+  const watchedCell = watch('cell');
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -66,7 +76,7 @@ const RegisterPage: React.FC = () => {
       try {
         const [skillsResponse, provincesResponse] = await Promise.all([
           skillsApi.getAll(),
-          locationsApi.getProvinces(),
+          rwandaLocationsApi.getProvinces(),
         ]);
         setSkills(skillsResponse.data);
         setProvinces(provincesResponse.data);
@@ -84,34 +94,121 @@ const RegisterPage: React.FC = () => {
     setSelectedRole(watchedRole);
   }, [watchedRole]);
 
+  // Fetch districts when province changes
   useEffect(() => {
     const fetchDistricts = async () => {
       if (watchedProvince && watchedProvince !== '') {
         try {
           console.log('Fetching districts for province:', watchedProvince);
-          setSelectedProvince(watchedProvince);
-          const response = await locationsApi.getDistrictsByProvince(watchedProvince);
-          console.log('API Response:', response);
-          console.log('Districts data:', response.data);
-          console.log('Districts array length:', response.data?.length);
-          if (response.data && response.data.length > 0) {
-            console.log('First district:', response.data[0]);
-          }
+          const response = await rwandaLocationsApi.getDistricts(watchedProvince);
+          console.log('Districts response:', response.data);
           setDistricts(response.data || []);
-          setValue('locationId', '' as any); // Reset district selection
+          setValue('district', ''); // Reset district selection
+          setSectors([]);
+          setCells([]);
+          setVillages([]);
+          setValue('sector', '');
+          setValue('cell', '');
+          setValue('village', '');
         } catch (error) {
           console.error('Failed to fetch districts for', watchedProvince, ':', error);
           setDistricts([]);
         }
       } else {
-        console.log('No province selected, clearing districts');
         setDistricts([]);
-        setValue('locationId', '' as any);
+        setSectors([]);
+        setCells([]);
+        setVillages([]);
+        setValue('district', '');
+        setValue('sector', '');
+        setValue('cell', '');
+        setValue('village', '');
       }
     };
 
     fetchDistricts();
   }, [watchedProvince, setValue]);
+
+  // Fetch sectors when district changes
+  useEffect(() => {
+    const fetchSectors = async () => {
+      if (watchedProvince && watchedDistrict && watchedDistrict !== '') {
+        try {
+          console.log('Fetching sectors for:', watchedProvince, watchedDistrict);
+          const response = await rwandaLocationsApi.getSectors(watchedProvince, watchedDistrict);
+          console.log('Sectors response:', response.data);
+          setSectors(response.data || []);
+          setValue('sector', '');
+          setCells([]);
+          setVillages([]);
+          setValue('cell', '');
+          setValue('village', '');
+        } catch (error) {
+          console.error('Failed to fetch sectors:', error);
+          setSectors([]);
+        }
+      } else {
+        setSectors([]);
+        setCells([]);
+        setVillages([]);
+        setValue('sector', '');
+        setValue('cell', '');
+        setValue('village', '');
+      }
+    };
+
+    fetchSectors();
+  }, [watchedProvince, watchedDistrict, setValue]);
+
+  // Fetch cells when sector changes
+  useEffect(() => {
+    const fetchCells = async () => {
+      if (watchedProvince && watchedDistrict && watchedSector && watchedSector !== '') {
+        try {
+          console.log('Fetching cells for:', watchedProvince, watchedDistrict, watchedSector);
+          const response = await rwandaLocationsApi.getCells(watchedProvince, watchedDistrict, watchedSector);
+          console.log('Cells response:', response.data);
+          setCells(response.data || []);
+          setValue('cell', '');
+          setVillages([]);
+          setValue('village', '');
+        } catch (error) {
+          console.error('Failed to fetch cells:', error);
+          setCells([]);
+        }
+      } else {
+        setCells([]);
+        setVillages([]);
+        setValue('cell', '');
+        setValue('village', '');
+      }
+    };
+
+    fetchCells();
+  }, [watchedProvince, watchedDistrict, watchedSector, setValue]);
+
+  // Fetch villages when cell changes
+  useEffect(() => {
+    const fetchVillages = async () => {
+      if (watchedProvince && watchedDistrict && watchedSector && watchedCell && watchedCell !== '') {
+        try {
+          console.log('Fetching villages for:', watchedProvince, watchedDistrict, watchedSector, watchedCell);
+          const response = await rwandaLocationsApi.getVillages(watchedProvince, watchedDistrict, watchedSector, watchedCell);
+          console.log('Villages response:', response.data);
+          setVillages(response.data || []);
+          setValue('village', '');
+        } catch (error) {
+          console.error('Failed to fetch villages:', error);
+          setVillages([]);
+        }
+      } else {
+        setVillages([]);
+        setValue('village', '');
+      }
+    };
+
+    fetchVillages();
+  }, [watchedProvince, watchedDistrict, watchedSector, watchedCell, setValue]);
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
@@ -122,12 +219,13 @@ const RegisterPage: React.FC = () => {
         phoneNumber: data.phoneNumber,
         password: data.password,
         role: data.role,
-        locationId: Number(data.locationId), // Ensure locationId is a number
-        sector: data.sector?.trim() || '',
-        cell: data.cell?.trim() || '',
-        village: data.village?.trim() || '',
+        province: data.province,
+        district: data.district,
+        sector: data.sector,
+        cell: data.cell,
+        village: data.village,
         skills: (data.skills || []).map(skillId => ({
-          skillId: Number(skillId) // Ensure skillId is a number
+          skillId: Number(skillId)
         }))
       };
       
@@ -302,113 +400,171 @@ const RegisterPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Location - Province and District */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Province */}
-            <div>
-              <label htmlFor="province" className="block text-sm font-medium text-gray-700 mb-1">
-                Province
-              </label>
-              <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
-                <select
-                  {...register('province')}
-                  id="province"
-                  className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white text-black"
-                  style={{ color: '#000000', backgroundColor: '#ffffff' }}
-                >
-                  <option value="" style={{ color: '#6b7280', backgroundColor: '#ffffff' }}>Select province</option>
-                  {provinces.map((province) => (
-                    <option key={province} value={province} style={{ color: '#000000', backgroundColor: '#ffffff' }}>
-                      {province}
-                    </option>
-                  ))}
-                </select>
+          {/* Location - All Administrative Levels */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-gray-900">Location Information</h3>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* Province */}
+              <div>
+                <label htmlFor="province" className="block text-sm font-medium text-gray-700 mb-1">
+                  Province *
+                </label>
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
+                  <select
+                    {...register('province')}
+                    id="province"
+                    className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white text-black"
+                  >
+                    <option value="">Select province</option>
+                    {provinces.map((province) => (
+                      <option key={province} value={province}>
+                        {province}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {errors.province && (
+                  <p className="mt-1 text-sm text-red-600">{errors.province.message}</p>
+                )}
               </div>
-              {errors.province && (
-                <p className="mt-1 text-sm text-red-600">{errors.province.message}</p>
-              )}
-            </div>
 
-            {/* District */}
-            <div>
-              <label htmlFor="locationId" className="block text-sm font-medium text-gray-700 mb-1">
-                District {districts.length > 0 && `(${districts.length} available)`}
-              </label>
-              <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
-                <select
-                  {...register('locationId', { valueAsNumber: true })}
-                  id="locationId"
-                  className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white"
-                  disabled={!selectedProvince || districts.length === 0}
-                >
-                  <option value="">
-                    {!selectedProvince 
-                      ? 'Select province first' 
-                      : districts.length === 0 
-                        ? 'Loading districts...' 
-                        : 'Select district'
-                    }
-                  </option>
-                  {districts.map((district, index) => (
-                    <option 
-                      key={index} 
-                      value={district}
-                    >
-                      {district}
+              {/* District */}
+              <div>
+                <label htmlFor="district" className="block text-sm font-medium text-gray-700 mb-1">
+                  District * {districts.length > 0 && `(${districts.length} available)`}
+                </label>
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+                  <select
+                    {...register('district')}
+                    id="district"
+                    className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white"
+                    disabled={!watchedProvince || districts.length === 0}
+                  >
+                    <option value="">
+                      {!watchedProvince 
+                        ? 'Select province first' 
+                        : districts.length === 0 
+                          ? 'Loading districts...' 
+                          : 'Select district'
+                      }
                     </option>
-                  ))}
-                </select>
+                    {districts.map((district, index) => (
+                      <option key={index} value={district}>
+                        {district}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {errors.district && (
+                  <p className="mt-1 text-sm text-red-600">{errors.district.message}</p>
+                )}
               </div>
-              {errors.locationId && (
-                <p className="mt-1 text-sm text-red-600">{errors.locationId.message}</p>
-              )}
+
+              {/* Sector */}
+              <div>
+                <label htmlFor="sector" className="block text-sm font-medium text-gray-700 mb-1">
+                  Sector * {sectors.length > 0 && `(${sectors.length} available)`}
+                </label>
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+                  <select
+                    {...register('sector')}
+                    id="sector"
+                    className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white"
+                    disabled={!watchedDistrict || sectors.length === 0}
+                  >
+                    <option value="">
+                      {!watchedDistrict 
+                        ? 'Select district first' 
+                        : sectors.length === 0 
+                          ? 'Loading sectors...' 
+                          : 'Select sector'
+                      }
+                    </option>
+                    {sectors.map((sector, index) => (
+                      <option key={index} value={sector}>
+                        {sector}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {errors.sector && (
+                  <p className="mt-1 text-sm text-red-600">{errors.sector.message}</p>
+                )}
+              </div>
+
+              {/* Cell */}
+              <div>
+                <label htmlFor="cell" className="block text-sm font-medium text-gray-700 mb-1">
+                  Cell * {cells.length > 0 && `(${cells.length} available)`}
+                </label>
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+                  <select
+                    {...register('cell')}
+                    id="cell"
+                    className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white"
+                    disabled={!watchedSector || cells.length === 0}
+                  >
+                    <option value="">
+                      {!watchedSector 
+                        ? 'Select sector first' 
+                        : cells.length === 0 
+                          ? 'Loading cells...' 
+                          : 'Select cell'
+                      }
+                    </option>
+                    {cells.map((cell, index) => (
+                      <option key={index} value={cell}>
+                        {cell}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {errors.cell && (
+                  <p className="mt-1 text-sm text-red-600">{errors.cell.message}</p>
+                )}
+              </div>
+
+              {/* Village */}
+              <div>
+                <label htmlFor="village" className="block text-sm font-medium text-gray-700 mb-1">
+                  Village * {villages.length > 0 && `(${villages.length} available)`}
+                </label>
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+                  <select
+                    {...register('village')}
+                    id="village"
+                    className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white"
+                    disabled={!watchedCell || villages.length === 0}
+                  >
+                    <option value="">
+                      {!watchedCell 
+                        ? 'Select cell first' 
+                        : villages.length === 0 
+                          ? 'Loading villages...' 
+                          : 'Select village'
+                      }
+                    </option>
+                    {villages.map((village, index) => (
+                      <option key={index} value={village}>
+                        {village}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {errors.village && (
+                  <p className="mt-1 text-sm text-red-600">{errors.village.message}</p>
+                )}
+              </div>
             </div>
           </div>
 
-          {/* Additional Location Details */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div>
-              <label htmlFor="sector" className="block text-sm font-medium text-gray-700">
-                Sector
-              </label>
-              <input
-                {...register('sector')}
-                id="sector"
-                type="text"
-                autoComplete="address-level3"
-                className="mt-1 input-field"
-                placeholder="Enter your sector"
-              />
-            </div>
-            <div>
-              <label htmlFor="cell" className="block text-sm font-medium text-gray-700">
-                Cell
-              </label>
-              <input
-                {...register('cell')}
-                id="cell"
-                type="text"
-                autoComplete="address-level4"
-                className="mt-1 input-field"
-                placeholder="Enter your cell"
-              />
-            </div>
-            <div>
-              <label htmlFor="village" className="block text-sm font-medium text-gray-700">
-                Village
-              </label>
-              <input
-                {...register('village')}
-                id="village"
-                type="text"
-                autoComplete="address-line1"
-                className="mt-1 input-field"
-                placeholder="Enter your village"
-              />
-            </div>
-          </div>
+
 
           {/* Skills (only for volunteers) */}
           {selectedRole === UserRole.VOLUNTEER && (
