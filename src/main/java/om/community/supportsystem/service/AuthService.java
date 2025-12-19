@@ -169,6 +169,16 @@ public class AuthService {
             System.out.println("✅ Password reset process completed successfully");
         } catch (Exception e) {
             System.err.println("❌ Failed to send password reset email: " + e.getMessage());
+            
+            // Check if we're in production environment
+            String environment = System.getenv("RENDER");
+            if (environment != null) {
+                System.err.println("⚠️ Production environment detected - email service may be unavailable");
+                System.err.println("🔑 Reset token saved in database for manual use: " + resetToken);
+                // Don't throw exception in production - token is saved in database
+                return;
+            }
+            
             e.printStackTrace();
             // Still save the token so user can try again
             throw new RuntimeException("Failed to send password reset email. Please try again later.");

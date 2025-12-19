@@ -20,6 +20,15 @@ public class EmailService {
             System.out.println("🔄 Attempting to send password reset email to: " + toEmail);
             System.out.println("📧 Using from email: " + fromEmail);
             
+            // Check if we're in a restricted environment (like Render)
+            String environment = System.getenv("RENDER");
+            if (environment != null) {
+                System.out.println("⚠️ Running in Render environment - SMTP may be blocked");
+                // Log the reset token for manual testing in production
+                System.out.println("🔑 Password reset token for " + toEmail + ": " + resetToken);
+                System.out.println("🔗 Reset URL: https://community-support-system.vercel.app/reset-password?token=" + resetToken);
+            }
+            
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
             message.setTo(toEmail);
@@ -43,6 +52,17 @@ public class EmailService {
             System.out.println("✅ Password reset email sent successfully to: " + toEmail);
         } catch (Exception e) {
             System.err.println("❌ Failed to send password reset email to " + toEmail + ": " + e.getMessage());
+            
+            // In production, log the reset token so it can be used manually
+            String environment = System.getenv("RENDER");
+            if (environment != null) {
+                System.err.println("🔑 MANUAL RESET TOKEN for " + toEmail + ": " + resetToken);
+                System.err.println("🔗 MANUAL RESET URL: https://community-support-system.vercel.app/reset-password?token=" + resetToken);
+                System.err.println("⚠️ Email service unavailable in production. Use the above URL to reset password.");
+                // Don't throw exception in production - allow the process to continue
+                return;
+            }
+            
             e.printStackTrace();
             throw new RuntimeException("Failed to send password reset email: " + e.getMessage(), e);
         }
