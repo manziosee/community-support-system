@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "community-support-system-v2",
 		"name": "Community Support System API - Complete Collection",
-		"description": "Complete API collection for Community Support System with Authentication, 2FA, and all 93+ endpoints",
+		"description": "Complete API collection for Community Support System with Authentication, 2FA, Rwanda Locations API, and all 130+ endpoints",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "community-support-system"
 	},
@@ -43,7 +43,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"phoneNumber\": \"0788123456\",\n  \"role\": \"VOLUNTEER\",\n  \"location\": {\n    \"locationId\": 1\n  },\n  \"sector\": \"Kimironko\",\n  \"cell\": \"Bibare\",\n  \"village\": \"Kamatamu\",\n  \"skills\": [\n    {\"skillId\": 1},\n    {\"skillId\": 2}\n  ]\n}"
+							"raw": "{\n  \"name\": \"Jean Claude Mugabo\",\n  \"email\": \"jean.mugabo@example.com\",\n  \"phoneNumber\": \"0788123456\",\n  \"password\": \"SecurePass123\",\n  \"role\": \"VOLUNTEER\",\n  \"province\": \"Kigali\",\n  \"district\": \"Gasabo\",\n  \"sector\": \"Remera\",\n  \"cell\": \"Nyabisindu\",\n  \"village\": \"Kabeza\",\n  \"skills\": [\n    {\"skillId\": 1},\n    {\"skillId\": 2}\n  ]\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/register",
@@ -678,6 +678,226 @@
 							"raw": "{{baseUrl}}/api/skills/popular",
 							"host": ["{{baseUrl}}"],
 							"path": ["api", "skills", "popular"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🇷🇼 Rwanda Locations",
+			"item": [
+				{
+					"name": "Get All Provinces",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/rwanda-locations/provinces",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "rwanda-locations", "provinces"]
+						}
+					}
+				},
+				{
+					"name": "Get Districts by Province",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/rwanda-locations/districts?province=Kigali",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "rwanda-locations", "districts"],
+							"query": [
+								{
+									"key": "province",
+									"value": "Kigali"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Sectors by Province and District",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/rwanda-locations/sectors?province=Kigali&district=Gasabo",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "rwanda-locations", "sectors"],
+							"query": [
+								{
+									"key": "province",
+									"value": "Kigali"
+								},
+								{
+									"key": "district",
+									"value": "Gasabo"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Cells by Province, District and Sector",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/rwanda-locations/cells?province=Kigali&district=Gasabo&sector=Remera",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "rwanda-locations", "cells"],
+							"query": [
+								{
+									"key": "province",
+									"value": "Kigali"
+								},
+								{
+									"key": "district",
+									"value": "Gasabo"
+								},
+								{
+									"key": "sector",
+									"value": "Remera"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Villages by Province, District, Sector and Cell",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/rwanda-locations/villages?province=Kigali&district=Gasabo&sector=Remera&cell=Nyabisindu",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "rwanda-locations", "villages"],
+							"query": [
+								{
+									"key": "province",
+									"value": "Kigali"
+								},
+								{
+									"key": "district",
+									"value": "Gasabo"
+								},
+								{
+									"key": "sector",
+									"value": "Remera"
+								},
+								{
+									"key": "cell",
+									"value": "Nyabisindu"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📍 User Location Queries",
+			"item": [
+				{
+					"name": "Get Users by Province",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/province/Kigali",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "province", "Kigali"]
+						}
+					}
+				},
+				{
+					"name": "Get Users by District",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/district/Gasabo",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "district", "Gasabo"]
+						}
+					}
+				},
+				{
+					"name": "Get Users by Province and District",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/location/Kigali/Gasabo",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "location", "Kigali", "Gasabo"]
+						}
+					}
+				},
+				{
+					"name": "Get Users by Sector",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/sector/Remera",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "sector", "Remera"]
+						}
+					}
+				},
+				{
+					"name": "Get Users by Cell",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/cell/Nyabisindu",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "cell", "Nyabisindu"]
+						}
+					}
+				},
+				{
+					"name": "Get Users by Village",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/village/Kabeza",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "village", "Kabeza"]
 						}
 					}
 				}
