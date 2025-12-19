@@ -33,14 +33,14 @@ const StatCard: React.FC<StatCardProps> = ({
   };
 
   const content = (
-    <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 hover:shadow-soft hover:-translate-y-1 transition-all duration-300 group">
-      <div className="flex items-center justify-between mb-4">
-        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${colorClasses[color].icon} group-hover:scale-110 transition-transform duration-300`}>
-          <Icon className="w-6 h-6" />
+    <div className="bg-white rounded-lg lg:rounded-xl shadow-sm border border-neutral-200 p-3 sm:p-4 lg:p-6 hover:shadow-soft hover:-translate-y-1 transition-all duration-300 group">
+      <div className="flex items-center justify-between mb-2 sm:mb-3 lg:mb-4">
+        <div className={`w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-lg lg:rounded-xl flex items-center justify-center ${colorClasses[color].icon} group-hover:scale-110 transition-transform duration-300`}>
+          <Icon className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
         </div>
         {trend && (
           <span
-            className={`text-xs font-semibold px-2 py-1 rounded-full ${
+            className={`text-xs font-semibold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full ${
               trend.isPositive ? 'bg-success-100 text-success-700' : 'bg-red-100 text-red-700'
             }`}
           >
@@ -48,8 +48,8 @@ const StatCard: React.FC<StatCardProps> = ({
           </span>
         )}
       </div>
-      <p className="text-sm font-medium text-neutral-600 mb-1">{title}</p>
-      <p className="text-3xl font-bold text-gray-900">{value}</p>
+      <p className="text-xs sm:text-sm font-medium text-neutral-600 mb-1 truncate">{title}</p>
+      <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">{value}</p>
     </div>
   );
 

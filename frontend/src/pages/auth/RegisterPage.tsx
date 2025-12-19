@@ -142,14 +142,14 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl w-full space-y-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-2xl w-full space-y-6 sm:space-y-8">
         {/* Header */}
         <div className="text-center">
-          <div className="mx-auto w-16 h-16 bg-gradient-to-br from-sky-400 to-sky-600 rounded-2xl flex items-center justify-center shadow-lg">
-            <HandHeart className="w-8 h-8 text-white" />
+          <div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-sky-400 to-sky-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
+            <HandHeart className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
           </div>
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">
+          <h2 className="mt-4 sm:mt-6 text-2xl sm:text-3xl font-bold text-gray-900">
             Join our community
           </h2>
           <p className="mt-2 text-sm text-gray-600">
@@ -158,8 +158,8 @@ const RegisterPage: React.FC = () => {
         </div>
 
         {/* Form */}
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form className="mt-6 sm:mt-8 space-y-4 sm:space-y-6" onSubmit={handleSubmit(onSubmit)}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             {/* Name */}
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
@@ -292,7 +292,7 @@ const RegisterPage: React.FC = () => {
           </div>
 
           {/* Location - Province and District */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Province */}
             <div>
               <label htmlFor="province" className="block text-sm font-medium text-gray-700">
@@ -308,9 +308,9 @@ const RegisterPage: React.FC = () => {
                   autoComplete="address-level1"
                   className="input-field pl-10"
                 >
-                  <option value="">Select province</option>
+                  <option key="empty-province" value="">Select province</option>
                   {provinces.map((province) => (
-                    <option key={province} value={province}>
+                    <option key={`province-${province}`} value={province}>
                       {province}
                     </option>
                   ))}
@@ -337,7 +337,7 @@ const RegisterPage: React.FC = () => {
                   className="input-field pl-10"
                   disabled={!selectedProvince || districts.length === 0}
                 >
-                  <option value="">
+                  <option key="empty-district" value="">
                     {!selectedProvince 
                       ? 'Select province first' 
                       : districts.length === 0 
@@ -345,11 +345,13 @@ const RegisterPage: React.FC = () => {
                         : 'Select district'
                     }
                   </option>
-                  {districts.map((location) => (
-                    <option key={location.locationId} value={location.locationId}>
-                      {location.district}
-                    </option>
-                  ))}
+                  {districts
+                    .filter(location => location.locationId && location.district)
+                    .map((location, index) => (
+                      <option key={`district-${location.locationId}-${index}`} value={location.locationId}>
+                        {location.district}
+                      </option>
+                    ))}
                 </select>
               </div>
               {errors.locationId && (
@@ -359,7 +361,7 @@ const RegisterPage: React.FC = () => {
           </div>
 
           {/* Additional Location Details */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <label htmlFor="sector" className="block text-sm font-medium text-gray-700">
                 Sector
@@ -408,7 +410,7 @@ const RegisterPage: React.FC = () => {
                 <Award className="inline w-4 h-4 mr-1" />
                 Select your skills
               </label>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {skills.map((skill) => (
                   <label
                     key={skill.skillId}
