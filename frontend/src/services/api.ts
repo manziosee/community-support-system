@@ -144,7 +144,10 @@ export const requestsApi = {
     api.get('/requests/pending'),
   
   getByProvince: (province: string) => 
-    api.get(`/requests/province/${province}`),
+    api.get(`/requests/province/${encodeURIComponent(province)}`),
+  
+  getPendingByProvince: (province: string) => 
+    api.get(`/requests/pending/province/${encodeURIComponent(province)}`),
   
   search: (params: {
     status?: string;

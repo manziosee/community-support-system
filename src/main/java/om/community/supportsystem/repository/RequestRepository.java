@@ -35,8 +35,12 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     List<Request> findByCreatedAtAfter(LocalDateTime date);
     
     // Find requests by location province
-    @Query("SELECT r FROM Request r WHERE r.citizen.location.province = :province")
+    @Query("SELECT r FROM Request r WHERE r.citizen.location.province = :province OR r.citizen.province = :province")
     List<Request> findByLocationProvince(@Param("province") String province);
+    
+    // Find pending requests by province (both location.province and citizen.province)
+    @Query("SELECT r FROM Request r WHERE r.status = 'PENDING' AND (r.citizen.location.province = :province OR r.citizen.province = :province) ORDER BY r.createdAt DESC")
+    List<Request> findPendingRequestsByProvince(@Param("province") String province);
     
     // Find with pagination and sorting
     Page<Request> findByStatusAndCitizen_Location_Province(RequestStatus status, String province, Pageable pageable);

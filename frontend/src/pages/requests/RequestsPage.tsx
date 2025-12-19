@@ -10,6 +10,7 @@ import Button from '../../components/common/Button';
 import Badge from '../../components/common/Badge';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import EmptyState from '../../components/common/EmptyState';
+import toast from 'react-hot-toast';
 
 const RequestsPage: React.FC = () => {
   const { user } = useAuth();
@@ -25,35 +26,7 @@ const RequestsPage: React.FC = () => {
     completed: 0
   });
 
-  const mockRequests: Request[] = [
-    {
-      requestId: 1,
-      title: 'Grocery Shopping Assistance',
-      description: 'Need help with weekly grocery shopping due to mobility issues',
-      category: 'SHOPPING_AND_ERRANDS' as any,
-      status: RequestStatus.ACCEPTED,
-      createdAt: '2024-03-15T10:00:00Z',
-      citizen: user!
-    },
-    {
-      requestId: 2,
-      title: 'Computer Setup Help',
-      description: 'Need assistance setting up new laptop and installing software',
-      category: 'TECHNOLOGY_SUPPORT' as any,
-      status: RequestStatus.PENDING,
-      createdAt: '2024-03-14T14:30:00Z',
-      citizen: user!
-    },
-    {
-      requestId: 3,
-      title: 'Math Tutoring Session',
-      description: 'Need help with calculus homework and exam preparation',
-      category: 'TUTORING_AND_EDUCATION' as any,
-      status: RequestStatus.COMPLETED,
-      createdAt: '2024-03-13T09:00:00Z',
-      citizen: user!
-    }
-  ];
+
 
   useEffect(() => {
     fetchRequests();
@@ -64,14 +37,12 @@ const RequestsPage: React.FC = () => {
 
     try {
       setIsLoading(true);
-      try {
-        const response = await requestsApi.getByCitizen(user.userId);
-        setRequests(response.data);
-      } catch (error) {
-        setRequests(mockRequests);
-      }
-    } catch (error) {
-      setRequests(mockRequests);
+      const response = await requestsApi.getByCitizen(user.userId);
+      setRequests(response.data || []);
+    } catch (error: any) {
+      console.error('Failed to fetch requests:', error);
+      toast.error('Failed to load requests');
+      setRequests([]);
     } finally {
       setIsLoading(false);
     }
@@ -116,7 +87,15 @@ const RequestsPage: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     if (!window.confirm('Are you sure you want to delete this request?')) return;
-    setRequests(prev => prev.filter(r => r.requestId !== id));
+    
+    try {
+      await requestsApi.delete(id);
+      setRequests(prev => prev.filter(r => r.requestId !== id));
+      toast.success('Request deleted successfully');
+    } catch (error) {
+      console.error('Failed to delete request:', error);
+      toast.error('Failed to delete request');
+    }
   };
 
   const getStatusBadgeVariant = (status: string) => {

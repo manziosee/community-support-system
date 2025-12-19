@@ -71,7 +71,7 @@ public class User {
     // Many-to-One: Many users belong to one location
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "location_id")
-    @JsonIgnoreProperties("users")
+    @JsonIgnoreProperties({"users"})
     private Location location;
     
     // User-specific location details
