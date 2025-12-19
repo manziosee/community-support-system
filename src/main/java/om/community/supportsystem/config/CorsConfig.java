@@ -15,6 +15,7 @@ public class CorsConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(
+                    "http://localhost:3000",
                     "http://localhost:3001",
                     "http://localhost:5173", 
                     "https://community-support-system.vercel.app"
@@ -28,6 +29,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedOrigin("http://localhost:3001");
         configuration.addAllowedOrigin("http://localhost:5173");
         configuration.addAllowedOrigin("https://community-support-system.vercel.app");
