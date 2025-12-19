@@ -99,6 +99,8 @@ The **Community Help Portal** is a Spring Boot web application that bridges the 
 | 🌐 **API** | REST | - | Web services |
 | 📊 **Data Access** | Spring Data JPA | 3.x | Repository pattern |
 | 🔍 **Validation** | Bean Validation | 3.x | Data validation |
+| 🇷🇼 **External API** | RDA Locations API | - | Rwanda administrative divisions |
+| 🔗 **HTTP Client** | RestTemplate | - | External API calls |
 
 </div>
 
@@ -112,7 +114,9 @@ The **Community Help Portal** is a Spring Boot web application that bridges the 
 | 🔍 **Advanced Queries** | findBy, existsBy, custom queries with @Query | ✅ |
 | 📄 **Pagination & Sorting** | Efficient data retrieval with Spring Data | ✅ |
 | 🏛️ **Location-based APIs** | Rwandan administrative hierarchy support | ✅ |
+| 🇷🇼 **Rwanda Locations API** | Complete 5-level location hierarchy (Province → Village) | ✅ |
 | 🌐 **RESTful Endpoints** | Complete API coverage for all operations | ✅ |
+| 🔗 **External API Integration** | RDA Administrative Divisions API integration | ✅ |
 | 🗄️ **Database Migration** | Hibernate DDL auto-generation | ✅ |
 | 📊 **Sample Data** | Automated data initialization | ✅ |
 | 🔐 **Data Integrity** | Foreign key constraints and validations | ✅ |
@@ -121,7 +125,7 @@ The **Community Help Portal** is a Spring Boot web application that bridges the 
 
 ---
 
-## 🌐 API Endpoints (105+ Total Mappings)
+## 🌐 API Endpoints (130+ Total Mappings)
 
 <details>
 <summary><strong>🏛️ Location Endpoints (11 endpoints)</strong></summary>
@@ -143,7 +147,7 @@ The **Community Help Portal** is a Spring Boot web application that bridges the 
 </details>
 
 <details>
-<summary><strong>👥 User Endpoints (15 endpoints)</strong></summary>
+<summary><strong>👥 User Endpoints (21 endpoints)</strong></summary>
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -153,6 +157,11 @@ The **Community Help Portal** is a Spring Boot web application that bridges the 
 | 🔍 `GET` | `/api/users/role/{role}` | Get users by role (CITIZEN/VOLUNTEER) |
 | 🔍 `GET` | `/api/users/province-code/{code}` | Get users by province code |
 | 🔍 `GET` | `/api/users/province/{name}` | Get users by province name |
+| 🔍 `GET` | `/api/users/district/{district}` | Get users by district |
+| 🔍 `GET` | `/api/users/location/{province}/{district}` | Get users by province and district |
+| 🔍 `GET` | `/api/users/sector/{sector}` | Get users by sector |
+| 🔍 `GET` | `/api/users/cell/{cell}` | Get users by cell |
+| 🔍 `GET` | `/api/users/village/{village}` | Get users by village |
 | 🔍 `GET` | `/api/users/volunteers/province/{province}` | Get volunteers by province |
 | 🔍 `GET` | `/api/users/search` | Search users with pagination |
 | 🔍 `GET` | `/api/users/search/name/{name}` | Search users by name |
@@ -266,11 +275,67 @@ The **Community Help Portal** is a Spring Boot web application that bridges the 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | 🔍 `GET` | `/api/settings/{userId}` | Get user settings and profile |
-| 🔄 `PATCH` | `/api/settings/profile/{userId}` | Update profile (name, phone, sector, cell, village) |
+| 🔄 `PATCH` | `/api/settings/profile/{userId}` | Update profile (name, phone, province, district, sector, cell, village) |
 | 🔄 `PATCH` | `/api/settings/password/{userId}` | Change password with validation |
 | 🔄 `PATCH` | `/api/settings/notifications/{userId}` | Update notification preferences |
 
 </details>
+
+<details>
+<summary><strong>🇷🇼 Rwanda Locations Endpoints (5 endpoints) - NEW!</strong></summary>
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| 🔍 `GET` | `/api/rwanda-locations/provinces` | Get all provinces from RDA API |
+| 🔍 `GET` | `/api/rwanda-locations/districts?province={province}` | Get districts by province |
+| 🔍 `GET` | `/api/rwanda-locations/sectors?province={province}&district={district}` | Get sectors by district |
+| 🔍 `GET` | `/api/rwanda-locations/cells?province={province}&district={district}&sector={sector}` | Get cells by sector |
+| 🔍 `GET` | `/api/rwanda-locations/villages?province={province}&district={district}&sector={sector}&cell={cell}` | Get villages by cell |
+
+</details>
+
+---
+
+## 🇷🇼 Rwanda Administrative Divisions Integration
+
+### 🎆 Complete Location Hierarchy
+
+The system now integrates with the official **Rwanda Development Agency (RDA) Administrative Divisions API** to provide accurate, real-time location data for user registration.
+
+<div align="center">
+
+| Level | Description | Example | API Endpoint |
+|-------|-------------|---------|-------------|
+| 1️⃣ **Province** | 5 Provinces | Kigali City, Eastern Province | `/api/rwanda-locations/provinces` |
+| 2️⃣ **District** | 30 Districts | Gasabo, Nyarugenge, Kicukiro | `/api/rwanda-locations/districts` |
+| 3️⃣ **Sector** | 416 Sectors | Remera, Kimisagara, Gisozi | `/api/rwanda-locations/sectors` |
+| 4️⃣ **Cell** | 2,148 Cells | Nyabisindu, Rugando | `/api/rwanda-locations/cells` |
+| 5️⃣ **Village** | 14,837 Villages | Kabeza, Kimihurura | `/api/rwanda-locations/villages` |
+
+</div>
+
+### 🔄 Cascading Selection Process
+
+```mermaid
+graph TD
+    A[🇷🇼 Select Province] --> B[🏢 Districts Load]
+    B --> C[🏢 Select District] --> D[🏠 Sectors Load]
+    D --> E[🏠 Select Sector] --> F[🏡 Cells Load]
+    F --> G[🏡 Select Cell] --> H[🏡 Villages Load]
+    H --> I[🏡 Select Village] --> J[✅ Complete Registration]
+```
+
+### 🔗 External API Integration
+
+- **Data Source**: [RDA Administrative Divisions API](https://rda-ad-divisions.onrender.com)
+- **Real-time Updates**: Location data is fetched live from official government API
+- **Accuracy**: Ensures users select valid, official administrative divisions
+- **Performance**: Efficient caching and error handling for optimal user experience
+
+### 📊 Registration Enhancement
+
+**Before**: Users manually typed location information (prone to errors)
+**After**: Users select from official dropdown menus (100% accurate)
 
 ---
 
@@ -397,7 +462,7 @@ SERVER_PORT=8080
 | Table | Records | Purpose | Key Features |
 |-------|---------|---------|-------------|
 | 🏛️ `locations` | 30 districts | Rwandan administrative hierarchy | Unique province codes (KG01-NP05) |
-| 👥 `users` | Citizens & Volunteers | User management | Role-based, location-linked + sector/cell/village fields |
+| 👥 `users` | Citizens & Volunteers | User management | Role-based, complete 5-level location hierarchy |
 | 📝 `requests` | Help requests | Service requests | Status tracking |
 | 🤝 `assignments` | Volunteer tasks | Request assignments | Time tracking |
 | 🔔 `notifications` | User alerts | System notifications | Read/unread status |
@@ -420,7 +485,8 @@ SERVER_PORT=8080
   - Northern Province: Gicumbi (NP01), Gakenke (NP02), Burera (NP03), Rulindo (NP04), Musanze (NP05)
 - **👥 5 Users**: Mix of citizens and volunteers with realistic Rwandan names
 - **🎯 10 Skills**: Programming, Tutoring, Delivery, Tech Support, Cooking, Healthcare, Construction, Transportation, Agriculture, Education
-- **📍 Location Structure**: Pre-loaded province/district, users manually enter sector/cell/village
+- **📍 Location Structure**: Complete 5-level hierarchy from RDA API (Province → District → Sector → Cell → Village)
+- **🇷🇼 Real-time Data**: All location data fetched from official Rwanda Development Agency API
 
 </details>
 
