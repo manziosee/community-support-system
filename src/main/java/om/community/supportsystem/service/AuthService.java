@@ -218,4 +218,30 @@ public class AuthService {
         
         userRepository.save(user);
     }
+    
+    public void resendEmailVerification(String email) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) {
+            // Don't reveal if email exists
+            return;
+        }
+        
+        User user = userOpt.get();
+        if (user.isEmailVerified()) {
+            // Email already verified
+            return;
+        }
+        
+        // Generate new verification token
+        String newToken = UUID.randomUUID().toString();
+        user.setEmailVerificationToken(newToken);
+        userRepository.save(user);
+        
+        // Send verification email
+        try {
+            emailService.sendEmailVerification(email, newToken);
+        } catch (Exception e) {
+            System.err.println("Failed to resend verification email: " + e.getMessage());
+        }
+    }
 }

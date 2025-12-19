@@ -116,8 +116,8 @@ const AvailableRequestsPage: React.FC = () => {
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Your Area</p>
-              <p className="text-lg font-bold text-gray-900">{user?.location.district}</p>
-              <p className="text-xs text-gray-500">{user?.location.province}</p>
+              <p className="text-lg font-bold text-gray-900">{user?.district || user?.location?.district}</p>
+              <p className="text-xs text-gray-500">{user?.province || user?.location?.province}</p>
             </div>
           </div>
         </Card>

@@ -101,7 +101,7 @@ const VolunteerDashboard: React.FC = () => {
             </h1>
             <p className="text-white/90 flex items-center mb-2 text-sm sm:text-base">
               <MapPin className="inline w-4 h-4 mr-1 flex-shrink-0" />
-              <span className="truncate">{user?.location.district}, {user?.location.province}</span>
+              <span className="truncate">{user?.district || user?.location?.district}, {user?.province || user?.location?.province}</span>
             </p>
             <div className="flex items-start">
               <Award className="w-4 h-4 text-white/80 mr-1 mt-0.5 flex-shrink-0" />

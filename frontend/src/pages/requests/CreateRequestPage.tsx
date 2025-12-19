@@ -200,8 +200,8 @@ const CreateRequestPage: React.FC = () => {
             <div className="bg-blue-50 p-4 rounded-lg">
               <h3 className="font-medium text-blue-900 mb-2">Your Location</h3>
               <div className="text-sm text-blue-800">
-                <p><span className="font-medium">District:</span> {user?.location.district}</p>
-                <p><span className="font-medium">Province:</span> {user?.location.province}</p>
+                <p><span className="font-medium">District:</span> {user?.district || user?.location?.district}</p>
+                <p><span className="font-medium">Province:</span> {user?.province || user?.location?.province}</p>
                 {user?.sector && <p><span className="font-medium">Sector:</span> {user.sector}</p>}
                 {user?.cell && <p><span className="font-medium">Cell:</span> {user.cell}</p>}
                 {user?.village && <p><span className="font-medium">Village:</span> {user.village}</p>}
