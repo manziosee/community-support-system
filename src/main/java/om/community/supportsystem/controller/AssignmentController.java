@@ -22,12 +22,20 @@ public class AssignmentController {
     
     // Create
     @PostMapping
-    public ResponseEntity<Assignment> createAssignment(@RequestBody Assignment assignment) {
+    public ResponseEntity<?> createAssignment(@RequestBody Assignment assignment) {
         try {
+            System.out.println("🔄 Creating assignment for request: " + 
+                (assignment.getRequest() != null ? assignment.getRequest().getRequestId() : "null") + 
+                ", volunteer: " + 
+                (assignment.getVolunteer() != null ? assignment.getVolunteer().getUserId() : "null"));
+            
             Assignment createdAssignment = assignmentService.createAssignment(assignment);
+            System.out.println("✅ Assignment created successfully with ID: " + createdAssignment.getAssignmentId());
             return ResponseEntity.ok(createdAssignment);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
+            System.err.println("❌ Failed to create assignment: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", e.getMessage()));
         }
     }
     

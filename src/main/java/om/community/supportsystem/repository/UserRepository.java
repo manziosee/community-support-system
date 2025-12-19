@@ -76,6 +76,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // Authentication methods
     Optional<User> findByEmailVerificationToken(String token);
     Optional<User> findByPasswordResetToken(String token);
+    List<User> findByPasswordResetTokenIsNotNull();
     
     // Dashboard statistics methods
     long countByAccountLockedFalse();

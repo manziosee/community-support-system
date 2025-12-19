@@ -6,6 +6,7 @@ import om.community.supportsystem.model.RequestStatus;
 import om.community.supportsystem.model.User;
 import om.community.supportsystem.repository.AssignmentRepository;
 import om.community.supportsystem.repository.RequestRepository;
+import om.community.supportsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,19 +25,53 @@ public class AssignmentService {
     @Autowired
     private RequestRepository requestRepository;
     
+    @Autowired
+    private UserRepository userRepository;
+    
     // Create
     public Assignment createAssignment(Assignment assignment) {
-        // Check if request is already assigned
-        if (assignmentRepository.existsByRequestAndVolunteer(assignment.getRequest(), assignment.getVolunteer())) {
+        System.out.println("🔄 Creating assignment...");
+        
+        // Validate input
+        if (assignment.getRequest() == null || assignment.getRequest().getRequestId() == null) {
+            throw new RuntimeException("Request is required and must have a valid ID");
+        }
+        
+        if (assignment.getVolunteer() == null || assignment.getVolunteer().getUserId() == null) {
+            throw new RuntimeException("Volunteer is required and must have a valid ID");
+        }
+        
+        // Fetch the actual request and volunteer entities
+        Request request = requestRepository.findById(assignment.getRequest().getRequestId())
+            .orElseThrow(() -> new RuntimeException("Request not found with ID: " + assignment.getRequest().getRequestId()));
+        
+        User volunteer = userRepository.findById(assignment.getVolunteer().getUserId())
+            .orElseThrow(() -> new RuntimeException("Volunteer not found with ID: " + assignment.getVolunteer().getUserId()));
+        
+        // Check if request is still pending
+        if (request.getStatus() != RequestStatus.PENDING) {
+            throw new RuntimeException("Request is no longer available for assignment");
+        }
+        
+        // Check if request is already assigned to this volunteer
+        if (assignmentRepository.existsByRequestAndVolunteer(request, volunteer)) {
             throw new RuntimeException("Assignment already exists for this request and volunteer");
         }
         
+        // Set the actual entities
+        assignment.setRequest(request);
+        assignment.setVolunteer(volunteer);
+        assignment.setAcceptedAt(LocalDateTime.now());
+        
         // Update request status to ACCEPTED
-        Request request = assignment.getRequest();
         request.setStatus(RequestStatus.ACCEPTED);
         requestRepository.save(request);
         
-        return assignmentRepository.save(assignment);
+        System.out.println("✅ Assignment validation passed, saving...");
+        Assignment savedAssignment = assignmentRepository.save(assignment);
+        System.out.println("✅ Assignment saved with ID: " + savedAssignment.getAssignmentId());
+        
+        return savedAssignment;
     }
     
     // Read
