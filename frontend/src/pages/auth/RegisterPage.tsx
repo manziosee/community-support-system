@@ -93,6 +93,10 @@ const RegisterPage: React.FC = () => {
           const response = await locationsApi.getDistrictsByProvince(watchedProvince);
           console.log('API Response:', response);
           console.log('Districts data:', response.data);
+          console.log('Districts array length:', response.data?.length);
+          if (response.data && response.data.length > 0) {
+            console.log('First district:', response.data[0]);
+          }
           setDistricts(response.data || []);
           setValue('locationId', '' as any); // Reset district selection
         } catch (error) {
@@ -113,21 +117,28 @@ const RegisterPage: React.FC = () => {
     try {
       setIsLoading(true);
       const userData = {
-        name: data.name,
-        email: data.email,
+        name: data.name.trim(),
+        email: data.email.trim().toLowerCase(),
         phoneNumber: data.phoneNumber,
         password: data.password,
         role: data.role,
-        locationId: data.locationId,
-        sector: data.sector || '',
-        cell: data.cell || '',
-        village: data.village || '',
-        skills: data.skills?.map(skillId => ({ skillId })) || [],
+        locationId: Number(data.locationId), // Ensure locationId is a number
+        sector: data.sector?.trim() || '',
+        cell: data.cell?.trim() || '',
+        village: data.village?.trim() || '',
+        skills: (data.skills || []).map(skillId => ({
+          skillId: Number(skillId) // Ensure skillId is a number
+        }))
       };
+      
+      console.log('Submitting registration data:', userData);
       await registerUser(userData);
+      toast.success('Registration successful! Redirecting to dashboard...');
       navigate('/dashboard');
-    } catch (error) {
-      // Error is handled by the auth context
+    } catch (error: any) {
+      console.error('Registration error:', error);
+      const errorMessage = error.response?.data?.message || 'Registration failed. Please try again.';
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -295,22 +306,20 @@ const RegisterPage: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Province */}
             <div>
-              <label htmlFor="province" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="province" className="block text-sm font-medium text-gray-700 mb-1">
                 Province
               </label>
-              <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <MapPin className="h-5 w-5 text-gray-400" />
-                </div>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
                 <select
                   {...register('province')}
                   id="province"
-                  autoComplete="address-level1"
-                  className="input-field pl-10"
+                  className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white text-black"
+                  style={{ color: '#000000', backgroundColor: '#ffffff' }}
                 >
-                  <option key="empty-province" value="">Select province</option>
+                  <option value="" style={{ color: '#6b7280', backgroundColor: '#ffffff' }}>Select province</option>
                   {provinces.map((province) => (
-                    <option key={`province-${province}`} value={province}>
+                    <option key={province} value={province} style={{ color: '#000000', backgroundColor: '#ffffff' }}>
                       {province}
                     </option>
                   ))}
@@ -323,21 +332,18 @@ const RegisterPage: React.FC = () => {
 
             {/* District */}
             <div>
-              <label htmlFor="locationId" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="locationId" className="block text-sm font-medium text-gray-700 mb-1">
                 District {districts.length > 0 && `(${districts.length} available)`}
               </label>
-              <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <MapPin className="h-5 w-5 text-gray-400" />
-                </div>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
                 <select
                   {...register('locationId', { valueAsNumber: true })}
                   id="locationId"
-                  autoComplete="address-level2"
-                  className="input-field pl-10"
+                  className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white"
                   disabled={!selectedProvince || districts.length === 0}
                 >
-                  <option key="empty-district" value="">
+                  <option value="">
                     {!selectedProvince 
                       ? 'Select province first' 
                       : districts.length === 0 
@@ -345,13 +351,14 @@ const RegisterPage: React.FC = () => {
                         : 'Select district'
                     }
                   </option>
-                  {districts
-                    .filter(location => location.locationId && location.district)
-                    .map((location, index) => (
-                      <option key={`district-${location.locationId}-${index}`} value={location.locationId}>
-                        {location.district}
-                      </option>
-                    ))}
+                  {districts.map((district, index) => (
+                    <option 
+                      key={index} 
+                      value={district}
+                    >
+                      {district}
+                    </option>
+                  ))}
                 </select>
               </div>
               {errors.locationId && (
