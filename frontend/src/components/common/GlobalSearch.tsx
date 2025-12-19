@@ -51,7 +51,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ onClose }) => {
             type: 'user',
             id: user.userId,
             title: user.name,
-            subtitle: `${user.role} • ${user.location.district}, ${user.location.province}`,
+            subtitle: `${user.role} • ${user.district || user.location?.district}, ${user.province || user.location?.province}`,
             icon: User,
           });
         });

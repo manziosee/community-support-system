@@ -94,7 +94,7 @@ const ProfilePage: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Province</label>
                 <input
                   type="text"
-                  value={user.location.province}
+                  value={user.province || user.location?.province || ''}
                   disabled
                   className="input-field bg-gray-50"
                 />
@@ -103,7 +103,7 @@ const ProfilePage: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">District</label>
                 <input
                   type="text"
-                  value={user.location.district}
+                  value={user.district || user.location?.district || ''}
                   disabled
                   className="input-field bg-gray-50"
                 />

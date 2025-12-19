@@ -3,11 +3,14 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { CheckCircle, XCircle, Mail, Loader } from 'lucide-react';
 import { authApi } from '../../services/api';
 import Button from '../../components/common/Button';
+import toast from 'react-hot-toast';
 
 const EmailVerificationPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('');
+  const [resendEmail, setResendEmail] = useState('');
+  const [isResending, setIsResending] = useState(false);
   const token = searchParams.get('token');
 
   useEffect(() => {
@@ -30,6 +33,24 @@ const EmailVerificationPage: React.FC = () => {
 
     verifyEmail();
   }, [token]);
+
+  const handleResendVerification = async () => {
+    if (!resendEmail) {
+      toast.error('Please enter your email address');
+      return;
+    }
+
+    setIsResending(true);
+    try {
+      await authApi.resendVerification(resendEmail);
+      toast.success('Verification email sent! Please check your inbox.');
+      setResendEmail('');
+    } catch (error: any) {
+      toast.error('Failed to resend verification email');
+    } finally {
+      setIsResending(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -91,17 +112,41 @@ const EmailVerificationPage: React.FC = () => {
               )}
 
               {status === 'error' && (
-                <div className="space-y-3">
-                  <Link to="/register">
-                    <Button variant="outline" className="w-full">
-                      Try Registration Again
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Resend verification email:
+                    </label>
+                    <input
+                      type="email"
+                      value={resendEmail}
+                      onChange={(e) => setResendEmail(e.target.value)}
+                      placeholder="Enter your email address"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <Button 
+                      onClick={handleResendVerification}
+                      disabled={!resendEmail || isResending}
+                      loading={isResending}
+                      variant="secondary"
+                      className="w-full"
+                    >
+                      Resend Verification Email
                     </Button>
-                  </Link>
-                  <Link to="/login">
-                    <Button className="w-full">
-                      Go to Login
-                    </Button>
-                  </Link>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <Link to="/register">
+                      <Button variant="outline" className="w-full">
+                        Try Registration Again
+                      </Button>
+                    </Link>
+                    <Link to="/login">
+                      <Button className="w-full">
+                        Go to Login
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               )}
 

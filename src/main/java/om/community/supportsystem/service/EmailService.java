@@ -39,15 +39,26 @@ public class EmailService {
             message.setFrom(fromEmail);
             message.setTo(toEmail);
             message.setSubject("Email Verification - Community Support System");
-            message.setText("Click the link to verify your email: " +
-                    "https://community-support-system.vercel.app/verify-email?token=" + verificationToken +
-                    "\n\nWelcome to Community Support System!");
+            
+            // Use environment variable for frontend URL or fallback
+            String frontendUrl = System.getenv("FRONTEND_URL");
+            if (frontendUrl == null || frontendUrl.isEmpty()) {
+                frontendUrl = "https://community-support-system.vercel.app";
+            }
+            
+            message.setText("Welcome to Community Support System!\n\n" +
+                    "Please click the link below to verify your email address:\n" +
+                    frontendUrl + "/verify-email?token=" + verificationToken +
+                    "\n\nThis link will expire in 24 hours.\n\n" +
+                    "If you didn't create an account, please ignore this email.");
             
             mailSender.send(message);
-            System.out.println("Verification email sent to: " + toEmail);
+            System.out.println("✅ Verification email sent successfully to: " + toEmail);
         } catch (Exception e) {
-            System.err.println("Failed to send verification email: " + e.getMessage());
-            throw new RuntimeException("Failed to send email", e);
+            System.err.println("❌ Failed to send verification email to " + toEmail + ": " + e.getMessage());
+            e.printStackTrace();
+            // Don't throw exception - allow registration to continue
+            // throw new RuntimeException("Failed to send email", e);
         }
     }
     

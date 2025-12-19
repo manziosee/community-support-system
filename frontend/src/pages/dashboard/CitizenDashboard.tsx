@@ -83,7 +83,7 @@ const CitizenDashboard: React.FC = () => {
             </h1>
             <p className="text-white/90 flex items-center">
               <MapPin className="inline w-4 h-4 mr-1" />
-              {user?.location.district}, {user?.location.province}
+              {user?.district || user?.location?.district}, {user?.province || user?.location?.province}
             </p>
           </div>
           <Link to="/requests/create">

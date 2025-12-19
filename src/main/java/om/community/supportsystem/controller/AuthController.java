@@ -16,6 +16,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import jakarta.validation.Valid;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import om.community.supportsystem.model.User;
+import om.community.supportsystem.repository.UserRepository;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -98,6 +102,20 @@ public class AuthController {
             return ResponseEntity.ok(Map.of("message", "Email verified successfully"));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+    
+    @Operation(summary = "Resend Email Verification", description = "Resend verification email to user")
+    @ApiResponse(responseCode = "200", description = "Verification email sent")
+    @PostMapping("/resend-verification")
+    public ResponseEntity<?> resendVerification(@RequestBody Map<String, String> request) {
+        try {
+            String email = request.get("email");
+            authService.resendEmailVerification(email);
+            return ResponseEntity.ok(Map.of("message", "Verification email sent"));
+        } catch (Exception e) {
+            // Don't reveal if email exists
+            return ResponseEntity.ok(Map.of("message", "If the email exists and is unverified, a verification email has been sent"));
         }
     }
     
