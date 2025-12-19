@@ -17,15 +17,15 @@ public class Assignment {
     private LocalDateTime completedAt;
     
     // Many-to-One: Many assignments belong to one request
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "request_id", nullable = false)
     @JsonIgnoreProperties({"assignments", "citizen"})
     private Request request;
     
     // Many-to-One: Many assignments belong to one volunteer
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "volunteer_id", nullable = false)
-    @JsonIgnoreProperties({"assignments", "requests", "notifications"})
+    @JsonIgnoreProperties({"assignments", "requests", "notifications", "skills", "userSettings"})
     private User volunteer;
     
     // Constructors

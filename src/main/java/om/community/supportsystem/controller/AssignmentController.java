@@ -54,9 +54,47 @@ public class AssignmentController {
     }
     
     @GetMapping("/volunteer/{volunteerId}")
-    public ResponseEntity<List<Assignment>> getAssignmentsByVolunteerId(@PathVariable Long volunteerId) {
-        List<Assignment> assignments = assignmentService.getAssignmentsByVolunteerId(volunteerId);
-        return ResponseEntity.ok(assignments);
+    public ResponseEntity<?> getAssignmentsByVolunteerId(@PathVariable Long volunteerId) {
+        try {
+            System.out.println("🔍 Fetching assignments for volunteer ID: " + volunteerId);
+            List<Assignment> assignments = assignmentService.getAssignmentsByVolunteerId(volunteerId);
+            System.out.println("✅ Found " + assignments.size() + " assignments for volunteer " + volunteerId);
+            
+            // Create simplified response to avoid serialization issues
+            List<java.util.Map<String, Object>> simpleAssignments = assignments.stream()
+                .map(assignment -> {
+                    java.util.Map<String, Object> map = new java.util.HashMap<>();
+                    map.put("assignmentId", assignment.getAssignmentId());
+                    map.put("acceptedAt", assignment.getAcceptedAt());
+                    map.put("completedAt", assignment.getCompletedAt());
+                    
+                    // Simplified request info
+                    if (assignment.getRequest() != null) {
+                        java.util.Map<String, Object> requestMap = new java.util.HashMap<>();
+                        requestMap.put("requestId", assignment.getRequest().getRequestId());
+                        requestMap.put("title", assignment.getRequest().getTitle());
+                        requestMap.put("status", assignment.getRequest().getStatus());
+                        map.put("request", requestMap);
+                    }
+                    
+                    // Simplified volunteer info
+                    if (assignment.getVolunteer() != null) {
+                        java.util.Map<String, Object> volunteerMap = new java.util.HashMap<>();
+                        volunteerMap.put("userId", assignment.getVolunteer().getUserId());
+                        volunteerMap.put("name", assignment.getVolunteer().getName());
+                        map.put("volunteer", volunteerMap);
+                    }
+                    
+                    return map;
+                })
+                .collect(java.util.stream.Collectors.toList());
+            
+            return ResponseEntity.ok(simpleAssignments);
+        } catch (Exception e) {
+            System.err.println("❌ Failed to fetch assignments for volunteer " + volunteerId + ": " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(java.util.Map.of("error", e.getMessage()));
+        }
     }
     
     @GetMapping("/completed")
