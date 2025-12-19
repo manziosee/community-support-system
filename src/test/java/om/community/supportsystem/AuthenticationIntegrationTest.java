@@ -40,7 +40,8 @@ public class AuthenticationIntegrationTest {
         registerRequest.setPhoneNumber("1234567890");
         registerRequest.setPassword("password123");
         registerRequest.setRole(UserRole.CITIZEN);
-        registerRequest.setLocationId(1L);
+        registerRequest.setProvince("Kigali City");
+        registerRequest.setDistrict("Gasabo");
         registerRequest.setSector("Test Sector");
         registerRequest.setCell("Test Cell");
         registerRequest.setVillage("Test Village");
@@ -62,7 +63,8 @@ public class AuthenticationIntegrationTest {
         registerRequest.setPhoneNumber("9876543210");
         registerRequest.setPassword("password123");
         registerRequest.setRole(UserRole.VOLUNTEER);
-        registerRequest.setLocationId(1L);
+        registerRequest.setProvince("Eastern Province");
+        registerRequest.setDistrict("Nyagatare");
 
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -90,7 +92,8 @@ public class AuthenticationIntegrationTest {
         registerRequest.setPhoneNumber("5555555555");
         registerRequest.setPassword("password123");
         registerRequest.setRole(UserRole.CITIZEN);
-        registerRequest.setLocationId(1L);
+        registerRequest.setProvince("Western Province");
+        registerRequest.setDistrict("Rusizi");
 
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
