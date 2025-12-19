@@ -32,9 +32,9 @@ public class TestRequestController {
             long pendingCount = requestRepository.countByStatus(RequestStatus.PENDING);
             
             return ResponseEntity.ok(Map.of(
-                "totalRequests", totalCount,
-                "pendingRequests", pendingCount,
-                "message", "Request counts retrieved successfully"
+                "totalRequests", (Object) totalCount,
+                "pendingRequests", (Object) pendingCount,
+                "message", (Object) "Request counts retrieved successfully"
             ));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(Map.of(
@@ -52,13 +52,16 @@ public class TestRequestController {
             
             // Create simplified response to avoid serialization issues
             List<Map<String, Object>> simpleRequests = requests.stream()
-                .map(request -> Map.of(
-                    "requestId", request.getRequestId(),
-                    "title", request.getTitle(),
-                    "status", request.getStatus().toString(),
-                    "createdAt", request.getCreatedAt().toString(),
-                    "citizenName", request.getCitizen() != null ? request.getCitizen().getName() : "Unknown"
-                ))
+                .map(request -> {
+                    Map<String, Object> map = Map.of(
+                        "requestId", (Object) request.getRequestId(),
+                        "title", (Object) request.getTitle(),
+                        "status", (Object) request.getStatus().toString(),
+                        "createdAt", (Object) request.getCreatedAt().toString(),
+                        "citizenName", (Object) (request.getCitizen() != null ? request.getCitizen().getName() : "Unknown")
+                    );
+                    return map;
+                })
                 .toList();
             
             return ResponseEntity.ok(Map.of(
