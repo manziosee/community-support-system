@@ -105,10 +105,22 @@ public class AuthController {
         }
     }
     
-    @Operation(summary = "Resend Email Verification", description = "Resend verification email to user")
-    @ApiResponse(responseCode = "200", description = "Verification email sent")
+    @Operation(summary = "Resend Email Verification", description = "Resend verification email to unverified user")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Verification email sent (or user doesn't exist)"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @PostMapping("/resend-verification")
-    public ResponseEntity<?> resendVerification(@RequestBody Map<String, String> request) {
+    public ResponseEntity<?> resendVerification(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                description = "Email address to resend verification to",
+                content = @io.swagger.v3.oas.annotations.media.Content(
+                    schema = @io.swagger.v3.oas.annotations.media.Schema(
+                        example = "{\"email\": \"user@example.com\"}"
+                    )
+                )
+            )
+            @RequestBody Map<String, String> request) {
         try {
             String email = request.get("email");
             authService.resendEmailVerification(email);

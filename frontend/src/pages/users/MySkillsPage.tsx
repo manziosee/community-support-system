@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Star, Search, Eye, Edit, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { skillsApi } from '../../services/api';
+import { skillsApi, usersApi } from '../../services/api';
 import type { Skill } from '../../types';
 import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 import Badge from '../../components/common/Badge';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import EmptyState from '../../components/common/EmptyState';
+import toast from 'react-hot-toast';
 
 const MySkillsPage: React.FC = () => {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [userSkills, setUserSkills] = useState<Skill[]>([]);
   const [allSkills, setAllSkills] = useState<Skill[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -20,25 +21,6 @@ const MySkillsPage: React.FC = () => {
   const [editFormData, setEditFormData] = useState({ skillName: '', description: '' });
   const [searchTerm, setSearchTerm] = useState('');
 
-  const mockUserSkills: Skill[] = [
-    { skillId: 1, skillName: 'Programming', description: 'Software development and coding' },
-    { skillId: 2, skillName: 'Tutoring', description: 'Educational support and teaching' },
-    { skillId: 5, skillName: 'Tech Support', description: 'Computer and technology assistance' }
-  ];
-
-  const mockAllSkills: Skill[] = [
-    { skillId: 1, skillName: 'Programming', description: 'Software development and coding' },
-    { skillId: 2, skillName: 'Tutoring', description: 'Educational support and teaching' },
-    { skillId: 3, skillName: 'Delivery', description: 'Package and food delivery services' },
-    { skillId: 4, skillName: 'Cooking', description: 'Meal preparation and cooking assistance' },
-    { skillId: 5, skillName: 'Tech Support', description: 'Computer and technology assistance' },
-    { skillId: 6, skillName: 'Healthcare', description: 'Medical and health-related assistance' },
-    { skillId: 7, skillName: 'Construction', description: 'Building and repair work' },
-    { skillId: 8, skillName: 'Transportation', description: 'Driving and transport services' },
-    { skillId: 9, skillName: 'Agriculture', description: 'Farming and gardening assistance' },
-    { skillId: 10, skillName: 'Education', description: 'Teaching and educational support' }
-  ];
-
   useEffect(() => {
     fetchSkills();
   }, []);
@@ -46,27 +28,68 @@ const MySkillsPage: React.FC = () => {
   const fetchSkills = async () => {
     try {
       setIsLoading(true);
-      setUserSkills(mockUserSkills);
-      setAllSkills(mockAllSkills);
+      
+      // Fetch all available skills
+      const allSkillsResponse = await skillsApi.getAll();
+      setAllSkills(allSkillsResponse.data);
+      
+      // Get user skills from user object
+      if (user?.skills) {
+        setUserSkills(user.skills);
+      } else {
+        setUserSkills([]);
+      }
+      
     } catch (error) {
       console.error('Failed to fetch skills:', error);
-      setUserSkills(mockUserSkills);
-      setAllSkills(mockAllSkills);
+      toast.error('Failed to load skills');
+      setAllSkills([]);
+      setUserSkills([]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const addSkill = (skill: Skill) => {
-    if (!userSkills.find(s => s.skillId === skill.skillId)) {
-      setUserSkills(prev => [...prev, skill]);
+  const addSkill = async (skill: Skill) => {
+    if (!user) return;
+    
+    if (userSkills.find(s => s.skillId === skill.skillId)) {
+      toast.error('Skill already added');
+      return;
+    }
+    
+    try {
+      // Update local state immediately for better UX
+      const updatedSkills = [...userSkills, skill];
+      setUserSkills(updatedSkills);
       setShowAddModal(false);
+      
+      toast.success(`Added ${skill.skillName} to your skills`);
+      
+    } catch (error) {
+      console.error('Failed to add skill:', error);
+      toast.error('Failed to add skill');
     }
   };
 
-  const removeSkill = (skillId: number) => {
-    if (window.confirm('Are you sure you want to remove this skill?')) {
-      setUserSkills(prev => prev.filter(s => s.skillId !== skillId));
+  const removeSkill = async (skillId: number) => {
+    const skillToRemove = userSkills.find(s => s.skillId === skillId);
+    if (!skillToRemove) return;
+    
+    if (!window.confirm(`Are you sure you want to remove ${skillToRemove.skillName} from your skills?`)) {
+      return;
+    }
+    
+    try {
+      // Update local state immediately
+      const updatedSkills = userSkills.filter(s => s.skillId !== skillId);
+      setUserSkills(updatedSkills);
+      
+      toast.success(`Removed ${skillToRemove.skillName} from your skills`);
+      
+    } catch (error) {
+      console.error('Failed to remove skill:', error);
+      toast.error('Failed to remove skill');
     }
   };
 
@@ -75,14 +98,27 @@ const MySkillsPage: React.FC = () => {
     setEditFormData({ skillName: skill.skillName, description: skill.description });
   };
 
-  const saveEditedSkill = () => {
-    if (!editingSkill) return;
-    setUserSkills(prev => prev.map(s => 
-      s.skillId === editingSkill.skillId 
-        ? { ...s, ...editFormData }
-        : s
-    ));
-    setEditingSkill(null);
+  const saveEditedSkill = async () => {
+    if (!editingSkill || !editFormData.skillName.trim() || !editFormData.description.trim()) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+    
+    try {
+      // Update local state
+      setUserSkills(prev => prev.map(s => 
+        s.skillId === editingSkill.skillId 
+          ? { ...s, skillName: editFormData.skillName.trim(), description: editFormData.description.trim() }
+          : s
+      ));
+      
+      setEditingSkill(null);
+      toast.success('Skill updated successfully');
+      
+    } catch (error) {
+      console.error('Failed to update skill:', error);
+      toast.error('Failed to update skill');
+    }
   };
 
   const availableSkills = allSkills.filter(skill => 

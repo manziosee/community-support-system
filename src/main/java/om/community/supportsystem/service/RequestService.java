@@ -53,6 +53,10 @@ public class RequestService {
         return requestRepository.findByLocationProvince(province);
     }
     
+    public List<Request> getPendingRequestsByProvince(String province) {
+        return requestRepository.findPendingRequestsByProvince(province);
+    }
+    
     public List<Request> getRequestsCreatedAfter(LocalDateTime date) {
         return requestRepository.findByCreatedAtAfter(date);
     }

@@ -11,10 +11,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/requests")
+@Tag(name = "📝 Requests", description = "Request management APIs - CRUD operations, status updates, and location-based filtering")
 @CrossOrigin(origins = {"http://localhost:3001", "http://localhost:5173", "https://community-support-system.vercel.app"}, allowCredentials = "true")
 public class RequestController {
     
@@ -22,6 +29,11 @@ public class RequestController {
     private RequestService requestService;
     
     // Create
+    @Operation(summary = "Create new request", description = "Create a new help request by a citizen")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Request created successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid request data")
+    })
     @PostMapping
     public ResponseEntity<Request> createRequest(@RequestBody Request request) {
         Request createdRequest = requestService.createRequest(request);
@@ -29,14 +41,30 @@ public class RequestController {
     }
     
     // Read
+    @Operation(summary = "Get all requests", description = "Retrieve all help requests in the system")
+    @ApiResponse(responseCode = "200", description = "Requests retrieved successfully")
     @GetMapping
-    public ResponseEntity<List<Request>> getAllRequests() {
-        List<Request> requests = requestService.getAllRequests();
-        return ResponseEntity.ok(requests);
+    public ResponseEntity<?> getAllRequests() {
+        try {
+            List<Request> requests = requestService.getAllRequests();
+            return ResponseEntity.ok(requests);
+        } catch (Exception e) {
+            System.err.println("Error fetching all requests: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(
+                java.util.Map.of("error", "Failed to fetch requests: " + e.getMessage())
+            );
+        }
     }
     
+    @Operation(summary = "Get request by ID", description = "Retrieve a specific request by its ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Request found"),
+        @ApiResponse(responseCode = "404", description = "Request not found")
+    })
     @GetMapping("/{id}")
-    public ResponseEntity<Request> getRequestById(@PathVariable Long id) {
+    public ResponseEntity<Request> getRequestById(
+            @Parameter(description = "Request ID", required = true) @PathVariable Long id) {
         return requestService.getRequestById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -48,22 +76,75 @@ public class RequestController {
         return ResponseEntity.ok(requests);
     }
     
+    @Operation(summary = "Get requests by citizen", description = "Retrieve all requests created by a specific citizen")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Requests retrieved successfully"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping("/citizen/{citizenId}")
-    public ResponseEntity<List<Request>> getRequestsByCitizenId(@PathVariable Long citizenId) {
-        List<Request> requests = requestService.getRequestsByCitizenId(citizenId);
-        return ResponseEntity.ok(requests);
+    public ResponseEntity<?> getRequestsByCitizenId(
+            @Parameter(description = "Citizen user ID", required = true) @PathVariable Long citizenId) {
+        try {
+            List<Request> requests = requestService.getRequestsByCitizenId(citizenId);
+            return ResponseEntity.ok(requests);
+        } catch (Exception e) {
+            System.err.println("Error fetching requests for citizen " + citizenId + ": " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(
+                java.util.Map.of("error", "Failed to fetch requests: " + e.getMessage())
+            );
+        }
     }
     
+    @Operation(summary = "Get pending requests", description = "Retrieve all requests with PENDING status for volunteers to accept")
+    @ApiResponse(responseCode = "200", description = "Pending requests retrieved successfully")
     @GetMapping("/pending")
-    public ResponseEntity<List<Request>> getPendingRequests() {
-        List<Request> requests = requestService.getPendingRequests();
-        return ResponseEntity.ok(requests);
+    public ResponseEntity<?> getPendingRequests() {
+        try {
+            List<Request> requests = requestService.getPendingRequests();
+            return ResponseEntity.ok(requests);
+        } catch (Exception e) {
+            System.err.println("Error fetching pending requests: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(
+                java.util.Map.of("error", "Failed to fetch pending requests: " + e.getMessage())
+            );
+        }
     }
     
     @GetMapping("/province/{province}")
-    public ResponseEntity<List<Request>> getRequestsByProvince(@PathVariable String province) {
-        List<Request> requests = requestService.getRequestsByProvince(province);
-        return ResponseEntity.ok(requests);
+    public ResponseEntity<?> getRequestsByProvince(@PathVariable String province) {
+        try {
+            List<Request> requests = requestService.getRequestsByProvince(province);
+            return ResponseEntity.ok(requests);
+        } catch (Exception e) {
+            System.err.println("Error fetching requests for province " + province + ": " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(
+                java.util.Map.of("error", "Failed to fetch requests for province: " + e.getMessage())
+            );
+        }
+    }
+    
+    @Operation(summary = "Get pending requests by province", description = "Retrieve pending requests from a specific province for location-based filtering")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Pending requests retrieved successfully"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/pending/province/{province}")
+    public ResponseEntity<?> getPendingRequestsByProvince(
+            @Parameter(description = "Province name (e.g., 'Kigali City', 'Eastern Province')", required = true) 
+            @PathVariable String province) {
+        try {
+            List<Request> requests = requestService.getPendingRequestsByProvince(province);
+            return ResponseEntity.ok(requests);
+        } catch (Exception e) {
+            System.err.println("Error fetching pending requests for province " + province + ": " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(
+                java.util.Map.of("error", "Failed to fetch pending requests for province: " + e.getMessage())
+            );
+        }
     }
     
     @GetMapping("/recent")

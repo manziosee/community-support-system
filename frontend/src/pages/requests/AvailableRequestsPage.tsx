@@ -10,6 +10,7 @@ import Button from '../../components/common/Button';
 import Badge from '../../components/common/Badge';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import EmptyState from '../../components/common/EmptyState';
+import toast from 'react-hot-toast';
 
 const AvailableRequestsPage: React.FC = () => {
   const { user } = useAuth();
@@ -17,16 +18,38 @@ const AvailableRequestsPage: React.FC = () => {
   const [filteredRequests, setFilteredRequests] = useState<Request[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [locationFilter, setLocationFilter] = useState<string>('ALL');
+  const [locationFilter, setLocationFilter] = useState<string>('MY_PROVINCE');
 
   useEffect(() => {
     const fetchRequests = async () => {
+      if (!user) return;
+      
       try {
         setIsLoading(true);
-        const response = await requestsApi.getPending();
-        setRequests(response.data);
+        
+        // Try to get requests by volunteer's province first
+        const userProvince = user.province || user.location?.province;
+        let response;
+        
+        if (userProvince && locationFilter === 'MY_PROVINCE') {
+          try {
+            response = await requestsApi.getByProvince(userProvince);
+            // Filter to only pending requests
+            const pendingRequests = response.data.filter((r: Request) => r.status === 'PENDING');
+            setRequests(pendingRequests);
+          } catch (error) {
+            console.log('Province-specific request failed, falling back to all pending requests');
+            response = await requestsApi.getPending();
+            setRequests(response.data || []);
+          }
+        } else {
+          response = await requestsApi.getPending();
+          setRequests(response.data || []);
+        }
+        
       } catch (error) {
         console.error('Failed to fetch requests:', error);
+        toast.error('Failed to load available requests');
         setRequests([]);
       } finally {
         setIsLoading(false);
@@ -34,11 +57,12 @@ const AvailableRequestsPage: React.FC = () => {
     };
 
     fetchRequests();
-  }, []);
+  }, [user, locationFilter]);
 
   useEffect(() => {
     let filtered = requests;
 
+    // Apply search filter
     if (searchTerm) {
       filtered = filtered.filter(request => 
         request.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -46,8 +70,12 @@ const AvailableRequestsPage: React.FC = () => {
       );
     }
 
-    if (locationFilter !== 'ALL') {
-      filtered = filtered.filter(request => request.citizen.location.province === locationFilter);
+    // Apply location filter (only if not already filtered by backend)
+    if (locationFilter !== 'MY_PROVINCE' && locationFilter !== 'ALL') {
+      filtered = filtered.filter(request => {
+        const requestProvince = request.citizen.province || request.citizen.location?.province;
+        return requestProvince === locationFilter;
+      });
     }
 
     setFilteredRequests(filtered);
@@ -63,10 +91,10 @@ const AvailableRequestsPage: React.FC = () => {
       });
       
       setRequests(prev => prev.filter(r => r.requestId !== requestId));
-      alert('Request accepted successfully! You can view it in your assignments.');
+      toast.success('Request accepted successfully! Check your assignments.');
     } catch (error) {
       console.error('Failed to accept request:', error);
-      alert('Failed to accept request. Please try again.');
+      toast.error('Failed to accept request. Please try again.');
     }
   };
 
@@ -80,7 +108,7 @@ const AvailableRequestsPage: React.FC = () => {
     return `${Math.floor(diffInHours / 24)}d ago`;
   };
 
-  const provinces = [...new Set(requests.map(r => r.citizen.location.province))];
+  const provinces = [...new Set(requests.map(r => r.citizen.province || r.citizen.location?.province).filter(Boolean))];
 
   if (isLoading) {
     return <LoadingSpinner size="lg" text="Loading available requests..." />;
@@ -156,6 +184,7 @@ const AvailableRequestsPage: React.FC = () => {
               value={locationFilter}
               onChange={(e) => setLocationFilter(e.target.value)}
             >
+              <option value="MY_PROVINCE">My Province ({user?.province || user?.location?.province || 'Not set'})</option>
               <option value="ALL">All Locations</option>
               {provinces.map(province => (
                 <option key={province} value={province}>{province}</option>
@@ -193,7 +222,7 @@ const AvailableRequestsPage: React.FC = () => {
                     </div>
                     <div className="flex items-center">
                       <MapPin className="w-4 h-4 mr-1" />
-                      {request.citizen.location.district}, {request.citizen.location.province}
+                      {(request.citizen.district || request.citizen.location?.district)}, {(request.citizen.province || request.citizen.location?.province)}
                     </div>
                     <div className="flex items-center">
                       <Clock className="w-4 h-4 mr-1" />

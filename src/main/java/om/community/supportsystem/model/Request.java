@@ -33,9 +33,9 @@ public class Request {
     private LocalDateTime updatedAt;
     
     // Many-to-One: Many requests belong to one citizen
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "citizen_id", nullable = false)
-    @JsonIgnoreProperties({"requests", "assignments", "notifications"})
+    @JsonIgnoreProperties({"requests", "assignments", "notifications", "password", "emailVerificationToken", "passwordResetToken", "twoFactorSecret", "twoFactorBackupCodes"})
     private User citizen;
     
     // One-to-Many: One request can have many assignments (history)
