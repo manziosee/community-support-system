@@ -60,9 +60,9 @@ public class LocationController {
     }
     
     @GetMapping("/districts/{province}")
-    public ResponseEntity<List<String>> getDistrictsByProvince(@PathVariable String province) {
-        List<String> districts = locationService.getDistrictsByProvince(province);
-        return ResponseEntity.ok(districts);
+    public ResponseEntity<List<Location>> getDistrictsByProvince(@PathVariable String province) {
+        List<Location> locations = locationService.getLocationsByProvince(province);
+        return ResponseEntity.ok(locations);
     }
     
     @GetMapping("/search")
