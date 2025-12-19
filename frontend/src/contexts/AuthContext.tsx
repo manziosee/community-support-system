@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { User } from '../types';
 import { UserRole } from '../types';
-import { authApi } from '../services/api';
+import { authApi, usersApi } from '../services/api';
 import toast from 'react-hot-toast';
 
 interface AuthContextType {
@@ -10,6 +10,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (userData: any) => Promise<void>;
   logout: () => void;
+  refreshUser: () => Promise<void>;
   isAuthenticated: boolean;
   isLoading: boolean;
   hasRole: (role: UserRole) => boolean;
@@ -41,6 +42,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(false);
   }, []);
 
+  const refreshUser = async () => {
+    if (!user?.userId) return;
+    
+    try {
+      const response = await usersApi.getById(user.userId);
+      const updatedUser = response.data;
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    } catch (error) {
+      console.error('Failed to refresh user data:', error);
+    }
+  };
+
   const login = async (email: string, password: string) => {
     try {
       setIsLoading(true);
@@ -58,6 +72,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       localStorage.setItem('token', authToken);
       localStorage.setItem('user', JSON.stringify(userData));
+      
+      // Refresh user data to get complete profile with skills
+      setTimeout(() => {
+        refreshUser();
+      }, 100);
       
       toast.success('Login successful!');
     } catch (error: any) {
@@ -112,6 +131,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     login,
     register,
     logout,
+    refreshUser,
     isAuthenticated: !!user && !!token,
     isLoading,
     hasRole,

@@ -20,7 +20,7 @@ import EmptyState from '../../components/common/EmptyState';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 
 const VolunteerDashboard: React.FC = () => {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [availableRequests, setAvailableRequests] = useState<Request[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -33,12 +33,20 @@ const VolunteerDashboard: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
 
+  // Refresh user data once on mount to ensure skills are loaded
+  useEffect(() => {
+    if (user?.userId) {
+      refreshUser();
+    }
+  }, []); // Empty dependency array - only run once
+
   useEffect(() => {
     const fetchDashboardData = async () => {
       if (!user) return;
 
       try {
         setIsLoading(true);
+        
         const [assignmentsResponse, requestsResponse, notificationsResponse, unreadCountResponse] = await Promise.all([
           assignmentsApi.getByVolunteer(user.userId),
           requestsApi.getPending(),
@@ -85,34 +93,36 @@ const VolunteerDashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Welcome Header */}
-      <div className="bg-gradient-to-br from-sky-400 to-sky-600 rounded-2xl shadow-soft-lg p-8 text-white">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">
+      <div className="bg-gradient-to-br from-sky-400 to-sky-600 rounded-xl lg:rounded-2xl shadow-soft-lg p-4 sm:p-6 lg:p-8 text-white">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+          <div className="flex-1">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2">
               Welcome back, {user?.name}! 🤝
             </h1>
-            <p className="text-white/90 flex items-center mb-2">
-              <MapPin className="inline w-4 h-4 mr-1" />
-              {user?.location.district}, {user?.location.province}
+            <p className="text-white/90 flex items-center mb-2 text-sm sm:text-base">
+              <MapPin className="inline w-4 h-4 mr-1 flex-shrink-0" />
+              <span className="truncate">{user?.location.district}, {user?.location.province}</span>
             </p>
-            <div className="flex items-center">
-              <Award className="w-4 h-4 text-white/80 mr-1" />
-              <span className="text-sm text-white/90">
+            <div className="flex items-start">
+              <Award className="w-4 h-4 text-white/80 mr-1 mt-0.5 flex-shrink-0" />
+              <span className="text-xs sm:text-sm text-white/90 break-words">
                 Skills: {user?.skills?.map(s => s.skillName).join(', ') || 'No skills added'}
               </span>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Link to="/requests/available">
-              <button className="inline-flex items-center bg-white text-sky-600 px-6 py-3 rounded-lg shadow-md font-semibold">
-                <FileText className="w-5 h-5 mr-2" />
-                Browse Requests
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full lg:w-auto">
+            <Link to="/requests/available" className="flex-1 lg:flex-none">
+              <button className="w-full inline-flex items-center justify-center bg-white text-sky-600 px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg shadow-md font-semibold text-sm sm:text-base">
+                <FileText className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                <span className="hidden sm:inline">Browse Requests</span>
+                <span className="sm:hidden">Browse</span>
               </button>
             </Link>
-            <Link to="/profile">
-              <button className="inline-flex items-center bg-white text-sky-600 px-6 py-3 rounded-lg shadow-md font-semibold">
-                <Plus className="w-5 h-5 mr-2" />
-                Update Skills
+            <Link to="/profile" className="flex-1 lg:flex-none">
+              <button className="w-full inline-flex items-center justify-center bg-white text-sky-600 px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg shadow-md font-semibold text-sm sm:text-base">
+                <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                <span className="hidden sm:inline">Update Skills</span>
+                <span className="sm:hidden">Skills</span>
               </button>
             </Link>
           </div>
@@ -120,7 +130,7 @@ const VolunteerDashboard: React.FC = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
         <StatCard
           title="Total Assignments"
           value={stats.totalAssignments}
@@ -156,7 +166,7 @@ const VolunteerDashboard: React.FC = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6">
         {/* My Active Assignments */}
         <Card padding="none" hover>
           <div className="p-6 border-b border-sky-200 bg-gradient-to-r from-sky-50 to-sky-100">
@@ -296,7 +306,7 @@ const VolunteerDashboard: React.FC = () => {
       </Card>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
         <Card hover className="group">
           <div className="text-center">
             <div className="w-14 h-14 bg-gradient-to-br from-sky-400 to-sky-600 rounded-xl flex items-center justify-center mx-auto shadow-sm group-hover:scale-110 transition-transform duration-300">
