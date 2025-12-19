@@ -17,7 +17,93 @@
 @layer components {
   /* Input Fields */
   .input-field {
-    @apply block w-full px-4 py-2.5 border border-neutral-300 rounded-lg shadow-sm transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none placeholder:text-neutral-400;
+    @apply block w-full px-4 py-2.5 border border-neutral-300 rounded-lg shadow-sm transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none placeholder:text-neutral-400 text-gray-900 bg-white;
+  }
+
+  .input-field option {
+    @apply text-gray-900 bg-white;
+    color: #111827 !important;
+    background-color: #ffffff !important;
+  }
+
+  select.input-field {
+    color: #111827 !important;
+  }
+
+  /* Force black text for all select elements and options */
+  select {
+    color: #111827 !important;
+  }
+
+  select option {
+    color: #111827 !important;
+    background-color: #ffffff !important;
+  }
+
+  /* Webkit specific fixes */
+  select::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  select::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  select::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  /* Specific styling for location selects */
+  select#province,
+  select#locationId {
+    color: #000000 !important;
+    background-color: #ffffff !important;
+  }
+
+  select#province option,
+  select#locationId option {
+    color: #000000 !important;
+    background-color: #ffffff !important;
+    padding: 8px 12px;
+  }
+
+  select#province option:hover,
+  select#locationId option:hover {
+    background-color: #f3f4f6 !important;
+  }
+
+  /* Force all select elements in forms to have black text */
+  form select,
+  form select option {
+    color: #000000 !important;
+    background-color: #ffffff !important;
+  }
+
+  /* Aggressive override for district dropdown */
+  select#locationId option {
+    color: #000000 !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  /* All states for district options */
+  select#locationId option:hover,
+  select#locationId option:focus,
+  select#locationId option:active,
+  select#locationId option:checked,
+  select#locationId option:selected {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  /* Force visibility on dropdown open */
+  select#locationId:focus option {
+    color: #000000 !important;
+    background-color: #ffffff !important;
   }
 
   .input-error {
