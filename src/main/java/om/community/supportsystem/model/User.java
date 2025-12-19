@@ -95,13 +95,13 @@ public class User {
     private List<Notification> notifications;
     
     // Many-to-Many: Users can have multiple skills (for volunteers)
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_skills",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
-    @JsonIgnore
+    @JsonIgnoreProperties({"users"})
     private Set<Skill> skills;
     
     // One-to-One: User settings for notification preferences
