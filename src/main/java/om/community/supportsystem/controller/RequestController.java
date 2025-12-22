@@ -1,5 +1,6 @@
 package om.community.supportsystem.controller;
 
+import om.community.supportsystem.dto.RequestResponseDTO;
 import om.community.supportsystem.model.Request;
 import om.community.supportsystem.model.RequestStatus;
 import om.community.supportsystem.service.RequestService;
@@ -18,6 +19,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/requests")
@@ -47,7 +49,10 @@ public class RequestController {
     public ResponseEntity<?> getAllRequests() {
         try {
             List<Request> requests = requestService.getAllRequests();
-            return ResponseEntity.ok(requests);
+            List<RequestResponseDTO> requestDTOs = requests.stream()
+                .map(RequestResponseDTO::new)
+                .collect(Collectors.toList());
+            return ResponseEntity.ok(requestDTOs);
         } catch (Exception e) {
             System.err.println("Error fetching all requests: " + e.getMessage());
             e.printStackTrace();

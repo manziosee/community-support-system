@@ -27,6 +27,11 @@ public class AssignmentResponseDTO {
     private String citizenName;
     private String citizenEmail;
     
+    // Nested objects for backward compatibility
+    private VolunteerInfo volunteer;
+    private CitizenInfo citizen;
+    private RequestInfo request;
+    
     public AssignmentResponseDTO(Assignment assignment) {
         this.assignmentId = assignment.getAssignmentId();
         this.acceptedAt = assignment.getAcceptedAt();
@@ -58,6 +63,11 @@ public class AssignmentResponseDTO {
                 this.citizenEmail = assignment.getRequest().getCitizen().getEmail();
             }
         }
+        
+        // Create nested objects for frontend compatibility
+        this.volunteer = new VolunteerInfo(this.volunteerId, this.volunteerName, this.volunteerEmail, this.volunteerPhone);
+        this.citizen = new CitizenInfo(this.citizenId, this.citizenName, this.citizenEmail);
+        this.request = new RequestInfo(this.requestId, this.requestTitle, this.requestDescription, this.requestCategory, this.requestStatus);
     }
     
     // Getters and setters
@@ -111,4 +121,75 @@ public class AssignmentResponseDTO {
     
     // Convenience method for frontend - provides 'name' property
     public String getName() { return volunteerName; }
+    
+    // Additional convenience methods for different name contexts
+    public String getVolunteerDisplayName() { return volunteerName; }
+    public String getCitizenDisplayName() { return citizenName; }
+    
+    public VolunteerInfo getVolunteer() { return volunteer; }
+    public void setVolunteer(VolunteerInfo volunteer) { this.volunteer = volunteer; }
+    
+    public CitizenInfo getCitizen() { return citizen; }
+    public void setCitizen(CitizenInfo citizen) { this.citizen = citizen; }
+    
+    public RequestInfo getRequest() { return request; }
+    public void setRequest(RequestInfo request) { this.request = request; }
+    
+    // Nested classes for frontend compatibility
+    public static class VolunteerInfo {
+        private Long userId;
+        private String name;
+        private String email;
+        private String phoneNumber;
+        
+        public VolunteerInfo(Long userId, String name, String email, String phoneNumber) {
+            this.userId = userId;
+            this.name = name != null ? name : "Unknown";
+            this.email = email;
+            this.phoneNumber = phoneNumber;
+        }
+        
+        public Long getUserId() { return userId; }
+        public String getName() { return name; }
+        public String getEmail() { return email; }
+        public String getPhoneNumber() { return phoneNumber; }
+    }
+    
+    public static class CitizenInfo {
+        private Long userId;
+        private String name;
+        private String email;
+        
+        public CitizenInfo(Long userId, String name, String email) {
+            this.userId = userId;
+            this.name = name != null ? name : "Unknown";
+            this.email = email;
+        }
+        
+        public Long getUserId() { return userId; }
+        public String getName() { return name; }
+        public String getEmail() { return email; }
+    }
+    
+    public static class RequestInfo {
+        private Long requestId;
+        private String title;
+        private String description;
+        private String category;
+        private String status;
+        
+        public RequestInfo(Long requestId, String title, String description, String category, String status) {
+            this.requestId = requestId;
+            this.title = title != null ? title : "Unknown";
+            this.description = description;
+            this.category = category;
+            this.status = status;
+        }
+        
+        public Long getRequestId() { return requestId; }
+        public String getTitle() { return title; }
+        public String getDescription() { return description; }
+        public String getCategory() { return category; }
+        public String getStatus() { return status; }
+    }
 }

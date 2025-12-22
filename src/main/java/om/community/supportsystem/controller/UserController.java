@@ -1,5 +1,6 @@
 package om.community.supportsystem.controller;
 
+import om.community.supportsystem.dto.UserResponseDTO;
 import om.community.supportsystem.model.User;
 import om.community.supportsystem.model.UserRole;
 import om.community.supportsystem.service.UserService;
@@ -20,6 +21,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -43,9 +45,12 @@ public class UserController {
     
     // Read
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
+        List<UserResponseDTO> userDTOs = users.stream()
+            .map(UserResponseDTO::new)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(userDTOs);
     }
     
     @GetMapping("/{id}")
