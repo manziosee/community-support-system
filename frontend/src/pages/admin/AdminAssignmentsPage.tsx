@@ -186,9 +186,9 @@ const AdminAssignmentsPage: React.FC = () => {
 
     if (searchTerm) {
       filtered = filtered.filter(assignment => 
-        assignment.request?.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        assignment.volunteer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        assignment.request?.citizen.name.toLowerCase().includes(searchTerm.toLowerCase())
+        assignment.request?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        assignment.volunteer?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        assignment.request?.citizen?.name?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -390,9 +390,9 @@ const AdminAssignmentsPage: React.FC = () => {
                             <Award className="w-4 h-4 mr-2" />
                             <span className="font-medium">Volunteer:</span>
                           </div>
-                          <p className="text-sm text-gray-900 ml-6">{assignment.volunteer.name}</p>
+                          <p className="text-sm text-gray-900 ml-6">{assignment.volunteer?.name || 'Unknown Volunteer'}</p>
                           <p className="text-xs text-gray-500 ml-6">
-                            {assignment.volunteer.location.district}, {assignment.volunteer.location.province}
+                            {assignment.volunteer?.location?.district || 'N/A'}, {assignment.volunteer?.location?.province || 'N/A'}
                           </p>
                         </div>
                         
@@ -401,9 +401,9 @@ const AdminAssignmentsPage: React.FC = () => {
                             <User className="w-4 h-4 mr-2" />
                             <span className="font-medium">Citizen:</span>
                           </div>
-                          <p className="text-sm text-gray-900 ml-6">{assignment.request?.citizen.name}</p>
+                          <p className="text-sm text-gray-900 ml-6">{assignment.request?.citizen?.name || 'Unknown Citizen'}</p>
                           <p className="text-xs text-gray-500 ml-6">
-                            {assignment.request?.citizen.location.district}, {assignment.request?.citizen.location.province}
+                            {assignment.request?.citizen?.location?.district || 'N/A'}, {assignment.request?.citizen?.location?.province || 'N/A'}
                           </p>
                         </div>
                       </div>
@@ -469,11 +469,11 @@ const AdminAssignmentsPage: React.FC = () => {
               <div>
                 <h4 className="font-medium text-gray-900 mb-2">Volunteer</h4>
                 <div className="bg-blue-50 p-3 rounded-lg">
-                  <p className="font-medium">{selectedAssignment.volunteer.name}</p>
-                  <p className="text-sm text-gray-600">{selectedAssignment.volunteer.email}</p>
-                  <p className="text-sm text-gray-600">{selectedAssignment.volunteer.phoneNumber}</p>
+                  <p className="font-medium">{selectedAssignment.volunteer?.name || 'Unknown Volunteer'}</p>
+                  <p className="text-sm text-gray-600">{selectedAssignment.volunteer?.email || 'N/A'}</p>
+                  <p className="text-sm text-gray-600">{selectedAssignment.volunteer?.phoneNumber || 'N/A'}</p>
                   <p className="text-sm text-gray-600">
-                    {selectedAssignment.volunteer.location.district}, {selectedAssignment.volunteer.location.province}
+                    {selectedAssignment.volunteer?.location?.district || 'N/A'}, {selectedAssignment.volunteer?.location?.province || 'N/A'}
                   </p>
                 </div>
               </div>
@@ -481,11 +481,11 @@ const AdminAssignmentsPage: React.FC = () => {
               <div>
                 <h4 className="font-medium text-gray-900 mb-2">Citizen</h4>
                 <div className="bg-green-50 p-3 rounded-lg">
-                  <p className="font-medium">{selectedAssignment.request?.citizen.name}</p>
-                  <p className="text-sm text-gray-600">{selectedAssignment.request?.citizen.email}</p>
-                  <p className="text-sm text-gray-600">{selectedAssignment.request?.citizen.phoneNumber}</p>
+                  <p className="font-medium">{selectedAssignment.request?.citizen?.name || 'Unknown Citizen'}</p>
+                  <p className="text-sm text-gray-600">{selectedAssignment.request?.citizen?.email || 'N/A'}</p>
+                  <p className="text-sm text-gray-600">{selectedAssignment.request?.citizen?.phoneNumber || 'N/A'}</p>
                   <p className="text-sm text-gray-600">
-                    {selectedAssignment.request?.citizen.location.district}, {selectedAssignment.request?.citizen.location.province}
+                    {selectedAssignment.request?.citizen?.location?.district || 'N/A'}, {selectedAssignment.request?.citizen?.location?.province || 'N/A'}
                   </p>
                 </div>
               </div>
@@ -494,7 +494,7 @@ const AdminAssignmentsPage: React.FC = () => {
             <div>
               <h4 className="font-medium text-gray-900 mb-2">Request Description</h4>
               <p className="text-gray-600 bg-gray-50 p-3 rounded-lg">
-                {selectedAssignment.request?.description}
+                {selectedAssignment.request?.description || 'No description available'}
               </p>
             </div>
             
@@ -513,13 +513,13 @@ const AdminAssignmentsPage: React.FC = () => {
                 </div>
               </div>
               
-              {selectedAssignment.volunteer.skills && selectedAssignment.volunteer.skills.length > 0 && (
+              {selectedAssignment.volunteer?.skills && selectedAssignment.volunteer.skills.length > 0 && (
                 <div>
                   <h4 className="font-medium text-gray-900 mb-2">Volunteer Skills</h4>
                   <div className="flex flex-wrap gap-2">
                     {selectedAssignment.volunteer.skills.map(skill => (
-                      <span key={skill.skillId} className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">
-                        {skill.skillName}
+                      <span key={skill?.skillId || Math.random()} className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">
+                        {skill?.skillName || 'Unknown Skill'}
                       </span>
                     ))}
                   </div>
@@ -560,10 +560,10 @@ const AdminAssignmentsPage: React.FC = () => {
             <div className="bg-gray-50 p-4 rounded-lg">
               <h4 className="font-medium text-gray-900 mb-2">Assignment Details</h4>
               <p className="text-sm text-gray-600 mb-1">
-                <span className="font-medium">Request:</span> {editingAssignment.request?.title}
+                <span className="font-medium">Request:</span> {editingAssignment.request?.title || 'Unknown Request'}
               </p>
               <p className="text-sm text-gray-600 mb-1">
-                <span className="font-medium">Volunteer:</span> {editingAssignment.volunteer.name}
+                <span className="font-medium">Volunteer:</span> {editingAssignment.volunteer?.name || 'Unknown Volunteer'}
               </p>
               <p className="text-sm text-gray-600">
                 <span className="font-medium">Accepted:</span> {new Date(editingAssignment.acceptedAt).toLocaleString()}

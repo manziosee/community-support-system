@@ -27,6 +27,8 @@ const AdminUsersPage: React.FC = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -227,8 +229,8 @@ const AdminUsersPage: React.FC = () => {
       email: user.email,
       phoneNumber: user.phoneNumber,
       role: user.role,
-      province: user.location.province,
-      district: user.location.district,
+      province: user.location?.province || 'Kigali City',
+      district: user.location?.district || 'Gasabo',
       sector: user.sector || '',
       cell: user.cell || '',
       village: user.village || ''
@@ -237,8 +239,10 @@ const AdminUsersPage: React.FC = () => {
   };
 
   const handleSaveUser = async () => {
+    setIsSaving(true);
     try {
       if (editingUser) {
+        // Update existing user
         const updatedUser = {
           ...editingUser,
           ...formData,
@@ -246,10 +250,13 @@ const AdminUsersPage: React.FC = () => {
             ...editingUser.location,
             province: formData.province,
             district: formData.district
-          }
+          },
+          updatedAt: new Date().toISOString()
         };
         setUsers(prev => prev.map(u => u.userId === editingUser.userId ? updatedUser : u));
+        console.log('User updated successfully');
       } else {
+        // Create new user
         const newUser: User = {
           userId: Math.max(...users.map(u => u.userId)) + 1,
           ...formData,
@@ -262,19 +269,43 @@ const AdminUsersPage: React.FC = () => {
           }
         };
         setUsers(prev => [...prev, newUser]);
+        console.log('User created successfully');
       }
+      
+      // Close modal and reset form
       setIsModalOpen(false);
+      setEditingUser(null);
+      setFormData({
+        name: '',
+        email: '',
+        phoneNumber: '',
+        role: UserRole.CITIZEN,
+        province: 'Kigali City',
+        district: 'Gasabo',
+        sector: '',
+        cell: '',
+        village: ''
+      });
     } catch (error) {
       console.error('Failed to save user:', error);
+      alert('Failed to save user. Please try again.');
+    } finally {
+      setIsSaving(false);
     }
   };
 
   const handleDeleteUser = async (userId: number) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
+    if (window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+      setIsDeleting(userId);
       try {
+        // Remove user from the list
         setUsers(prev => prev.filter(u => u.userId !== userId));
+        console.log(`User ${userId} deleted successfully`);
       } catch (error) {
         console.error('Failed to delete user:', error);
+        alert('Failed to delete user. Please try again.');
+      } finally {
+        setIsDeleting(null);
       }
     }
   };
@@ -409,7 +440,7 @@ const AdminUsersPage: React.FC = () => {
                       <p className="text-sm text-gray-500">{user.email}</p>
                       <div className="flex items-center text-xs text-gray-400 mt-1">
                         <MapPin className="w-3 h-3 mr-1" />
-                        {user.location.district}, {user.location.province}
+                        {user.location?.district || 'N/A'}, {user.location?.province || 'N/A'}
                         {user.skills && user.skills.length > 0 && (
                           <>
                             <span className="mx-2">•</span>
@@ -421,13 +452,30 @@ const AdminUsersPage: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Button size="sm" variant="secondary" icon={Eye} onClick={() => handleViewUser(user)}>
+                    <Button 
+                      size="sm" 
+                      variant="secondary" 
+                      icon={Eye} 
+                      onClick={() => handleViewUser(user)}
+                    >
                       View
                     </Button>
-                    <Button size="sm" variant="secondary" icon={Edit} onClick={() => handleEditUser(user)}>
+                    <Button 
+                      size="sm" 
+                      variant="secondary" 
+                      icon={Edit} 
+                      onClick={() => handleEditUser(user)}
+                    >
                       Edit
                     </Button>
-                    <Button size="sm" variant="danger" icon={Trash2} onClick={() => handleDeleteUser(user.userId)}>
+                    <Button 
+                      size="sm" 
+                      variant="danger" 
+                      icon={Trash2} 
+                      onClick={() => handleDeleteUser(user.userId)}
+                      loading={isDeleting === user.userId}
+                      disabled={isDeleting === user.userId}
+                    >
                       Delete
                     </Button>
                   </div>
@@ -546,7 +594,8 @@ const AdminUsersPage: React.FC = () => {
             </Button>
             <Button
               onClick={handleSaveUser}
-              disabled={!formData.name.trim() || !formData.email.trim() || !formData.phoneNumber.trim()}
+              disabled={!formData.name.trim() || !formData.email.trim() || !formData.phoneNumber.trim() || isSaving}
+              loading={isSaving}
             >
               {editingUser ? 'Update' : 'Create'} User
             </Button>
@@ -592,8 +641,8 @@ const AdminUsersPage: React.FC = () => {
               <div>
                 <h4 className="font-medium text-gray-900 mb-2">Location</h4>
                 <div className="bg-gray-50 p-3 rounded-lg space-y-2">
-                  <p><span className="font-medium">Province:</span> {selectedUser.location.province}</p>
-                  <p><span className="font-medium">District:</span> {selectedUser.location.district}</p>
+                  <p><span className="font-medium">Province:</span> {selectedUser.location?.province || 'N/A'}</p>
+                  <p><span className="font-medium">District:</span> {selectedUser.location?.district || 'N/A'}</p>
                   {selectedUser.sector && <p><span className="font-medium">Sector:</span> {selectedUser.sector}</p>}
                   {selectedUser.cell && <p><span className="font-medium">Cell:</span> {selectedUser.cell}</p>}
                   {selectedUser.village && <p><span className="font-medium">Village:</span> {selectedUser.village}</p>}

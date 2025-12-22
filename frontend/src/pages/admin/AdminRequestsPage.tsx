@@ -28,6 +28,8 @@ const AdminRequestsPage: React.FC = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingRequest, setEditingRequest] = useState<Request | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState<number | null>(null);
   const [editFormData, setEditFormData] = useState({
     title: '',
     description: '',
@@ -216,21 +218,50 @@ const AdminRequestsPage: React.FC = () => {
 
   const handleSaveRequest = async () => {
     if (!editingRequest) return;
+    
+    setIsSaving(true);
     try {
-      const updatedRequest = { ...editingRequest, ...editFormData };
-      setRequests(prev => prev.map(r => r.requestId === editingRequest.requestId ? updatedRequest : r));
+      const updatedRequest = { 
+        ...editingRequest, 
+        ...editFormData,
+        updatedAt: new Date().toISOString()
+      };
+      
+      // Update the requests list
+      setRequests(prev => prev.map(r => 
+        r.requestId === editingRequest.requestId ? updatedRequest : r
+      ));
+      
+      // Close modal and reset form
       setIsEditModalOpen(false);
+      setEditingRequest(null);
+      setEditFormData({
+        title: '',
+        description: '',
+        status: RequestStatus.PENDING
+      });
+      
+      console.log('Request updated successfully');
     } catch (error) {
       console.error('Failed to save request:', error);
+      alert('Failed to update request. Please try again.');
+    } finally {
+      setIsSaving(false);
     }
   };
 
   const handleDeleteRequest = async (requestId: number) => {
-    if (window.confirm('Are you sure you want to delete this request?')) {
+    if (window.confirm('Are you sure you want to delete this request? This action cannot be undone.')) {
+      setIsDeleting(requestId);
       try {
+        // Remove from requests list
         setRequests(prev => prev.filter(r => r.requestId !== requestId));
+        console.log(`Request ${requestId} deleted successfully`);
       } catch (error) {
         console.error('Failed to delete request:', error);
+        alert('Failed to delete request. Please try again.');
+      } finally {
+        setIsDeleting(null);
       }
     }
   };
@@ -387,13 +418,30 @@ const AdminRequestsPage: React.FC = () => {
                         </div>
                       </div>
                       <div className="flex items-center space-x-2 ml-4">
-                        <Button size="sm" variant="secondary" icon={Eye} onClick={() => handleViewRequest(request)}>
+                        <Button 
+                          size="sm" 
+                          variant="secondary" 
+                          icon={Eye} 
+                          onClick={() => handleViewRequest(request)}
+                        >
                           View
                         </Button>
-                        <Button size="sm" variant="secondary" icon={Edit} onClick={() => handleEditRequest(request)}>
+                        <Button 
+                          size="sm" 
+                          variant="secondary" 
+                          icon={Edit} 
+                          onClick={() => handleEditRequest(request)}
+                        >
                           Edit
                         </Button>
-                        <Button size="sm" variant="danger" icon={Trash2} onClick={() => handleDeleteRequest(request.requestId)}>
+                        <Button 
+                          size="sm" 
+                          variant="danger" 
+                          icon={Trash2} 
+                          onClick={() => handleDeleteRequest(request.requestId)}
+                          loading={isDeleting === request.requestId}
+                          disabled={isDeleting === request.requestId}
+                        >
                           Delete
                         </Button>
                       </div>
@@ -537,7 +585,8 @@ const AdminRequestsPage: React.FC = () => {
               </Button>
               <Button
                 onClick={handleSaveRequest}
-                disabled={!editFormData.title.trim() || !editFormData.description.trim()}
+                disabled={!editFormData.title.trim() || !editFormData.description.trim() || isSaving}
+                loading={isSaving}
               >
                 Update Request
               </Button>
