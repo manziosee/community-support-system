@@ -23,6 +23,12 @@ import om.community.supportsystem.repository.UserRepository;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = {
+    "http://localhost:3000",
+    "http://localhost:3001", 
+    "http://localhost:5173",
+    "https://community-support-system.vercel.app"
+}, allowCredentials = "true")
 @Tag(name = "🔐 Authentication", description = "User authentication, registration, password reset, and 2FA management")
 public class AuthController {
     
