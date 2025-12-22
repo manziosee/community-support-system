@@ -137,15 +137,19 @@ public class AuthController {
         }
     }
     
-    @Operation(summary = "Enable Two-Factor Authentication", description = "Enable 2FA for user account")
-    @ApiResponse(responseCode = "200", description = "2FA enabled successfully")
+    @Operation(summary = "Enable Two-Factor Authentication", description = "Enable 2FA for user account and get backup codes")
+    @ApiResponse(responseCode = "200", description = "2FA enabled successfully with backup codes")
     @PostMapping("/enable-2fa/{userId}")
     public ResponseEntity<?> enableTwoFactor(
             @Parameter(description = "User ID", required = true)
             @PathVariable Long userId) {
         try {
-            authService.enableTwoFactor(userId);
-            return ResponseEntity.ok(Map.of("message", "Two-factor authentication enabled"));
+            String[] backupCodes = authService.enableTwoFactor(userId);
+            return ResponseEntity.ok(Map.of(
+                "message", "Two-factor authentication enabled successfully",
+                "backupCodes", backupCodes,
+                "warning", "Save these backup codes in a secure location. They can be used to access your account if you lose access to your email."
+            ));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }

@@ -123,17 +123,36 @@ public class AuthService {
             if (request.getTwoFactorCode() == null || request.getTwoFactorCode().isEmpty()) {
                 // Generate and send 2FA code
                 String code = String.format("%06d", random.nextInt(999999));
-                user.setTwoFactorSecret(code); // Temporarily store code
+                user.setTwoFactorSecret(code);
+                user.setPasswordResetTokenExpiry(LocalDateTime.now().plusMinutes(5)); // Reuse field for 2FA expiry
                 userRepository.save(user);
-                emailService.sendTwoFactorCode(user.getEmail(), code);
+                
+                try {
+                    emailService.sendTwoFactorCode(user.getEmail(), code);
+                    System.out.println("✅ 2FA code sent to: " + user.getEmail());
+                } catch (Exception e) {
+                    System.err.println("❌ Failed to send 2FA code: " + e.getMessage());
+                    throw new RuntimeException("Failed to send verification code. Please try again.");
+                }
                 
                 return new AuthResponse("Two-factor authentication required", true);
             } else {
                 // Verify 2FA code
-                if (!request.getTwoFactorCode().equals(user.getTwoFactorSecret())) {
-                    throw new RuntimeException("Invalid two-factor code");
+                if (user.getTwoFactorSecret() == null || !request.getTwoFactorCode().equals(user.getTwoFactorSecret())) {
+                    throw new RuntimeException("Invalid or expired two-factor code");
                 }
+                
+                // Check if 2FA code has expired (5 minutes)
+                if (user.getPasswordResetTokenExpiry() != null && 
+                    user.getPasswordResetTokenExpiry().isBefore(LocalDateTime.now())) {
+                    user.setTwoFactorSecret(null);
+                    user.setPasswordResetTokenExpiry(null);
+                    userRepository.save(user);
+                    throw new RuntimeException("Two-factor code has expired. Please request a new one.");
+                }
+                
                 user.setTwoFactorSecret(null); // Clear temporary code
+                user.setPasswordResetTokenExpiry(null); // Clear expiry
             }
         }
         
@@ -148,14 +167,20 @@ public class AuthService {
     public void requestPasswordReset(String email) {
         System.out.println("🔄 Password reset requested for email: " + email);
         
+        // Check if user exists in database
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isEmpty()) {
             System.out.println("⚠️ Email not found in database: " + email);
-            // Don't reveal if email exists
-            return;
+            throw new RuntimeException("Email address not found. Please check your email or register first.");
         }
         
         User user = userOpt.get();
+        
+        // Check if account is locked
+        if (user.isAccountLocked()) {
+            throw new RuntimeException("Account is locked. Please contact support.");
+        }
+        
         String resetToken = UUID.randomUUID().toString();
         user.setPasswordResetToken(resetToken);
         user.setPasswordResetTokenExpiry(LocalDateTime.now().plusHours(1));
@@ -164,23 +189,22 @@ public class AuthService {
         userRepository.save(user);
         
         try {
-            System.out.println("📧 Attempting to send password reset email...");
+            System.out.println("📧 Sending password reset email via SendGrid...");
             emailService.sendPasswordResetEmail(email, resetToken);
-            System.out.println("✅ Password reset process completed successfully");
+            System.out.println("✅ Password reset email sent successfully");
         } catch (Exception e) {
             System.err.println("❌ Failed to send password reset email: " + e.getMessage());
             
             // Check if we're in production environment
             String environment = System.getenv("RENDER");
             if (environment != null) {
-                System.err.println("⚠️ Production environment detected - email service may be unavailable");
-                System.err.println("🔑 Reset token saved in database for manual use: " + resetToken);
-                // Don't throw exception in production - token is saved in database
+                System.err.println("⚠️ Production environment - logging reset token");
+                System.err.println("🔑 Reset token: " + resetToken);
+                System.err.println("🔗 Reset URL: https://community-support-system.vercel.app/reset-password?token=" + resetToken);
+                // Don't throw exception in production - token is saved
                 return;
             }
             
-            e.printStackTrace();
-            // Still save the token so user can try again
             throw new RuntimeException("Failed to send password reset email. Please try again later.");
         }
     }
@@ -218,7 +242,7 @@ public class AuthService {
         userRepository.save(user);
     }
     
-    public void enableTwoFactor(Long userId) {
+    public String[] enableTwoFactor(Long userId) {
         Optional<User> userOpt = userRepository.findById(userId);
         if (userOpt.isEmpty()) {
             throw new RuntimeException("User not found");
@@ -227,7 +251,22 @@ public class AuthService {
         User user = userOpt.get();
         user.setTwoFactorEnabled(true);
         
+        // Generate backup codes
+        String[] backupCodes = generateBackupCodes();
+        user.setTwoFactorBackupCodes(String.join(",", backupCodes));
+        
         userRepository.save(user);
+        
+        System.out.println("✅ 2FA enabled for user: " + user.getEmail());
+        return backupCodes;
+    }
+    
+    private String[] generateBackupCodes() {
+        String[] codes = new String[8];
+        for (int i = 0; i < 8; i++) {
+            codes[i] = String.format("%08d", random.nextInt(99999999));
+        }
+        return codes;
     }
     
     public void disableTwoFactor(Long userId) {
@@ -244,16 +283,15 @@ public class AuthService {
     }
     
     public void resendEmailVerification(String email) {
+        // Check if user exists in database
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isEmpty()) {
-            // Don't reveal if email exists
-            return;
+            throw new RuntimeException("Email address not found. Please check your email or register first.");
         }
         
         User user = userOpt.get();
         if (user.isEmailVerified()) {
-            // Email already verified
-            return;
+            throw new RuntimeException("Email is already verified.");
         }
         
         // Generate new verification token
@@ -264,8 +302,10 @@ public class AuthService {
         // Send verification email
         try {
             emailService.sendEmailVerification(email, newToken);
+            System.out.println("✅ Verification email resent to: " + email);
         } catch (Exception e) {
-            System.err.println("Failed to resend verification email: " + e.getMessage());
+            System.err.println("❌ Failed to resend verification email: " + e.getMessage());
+            throw new RuntimeException("Failed to send verification email. Please try again later.");
         }
     }
 }
