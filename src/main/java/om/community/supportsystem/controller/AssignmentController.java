@@ -47,10 +47,80 @@ public class AssignmentController {
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<Assignment> getAssignmentById(@PathVariable Long id) {
-        return assignmentService.getAssignmentById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> getAssignmentById(@PathVariable Long id) {
+        try {
+            System.out.println("🔍 Fetching assignment by ID: " + id);
+            Optional<Assignment> assignmentOpt = assignmentService.getAssignmentById(id);
+            
+            if (assignmentOpt.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            Assignment assignment = assignmentOpt.get();
+            
+            // Create simplified response to match the structure expected by frontend
+            java.util.Map<String, Object> map = new java.util.HashMap<>();
+            map.put("assignmentId", assignment.getAssignmentId());
+            map.put("acceptedAt", assignment.getAcceptedAt());
+            map.put("completedAt", assignment.getCompletedAt());
+            
+            // Simplified request info
+            if (assignment.getRequest() != null) {
+                java.util.Map<String, Object> requestMap = new java.util.HashMap<>();
+                requestMap.put("requestId", assignment.getRequest().getRequestId());
+                requestMap.put("title", assignment.getRequest().getTitle());
+                requestMap.put("description", assignment.getRequest().getDescription());
+                requestMap.put("status", assignment.getRequest().getStatus());
+                requestMap.put("createdAt", assignment.getRequest().getCreatedAt());
+                
+                // Add citizen info to request
+                if (assignment.getRequest().getCitizen() != null) {
+                    java.util.Map<String, Object> citizenMap = new java.util.HashMap<>();
+                    citizenMap.put("userId", assignment.getRequest().getCitizen().getUserId());
+                    citizenMap.put("name", assignment.getRequest().getCitizen().getName());
+                    citizenMap.put("email", assignment.getRequest().getCitizen().getEmail());
+                    citizenMap.put("phoneNumber", assignment.getRequest().getCitizen().getPhoneNumber());
+                    citizenMap.put("province", assignment.getRequest().getCitizen().getProvince());
+                    citizenMap.put("district", assignment.getRequest().getCitizen().getDistrict());
+                    citizenMap.put("sector", assignment.getRequest().getCitizen().getSector());
+                    citizenMap.put("cell", assignment.getRequest().getCitizen().getCell());
+                    citizenMap.put("village", assignment.getRequest().getCitizen().getVillage());
+                    
+                    // Add location object for backward compatibility
+                    if (assignment.getRequest().getCitizen().getLocation() != null) {
+                        java.util.Map<String, Object> locationMap = new java.util.HashMap<>();
+                        locationMap.put("province", assignment.getRequest().getCitizen().getLocation().getProvince());
+                        locationMap.put("district", assignment.getRequest().getCitizen().getLocation().getDistrict());
+                        citizenMap.put("location", locationMap);
+                    } else {
+                        // Fallback location object
+                        java.util.Map<String, Object> locationMap = new java.util.HashMap<>();
+                        locationMap.put("province", assignment.getRequest().getCitizen().getProvince());
+                        locationMap.put("district", assignment.getRequest().getCitizen().getDistrict());
+                        citizenMap.put("location", locationMap);
+                    }
+                    
+                    requestMap.put("citizen", citizenMap);
+                }
+                
+                map.put("request", requestMap);
+            }
+            
+            // Simplified volunteer info
+            if (assignment.getVolunteer() != null) {
+                java.util.Map<String, Object> volunteerMap = new java.util.HashMap<>();
+                volunteerMap.put("userId", assignment.getVolunteer().getUserId());
+                volunteerMap.put("name", assignment.getVolunteer().getName());
+                map.put("volunteer", volunteerMap);
+            }
+            
+            System.out.println("✅ Assignment " + id + " retrieved successfully");
+            return ResponseEntity.ok(map);
+        } catch (Exception e) {
+            System.err.println("❌ Failed to fetch assignment " + id + ": " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(java.util.Map.of("error", e.getMessage()));
+        }
     }
     
     @GetMapping("/volunteer/{volunteerId}")
