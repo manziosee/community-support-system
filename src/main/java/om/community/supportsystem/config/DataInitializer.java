@@ -30,7 +30,7 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
     
-    @Value("${app.data.initialize:true}")
+    @Value("${app.data.initialize:false}")
     private boolean initializeData;
     
     @Override
@@ -42,27 +42,18 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
     
-    private void initializeBasicData() {
-        // Only initialize if database is empty
-        if (locationRepository.count() > 0) {
-            System.out.println("📊 Database already contains data - skipping initialization");
-            System.out.println("   - Locations: " + locationRepository.count());
-            System.out.println("   - Skills: " + skillRepository.count());
-            System.out.println("✅ Using existing data!");
-            return;
-        }
-        
-        System.out.println("🚀 Initializing essential system data (empty database detected)...");
+    public void initializeBasicData() {
+        // Force initialization regardless of existing data
+        System.out.println("🚀 Force initializing system data...");
         initializeLocations();
         initializeSkills();
         initializeAdminUser();
         
-        System.out.println("✅ Essential system data initialized successfully!");
+        System.out.println("✅ System data initialized successfully!");
         System.out.println("📊 Data loaded:");
-        System.out.println("   - 30 Rwandan locations (5 provinces, 30 districts)");
-        System.out.println("   - 45+ comprehensive skills across all service categories");
-        System.out.println("   - Admin user created (oseemanzi3@gmail.com)");
-        System.out.println("🎯 System ready! Users can now register and create content.");
+        System.out.println("   - Locations: " + locationRepository.count());
+        System.out.println("   - Skills: " + skillRepository.count());
+        System.out.println("   - Admin user: oseemanzi3@gmail.com");
     }
     
     private void initializeLocations() {
