@@ -20,4 +20,15 @@ public class AdminController {
         Map<String, Object> stats = adminService.getDashboardStats();
         return ResponseEntity.ok(stats);
     }
+
+    @GetMapping("/analytics")
+    public ResponseEntity<Map<String, Object>> getAnalytics() {
+        Map<String, Object> analytics = adminService.getAnalytics();
+        return ResponseEntity.ok(analytics);
+    }
+
+    @GetMapping("/health")
+    public ResponseEntity<String> health() {
+        return ResponseEntity.ok("Admin API is running");
+    }
 }

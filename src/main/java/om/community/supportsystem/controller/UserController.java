@@ -126,16 +126,33 @@ public class UserController {
     }
     
     @GetMapping("/search")
-    public ResponseEntity<Page<User>> getUsersByRoleAndProvince(
-            @RequestParam UserRole role,
-            @RequestParam String province,
+    public ResponseEntity<?> searchUsers(
+            @RequestParam(required = false) String query,
+            @RequestParam(required = false) UserRole role,
+            @RequestParam(required = false) String province,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "name") String sortBy) {
         
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        Page<User> users = userService.getUsersByRoleAndProvince(role, province, pageable);
-        return ResponseEntity.ok(users);
+        try {
+            if (query != null && !query.trim().isEmpty()) {
+                // General search by name
+                List<User> users = userService.searchUsersByName(query.trim());
+                return ResponseEntity.ok(users);
+            } else if (role != null && province != null) {
+                // Search by role and province with pagination
+                Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+                Page<User> users = userService.getUsersByRoleAndProvince(role, province, pageable);
+                return ResponseEntity.ok(users);
+            } else {
+                // Return all users with pagination
+                Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+                List<User> allUsers = userService.getAllUsers();
+                return ResponseEntity.ok(allUsers);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
     
     @GetMapping("/search/name/{name}")

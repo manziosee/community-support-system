@@ -27,6 +27,9 @@ public class AdminService {
     @Autowired
     private LocationRepository locationRepository;
 
+    @Autowired
+    private AnalyticsService analyticsService;
+
     public Map<String, Object> getDashboardStats() {
         Map<String, Object> stats = new HashMap<>();
         
@@ -49,5 +52,9 @@ public class AdminService {
         stats.put("totalLocations", locationRepository.count());
         
         return stats;
+    }
+
+    public Map<String, Object> getAnalytics() {
+        return analyticsService.getAnalyticsDashboard();
     }
 }
