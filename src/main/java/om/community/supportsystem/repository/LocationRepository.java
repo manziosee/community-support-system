@@ -37,6 +37,9 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
     // Find with pagination and sorting
     Page<Location> findByProvinceContainingIgnoreCase(String province, Pageable pageable);
     
+    // Find by province and district
+    Optional<Location> findByProvinceAndDistrict(String province, String district);
+    
     // Custom query to find locations with users count
     @Query("SELECT l FROM Location l LEFT JOIN l.users u GROUP BY l ORDER BY COUNT(u) DESC")
     List<Location> findLocationsOrderByUserCount();
