@@ -154,16 +154,36 @@ public class RequestController {
     }
     
     @GetMapping("/search")
-    public ResponseEntity<Page<Request>> getRequestsByStatusAndProvince(
-            @RequestParam RequestStatus status,
-            @RequestParam String province,
+    public ResponseEntity<?> searchRequests(
+            @RequestParam(required = false) String query,
+            @RequestParam(required = false) RequestStatus status,
+            @RequestParam(required = false) String province,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy) {
         
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortBy));
-        Page<Request> requests = requestService.getRequestsByStatusAndProvince(status, province, pageable);
-        return ResponseEntity.ok(requests);
+        try {
+            if (query != null && !query.trim().isEmpty()) {
+                // General search by title
+                List<Request> requests = requestService.searchRequestsByTitle(query.trim());
+                return ResponseEntity.ok(requests);
+            } else if (status != null && province != null) {
+                // Search by status and province with pagination
+                Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortBy));
+                Page<Request> requests = requestService.getRequestsByStatusAndProvince(status, province, pageable);
+                return ResponseEntity.ok(requests);
+            } else if (status != null) {
+                // Search by status only
+                List<Request> requests = requestService.getRequestsByStatus(status);
+                return ResponseEntity.ok(requests);
+            } else {
+                // Return all requests
+                List<Request> requests = requestService.getAllRequests();
+                return ResponseEntity.ok(requests);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", e.getMessage()));
+        }
     }
     
     @GetMapping("/search/title/{title}")

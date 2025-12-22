@@ -1,5 +1,6 @@
 package om.community.supportsystem.controller;
 
+import om.community.supportsystem.dto.AssignmentResponseDTO;
 import om.community.supportsystem.model.Assignment;
 import om.community.supportsystem.service.AssignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +43,12 @@ public class AssignmentController {
     
     // Read
     @GetMapping
-    public ResponseEntity<List<Assignment>> getAllAssignments() {
+    public ResponseEntity<List<AssignmentResponseDTO>> getAllAssignments() {
         List<Assignment> assignments = assignmentService.getAllAssignments();
-        return ResponseEntity.ok(assignments);
+        List<AssignmentResponseDTO> assignmentDTOs = assignments.stream()
+            .map(AssignmentResponseDTO::new)
+            .collect(java.util.stream.Collectors.toList());
+        return ResponseEntity.ok(assignmentDTOs);
     }
     
     @GetMapping("/{id}")
