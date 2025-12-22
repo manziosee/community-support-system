@@ -59,49 +59,67 @@ public class DataInitializer implements CommandLineRunner {
     private void initializeLocations() {
         System.out.println("Creating Rwanda administrative locations...");
         
+        // Check if locations already exist
+        if (locationRepository.count() > 0) {
+            System.out.println("⚠️ Locations already exist - skipping creation");
+            return;
+        }
+        
         // Kigali City (3 Districts)
-        locationService.createLocation(new Location("Kigali City", "Gasabo", "KG01"));
-        locationService.createLocation(new Location("Kigali City", "Kicukiro", "KG02"));
-        locationService.createLocation(new Location("Kigali City", "Nyarugenge", "KG03"));
+        createLocationIfNotExists("Kigali City", "Gasabo", "KG01");
+        createLocationIfNotExists("Kigali City", "Kicukiro", "KG02");
+        createLocationIfNotExists("Kigali City", "Nyarugenge", "KG03");
         
         // Eastern Province (7 Districts)
-        locationService.createLocation(new Location("Eastern Province", "Nyagatare", "EP01"));
-        locationService.createLocation(new Location("Eastern Province", "Gatsibo", "EP02"));
-        locationService.createLocation(new Location("Eastern Province", "Bugesera", "EP03"));
-        locationService.createLocation(new Location("Eastern Province", "Kayonza", "EP04"));
-        locationService.createLocation(new Location("Eastern Province", "Ngoma", "EP05"));
-        locationService.createLocation(new Location("Eastern Province", "Kirehe", "EP06"));
-        locationService.createLocation(new Location("Eastern Province", "Rwamagana", "EP07"));
+        createLocationIfNotExists("Eastern Province", "Nyagatare", "EP01");
+        createLocationIfNotExists("Eastern Province", "Gatsibo", "EP02");
+        createLocationIfNotExists("Eastern Province", "Bugesera", "EP03");
+        createLocationIfNotExists("Eastern Province", "Kayonza", "EP04");
+        createLocationIfNotExists("Eastern Province", "Ngoma", "EP05");
+        createLocationIfNotExists("Eastern Province", "Kirehe", "EP06");
+        createLocationIfNotExists("Eastern Province", "Rwamagana", "EP07");
         
         // Western Province (7 Districts)
-        locationService.createLocation(new Location("Western Province", "Rusizi", "WP01"));
-        locationService.createLocation(new Location("Western Province", "Rubavu", "WP02"));
-        locationService.createLocation(new Location("Western Province", "Nyamasheke", "WP03"));
-        locationService.createLocation(new Location("Western Province", "Ngororero", "WP04"));
-        locationService.createLocation(new Location("Western Province", "Karongi", "WP05"));
-        locationService.createLocation(new Location("Western Province", "Rutsiro", "WP06"));
-        locationService.createLocation(new Location("Western Province", "Nyabihu", "WP07"));
+        createLocationIfNotExists("Western Province", "Rusizi", "WP01");
+        createLocationIfNotExists("Western Province", "Rubavu", "WP02");
+        createLocationIfNotExists("Western Province", "Nyamasheke", "WP03");
+        createLocationIfNotExists("Western Province", "Ngororero", "WP04");
+        createLocationIfNotExists("Western Province", "Karongi", "WP05");
+        createLocationIfNotExists("Western Province", "Rutsiro", "WP06");
+        createLocationIfNotExists("Western Province", "Nyabihu", "WP07");
         
         // Southern Province (8 Districts)
-        locationService.createLocation(new Location("Southern Province", "Kamonyi", "SP01"));
-        locationService.createLocation(new Location("Southern Province", "Nyamagabe", "SP02"));
-        locationService.createLocation(new Location("Southern Province", "Huye", "SP03"));
-        locationService.createLocation(new Location("Southern Province", "Nyanza", "SP04"));
-        locationService.createLocation(new Location("Southern Province", "Gisagara", "SP05"));
-        locationService.createLocation(new Location("Southern Province", "Ruhango", "SP06"));
-        locationService.createLocation(new Location("Southern Province", "Muhanga", "SP07"));
-        locationService.createLocation(new Location("Southern Province", "Nyaruguru", "SP08"));
+        createLocationIfNotExists("Southern Province", "Kamonyi", "SP01");
+        createLocationIfNotExists("Southern Province", "Nyamagabe", "SP02");
+        createLocationIfNotExists("Southern Province", "Huye", "SP03");
+        createLocationIfNotExists("Southern Province", "Nyanza", "SP04");
+        createLocationIfNotExists("Southern Province", "Gisagara", "SP05");
+        createLocationIfNotExists("Southern Province", "Ruhango", "SP06");
+        createLocationIfNotExists("Southern Province", "Muhanga", "SP07");
+        createLocationIfNotExists("Southern Province", "Nyaruguru", "SP08");
         
         // Northern Province (5 Districts)
-        locationService.createLocation(new Location("Northern Province", "Gicumbi", "NP01"));
-        locationService.createLocation(new Location("Northern Province", "Gakenke", "NP02"));
-        locationService.createLocation(new Location("Northern Province", "Burera", "NP03"));
-        locationService.createLocation(new Location("Northern Province", "Rulindo", "NP04"));
-        locationService.createLocation(new Location("Northern Province", "Musanze", "NP05"));
+        createLocationIfNotExists("Northern Province", "Gicumbi", "NP01");
+        createLocationIfNotExists("Northern Province", "Gakenke", "NP02");
+        createLocationIfNotExists("Northern Province", "Burera", "NP03");
+        createLocationIfNotExists("Northern Province", "Rulindo", "NP04");
+        createLocationIfNotExists("Northern Province", "Musanze", "NP05");
+    }
+    
+    private void createLocationIfNotExists(String province, String district, String provinceCode) {
+        if (!locationService.existsByProvinceCode(provinceCode)) {
+            locationService.createLocation(new Location(province, district, provinceCode));
+        }
     }
     
     private void initializeSkills() {
         System.out.println("Creating comprehensive skill categories...");
+        
+        // Check if skills already exist
+        if (skillRepository.count() > 0) {
+            System.out.println("⚠️ Skills already exist - skipping creation");
+            return;
+        }
         
         // Technology & Digital Skills
         skillService.createSkill(new Skill("Programming", "Software development, coding, and web development"));
