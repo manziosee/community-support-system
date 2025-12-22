@@ -73,7 +73,40 @@ public class AssignmentController {
                         java.util.Map<String, Object> requestMap = new java.util.HashMap<>();
                         requestMap.put("requestId", assignment.getRequest().getRequestId());
                         requestMap.put("title", assignment.getRequest().getTitle());
+                        requestMap.put("description", assignment.getRequest().getDescription());
                         requestMap.put("status", assignment.getRequest().getStatus());
+                        requestMap.put("createdAt", assignment.getRequest().getCreatedAt());
+                        
+                        // Add citizen info to request
+                        if (assignment.getRequest().getCitizen() != null) {
+                            java.util.Map<String, Object> citizenMap = new java.util.HashMap<>();
+                            citizenMap.put("userId", assignment.getRequest().getCitizen().getUserId());
+                            citizenMap.put("name", assignment.getRequest().getCitizen().getName());
+                            citizenMap.put("email", assignment.getRequest().getCitizen().getEmail());
+                            citizenMap.put("phoneNumber", assignment.getRequest().getCitizen().getPhoneNumber());
+                            citizenMap.put("province", assignment.getRequest().getCitizen().getProvince());
+                            citizenMap.put("district", assignment.getRequest().getCitizen().getDistrict());
+                            citizenMap.put("sector", assignment.getRequest().getCitizen().getSector());
+                            citizenMap.put("cell", assignment.getRequest().getCitizen().getCell());
+                            citizenMap.put("village", assignment.getRequest().getCitizen().getVillage());
+                            
+                            // Add location object for backward compatibility
+                            if (assignment.getRequest().getCitizen().getLocation() != null) {
+                                java.util.Map<String, Object> locationMap = new java.util.HashMap<>();
+                                locationMap.put("province", assignment.getRequest().getCitizen().getLocation().getProvince());
+                                locationMap.put("district", assignment.getRequest().getCitizen().getLocation().getDistrict());
+                                citizenMap.put("location", locationMap);
+                            } else {
+                                // Fallback location object
+                                java.util.Map<String, Object> locationMap = new java.util.HashMap<>();
+                                locationMap.put("province", assignment.getRequest().getCitizen().getProvince());
+                                locationMap.put("district", assignment.getRequest().getCitizen().getDistrict());
+                                citizenMap.put("location", locationMap);
+                            }
+                            
+                            requestMap.put("citizen", citizenMap);
+                        }
+                        
                         map.put("request", requestMap);
                     }
                     
