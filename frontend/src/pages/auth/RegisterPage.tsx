@@ -227,8 +227,8 @@ const RegisterPage: React.FC = () => {
       };
       
       await registerUser(userData);
-      toast.success('Registration successful!');
-      navigate('/dashboard');
+      toast.success('Registration successful! Please check your email to verify your account before logging in.');
+      navigate('/login?message=verify-email');
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || 'Registration failed. Please try again.';
       toast.error(errorMessage);

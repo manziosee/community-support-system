@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 interface AuthContextType {
   user: User | null;
   token: string | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, otpCode?: string) => Promise<void>;
   register: (userData: any) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
@@ -55,16 +55,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, otpCode?: string) => {
     try {
       setIsLoading(true);
       
       // Use real API for authentication
-      const response = await authApi.login({ email, password });
+      const response = await authApi.login({ 
+        email, 
+        password, 
+        twoFactorCode: otpCode 
+      });
       const { token: authToken, user: userData, requires2FA } = response.data;
       
       if (requires2FA) {
-        throw { response: { data: { requires2FA: true } } };
+        throw { response: { data: { requires2FA: true, message: 'OTP verification required' } } };
       }
       
       setToken(authToken);
@@ -80,10 +84,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       toast.success('Login successful!');
     } catch (error: any) {
-      if (error.response?.data?.requires2FA) {
-        throw { requires2FA: true, email, password };
+      if (error.response?.data?.requires2FA || error.response?.data?.message === 'OTP verification required') {
+        throw { response: { data: { message: 'OTP verification required' } } };
       }
-      toast.error(error.response?.data?.message || 'Login failed');
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Login failed';
+      if (errorMessage.includes('verify your email')) {
+        throw { message: errorMessage };
+      }
+      toast.error(errorMessage);
       throw error;
     } finally {
       setIsLoading(false);
@@ -94,15 +102,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setIsLoading(true);
       const response = await authApi.register(userData);
-      const { token: authToken, user: newUser } = response.data;
-      
-      setToken(authToken);
-      setUser(newUser);
-      
-      localStorage.setItem('token', authToken);
-      localStorage.setItem('user', JSON.stringify(newUser));
-      
-      toast.success('Registration successful!');
+      // Don't automatically log in - user needs to verify email first
+      toast.success('Registration successful! Please check your email to verify your account.');
     } catch (error: any) {
       console.error('Registration error:', error.response?.data);
       const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Registration failed';

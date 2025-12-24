@@ -14,7 +14,7 @@ interface TableProps<T> {
   columns: Column<T>[];
   pagination?: {
     currentPage: number;
-    totalPages: number;
+    totalPages: numb
     pageSize: number;
     totalItems: number;
     onPageChange: (page: number) => void;

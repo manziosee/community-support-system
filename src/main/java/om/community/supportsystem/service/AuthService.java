@@ -114,46 +114,49 @@ public class AuthService {
             throw new RuntimeException("Invalid credentials");
         }
         
+        // Check if email is verified
+        if (!user.isEmailVerified()) {
+            throw new RuntimeException("Please verify your email address before logging in. Check your inbox for the verification link.");
+        }
+        
         // Reset failed attempts on successful password verification
         user.setFailedLoginAttempts(0);
         user.setLastLoginAt(LocalDateTime.now());
         
-        // Check if 2FA is enabled
-        if (user.isTwoFactorEnabled()) {
-            if (request.getTwoFactorCode() == null || request.getTwoFactorCode().isEmpty()) {
-                // Generate and send 2FA code
-                String code = String.format("%06d", random.nextInt(999999));
-                user.setTwoFactorSecret(code);
-                user.setPasswordResetTokenExpiry(LocalDateTime.now().plusMinutes(5)); // Reuse field for 2FA expiry
-                userRepository.save(user);
-                
-                try {
-                    emailService.sendTwoFactorCode(user.getEmail(), code);
-                    System.out.println("✅ 2FA code sent to: " + user.getEmail());
-                } catch (Exception e) {
-                    System.err.println("❌ Failed to send 2FA code: " + e.getMessage());
-                    throw new RuntimeException("Failed to send verification code. Please try again.");
-                }
-                
-                return new AuthResponse("Two-factor authentication required", true);
-            } else {
-                // Verify 2FA code
-                if (user.getTwoFactorSecret() == null || !request.getTwoFactorCode().equals(user.getTwoFactorSecret())) {
-                    throw new RuntimeException("Invalid or expired two-factor code");
-                }
-                
-                // Check if 2FA code has expired (5 minutes)
-                if (user.getPasswordResetTokenExpiry() != null && 
-                    user.getPasswordResetTokenExpiry().isBefore(LocalDateTime.now())) {
-                    user.setTwoFactorSecret(null);
-                    user.setPasswordResetTokenExpiry(null);
-                    userRepository.save(user);
-                    throw new RuntimeException("Two-factor code has expired. Please request a new one.");
-                }
-                
-                user.setTwoFactorSecret(null); // Clear temporary code
-                user.setPasswordResetTokenExpiry(null); // Clear expiry
+        // Always require OTP for login (not just 2FA users)
+        if (request.getTwoFactorCode() == null || request.getTwoFactorCode().isEmpty()) {
+            // Generate and send OTP code
+            String code = String.format("%06d", random.nextInt(999999));
+            user.setTwoFactorSecret(code);
+            user.setPasswordResetTokenExpiry(LocalDateTime.now().plusMinutes(5)); // OTP expires in 5 minutes
+            userRepository.save(user);
+            
+            try {
+                emailService.sendLoginOTP(user.getEmail(), code);
+                System.out.println("✅ Login OTP sent to: " + user.getEmail());
+            } catch (Exception e) {
+                System.err.println("❌ Failed to send login OTP: " + e.getMessage());
+                throw new RuntimeException("Failed to send verification code. Please try again.");
             }
+            
+            return new AuthResponse("OTP verification required", true);
+        } else {
+            // Verify OTP code
+            if (user.getTwoFactorSecret() == null || !request.getTwoFactorCode().equals(user.getTwoFactorSecret())) {
+                throw new RuntimeException("Invalid or expired OTP code");
+            }
+            
+            // Check if OTP code has expired (5 minutes)
+            if (user.getPasswordResetTokenExpiry() != null && 
+                user.getPasswordResetTokenExpiry().isBefore(LocalDateTime.now())) {
+                user.setTwoFactorSecret(null);
+                user.setPasswordResetTokenExpiry(null);
+                userRepository.save(user);
+                throw new RuntimeException("OTP code has expired. Please request a new one.");
+            }
+            
+            user.setTwoFactorSecret(null); // Clear OTP code
+            user.setPasswordResetTokenExpiry(null); // Clear expiry
         }
         
         userRepository.save(user);

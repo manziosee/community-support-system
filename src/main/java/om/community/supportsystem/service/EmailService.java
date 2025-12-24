@@ -79,10 +79,7 @@ public class EmailService {
         message.setTo(toEmail);
         message.setSubject("Password Reset - Community Support System");
         
-        String frontendUrl = System.getenv("FRONTEND_URL");
-        if (frontendUrl == null || frontendUrl.isEmpty()) {
-            frontendUrl = "https://community-support-system.vercel.app";
-        }
+        String frontendUrl = getFrontendUrl();
         
         message.setText("Hello,\n\n" +
                 "You requested a password reset for your Community Support System account.\n\n" +
@@ -101,10 +98,7 @@ public class EmailService {
         message.setTo(toEmail);
         message.setSubject("Email Verification - Community Support System");
         
-        String frontendUrl = System.getenv("FRONTEND_URL");
-        if (frontendUrl == null || frontendUrl.isEmpty()) {
-            frontendUrl = "https://community-support-system.vercel.app";
-        }
+        String frontendUrl = getFrontendUrl();
         
         message.setText("Welcome to Community Support System!\n\n" +
                 "Please click the link below to verify your email address:\n" +
@@ -114,6 +108,24 @@ public class EmailService {
         
         mailSender.send(message);
         System.out.println("✅ Verification email sent successfully to: " + toEmail);
+    }
+    
+    private String getFrontendUrl() {
+        // Check if we're running on Render (production)
+        String renderEnv = System.getenv("RENDER");
+        if (renderEnv != null) {
+            // Production - use Vercel URL
+            return "https://community-support-system.vercel.app";
+        }
+        
+        // Local development - check for custom frontend URL
+        String localUrl = System.getenv("FRONTEND_URL");
+        if (localUrl != null && !localUrl.isEmpty()) {
+            return localUrl;
+        }
+        
+        // Default local frontend URL (port 3001)
+        return "http://localhost:3001";
     }
     
     public void sendTwoFactorCode(String toEmail, String code) {
@@ -144,6 +156,46 @@ public class EmailService {
             System.out.println("2FA code sent to: " + toEmail);
         } catch (Exception e) {
             System.err.println("Failed to send 2FA code: " + e.getMessage());
+            throw new RuntimeException("Failed to send email", e);
+        }
+    }
+    
+    public void sendLoginOTP(String toEmail, String code) {
+        try {
+            if (sendGridEnabled) {
+                String subject = "Login Verification Code - Community Support System";
+                String content = String.format(
+                    "<div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>" +
+                    "<h2 style='color: #2c5aa0;'>Login Verification</h2>" +
+                    "<p>Hello,</p>" +
+                    "<p>Someone is trying to log in to your Community Support System account. Please use the verification code below to complete your login:</p>" +
+                    "<div style='background-color: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0;'>" +
+                    "<h1 style='color: #2c5aa0; font-size: 32px; margin: 0; letter-spacing: 4px;'>%s</h1>" +
+                    "</div>" +
+                    "<p><strong>This code will expire in 5 minutes.</strong></p>" +
+                    "<p>If you didn't attempt to log in, please ignore this email and consider changing your password.</p>" +
+                    "<hr style='border: none; border-top: 1px solid #eee; margin: 30px 0;'>" +
+                    "<p style='color: #666; font-size: 12px;'>© 2025 Community Support System. This is an automated message.</p>" +
+                    "</div>",
+                    code
+                );
+                sendGridEmailService.sendEmail(toEmail, subject, content);
+                return;
+            }
+            
+            // Fallback to SMTP
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(toEmail);
+            message.setSubject("Login Verification Code - Community Support System");
+            message.setText("Your login verification code is: " + code +
+                    "\n\nThis code will expire in 5 minutes." +
+                    "\n\nIf you didn't attempt to log in, please ignore this email.");
+            
+            mailSender.send(message);
+            System.out.println("Login OTP sent to: " + toEmail);
+        } catch (Exception e) {
+            System.err.println("Failed to send login OTP: " + e.getMessage());
             throw new RuntimeException("Failed to send email", e);
         }
     }
