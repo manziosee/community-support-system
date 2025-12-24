@@ -25,19 +25,21 @@ public class SendGridEmailService {
     private String frontendUrl;
     
     private String getFrontendUrl() {
-        // Check if we're running locally
-        String environment = System.getenv("RENDER");
-        if (environment == null) {
-            // Local development - check if frontend is running on different ports
-            String localUrl = System.getenv("FRONTEND_URL");
-            if (localUrl != null && !localUrl.isEmpty()) {
-                return localUrl;
-            }
-            // Default local frontend URLs
-            return "http://localhost:3001";
+        // Check if we're running on Render (production)
+        String renderEnv = System.getenv("RENDER");
+        if (renderEnv != null) {
+            // Production - use configured frontend URL
+            return frontendUrl;
         }
-        // Production - use configured frontend URL
-        return frontendUrl;
+        
+        // Local development - check for custom frontend URL
+        String localUrl = System.getenv("FRONTEND_URL");
+        if (localUrl != null && !localUrl.isEmpty()) {
+            return localUrl;
+        }
+        
+        // Default local frontend URL (port 3001)
+        return "http://localhost:3001";
     }
 
     public void sendEmail(String toEmail, String subject, String htmlContent) throws IOException {

@@ -1,8 +1,16 @@
 import axios from 'axios';
 import type { AuthResponse, LoginRequest, RegisterRequest } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://community-support-system.onrender.com/api' : '/api');
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
+  (import.meta.env.PROD 
+    ? 'https://community-support-system.onrender.com/api' 
+    : window.location.hostname === 'localhost' && window.location.port === '3001'
+      ? 'http://localhost:8080/api'
+      : '/api'
+  );
 console.log('API Base URL:', API_BASE_URL);
+console.log('Environment:', import.meta.env.PROD ? 'Production' : 'Development');
+console.log('Current URL:', window.location.href);
 
 // Create axios instance
 export const api = axios.create({

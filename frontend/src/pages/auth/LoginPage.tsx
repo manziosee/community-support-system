@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Mail, Lock, Eye, EyeOff, HandHeart } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, HandHeart, AlertCircle, CheckCircle } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { authApi } from '../../services/api';
 import Button from '../../components/common/Button';
+import toast from 'react-hot-toast';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -17,6 +19,9 @@ type LoginFormData = z.infer<typeof loginSchema>;
 const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isResendingVerification, setIsResendingVerification] = useState(false);
+  const [verificationMessage, setVerificationMessage] = useState('');
+  const [searchParams] = useSearchParams();
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -34,6 +39,13 @@ const LoginPage: React.FC = () => {
     }
   }, [isAuthenticated, navigate]);
 
+  useEffect(() => {
+    const message = searchParams.get('message');
+    if (message === 'verify-email') {
+      setVerificationMessage('Please check your email and click the verification link before logging in.');
+    }
+  }, [searchParams]);
+
   const onSubmit = async (data: LoginFormData) => {
     try {
       setIsLoading(true);
@@ -44,10 +56,31 @@ const LoginPage: React.FC = () => {
         navigate('/2fa-verify', { 
           state: { email: error.email, password: error.password } 
         });
+      } else if (error.message?.includes('verify your email')) {
+        setVerificationMessage('Your email address is not verified. Please check your inbox for the verification link.');
       }
       // Other errors are handled by the auth context
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    const email = (document.getElementById('email') as HTMLInputElement)?.value;
+    if (!email) {
+      toast.error('Please enter your email address first');
+      return;
+    }
+
+    setIsResendingVerification(true);
+    try {
+      await authApi.resendVerification(email);
+      toast.success('Verification email sent! Please check your inbox.');
+      setVerificationMessage('A new verification email has been sent. Please check your inbox.');
+    } catch (error: any) {
+      toast.error('Failed to resend verification email');
+    } finally {
+      setIsResendingVerification(false);
     }
   };
 
@@ -69,6 +102,26 @@ const LoginPage: React.FC = () => {
           </div>
 
 
+
+          {/* Verification Message */}
+          {verificationMessage && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+              <div className="flex items-start">
+                <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
+                <div className="flex-1">
+                  <p className="text-sm text-blue-800">{verificationMessage}</p>
+                  <button
+                    type="button"
+                    onClick={handleResendVerification}
+                    disabled={isResendingVerification}
+                    className="mt-2 text-sm text-blue-600 hover:text-blue-500 underline disabled:opacity-50"
+                  >
+                    {isResendingVerification ? 'Sending...' : 'Resend verification email'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
         {/* Form */}
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
@@ -125,6 +178,40 @@ const LoginPage: React.FC = () => {
                 <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
               )}
             </div>
+
+            {/* OTP Field */}
+            {showOtpField && (
+              <div>
+                <label htmlFor="otp" className="block text-sm font-medium text-gray-700">
+                  Enter 6-digit OTP code
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="otp"
+                    type="text"
+                    maxLength={6}
+                    value={otpCode}
+                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
+                    className="input-field text-center text-lg tracking-widest"
+                    placeholder="000000"
+                    autoComplete="one-time-code"
+                  />
+                </div>
+                <div className="mt-2 flex justify-between items-center">
+                  <p className="text-xs text-gray-500">
+                    Code sent to {loginCredentials.email}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handleResendOtp}
+                    disabled={isResendingOtp}
+                    className="text-xs text-blue-600 hover:text-blue-500 underline disabled:opacity-50"
+                  >
+                    {isResendingOtp ? 'Sending...' : 'Resend OTP'}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Remember me & Forgot password */}
@@ -152,14 +239,30 @@ const LoginPage: React.FC = () => {
           </div>
 
           {/* Submit button */}
-          <Button
-            type="submit"
-            className="w-full"
-            loading={isLoading}
-            disabled={isLoading}
-          >
-            Sign in
-          </Button>
+          <div className="space-y-3">
+            <Button
+              type="submit"
+              className="w-full"
+              loading={isLoading}
+              disabled={isLoading}
+            >
+              {showOtpField ? 'Verify OTP & Sign In' : 'Continue'}
+            </Button>
+            
+            {showOtpField && (
+              <Button
+                type="button"
+                variant="secondary"
+                className="w-full"
+                onClick={() => {
+                  setShowOtpField(false);
+                  setOtpCode('');
+                }}
+              >
+                ← Back to Login
+              </Button>
+            )}
+          </div>
 
           {/* Sign up link */}
           <div className="text-center">
