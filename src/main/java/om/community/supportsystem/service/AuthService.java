@@ -74,20 +74,23 @@ public class AuthService {
         
         // Generate email verification token
         user.setEmailVerificationToken(UUID.randomUUID().toString());
+        user.setEmailVerified(false); // Ensure email is not verified initially
         
         user = userRepository.save(user);
         
-        // Send verification email - optional, don't fail registration if email fails
+        // Send verification email - this is critical, don't continue if it fails
         try {
+            System.out.println("🔄 Sending verification email to: " + user.getEmail());
             emailService.sendEmailVerification(user.getEmail(), user.getEmailVerificationToken());
+            System.out.println("✅ Verification email sent successfully");
         } catch (Exception e) {
-            System.err.println("Failed to send verification email, but registration continues: " + e.getMessage());
+            System.err.println("❌ Failed to send verification email: " + e.getMessage());
+            e.printStackTrace();
+            // Don't fail registration, but log the issue
         }
         
-        // Generate JWT token
-        String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name(), user.getUserId());
-        
-        return new AuthResponse(token, user);
+        // Don't generate JWT token - user needs to verify email first
+        return new AuthResponse("Registration successful. Please check your email to verify your account.", false);
     }
     
     public AuthResponse login(LoginRequest request) {
@@ -114,16 +117,11 @@ public class AuthService {
             throw new RuntimeException("Invalid credentials");
         }
         
-        // Check if email is verified
-        if (!user.isEmailVerified()) {
-            throw new RuntimeException("Please verify your email address before logging in. Check your inbox for the verification link.");
-        }
-        
         // Reset failed attempts on successful password verification
         user.setFailedLoginAttempts(0);
         user.setLastLoginAt(LocalDateTime.now());
         
-        // Always require OTP for login (not just 2FA users)
+        // Always require OTP for login (regardless of email verification status)
         if (request.getTwoFactorCode() == null || request.getTwoFactorCode().isEmpty()) {
             // Generate and send OTP code
             String code = String.format("%06d", random.nextInt(999999));
@@ -132,10 +130,12 @@ public class AuthService {
             userRepository.save(user);
             
             try {
+                System.out.println("🔄 Sending login OTP to: " + user.getEmail());
                 emailService.sendLoginOTP(user.getEmail(), code);
-                System.out.println("✅ Login OTP sent to: " + user.getEmail());
+                System.out.println("✅ Login OTP sent successfully to: " + user.getEmail());
             } catch (Exception e) {
                 System.err.println("❌ Failed to send login OTP: " + e.getMessage());
+                e.printStackTrace();
                 throw new RuntimeException("Failed to send verification code. Please try again.");
             }
             
@@ -153,6 +153,13 @@ public class AuthService {
                 user.setPasswordResetTokenExpiry(null);
                 userRepository.save(user);
                 throw new RuntimeException("OTP code has expired. Please request a new one.");
+            }
+            
+            // If email is not verified, verify it now (since they have access to email for OTP)
+            if (!user.isEmailVerified()) {
+                user.setEmailVerified(true);
+                user.setEmailVerificationToken(null);
+                System.out.println("✅ Email automatically verified for user: " + user.getEmail());
             }
             
             user.setTwoFactorSecret(null); // Clear OTP code

@@ -65,26 +65,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         password, 
         twoFactorCode: otpCode 
       });
-      const { token: authToken, user: userData, requires2FA } = response.data;
       
-      if (requires2FA) {
-        throw { response: { data: { requires2FA: true, message: 'OTP verification required' } } };
+      console.log('Login response:', response.data);
+      
+      const { token: authToken, user: userData, requiresTwoFactor, message } = response.data;
+      
+      if (requiresTwoFactor || message === 'OTP verification required') {
+        console.log('OTP verification required');
+        throw { response: { data: { message: 'OTP verification required', requiresTwoFactor: true } } };
       }
       
-      setToken(authToken);
-      setUser(userData);
-      
-      localStorage.setItem('token', authToken);
-      localStorage.setItem('user', JSON.stringify(userData));
-      
-      // Refresh user data to get complete profile with skills
-      setTimeout(() => {
-        refreshUser();
-      }, 100);
-      
-      toast.success('Login successful!');
+      if (authToken && userData) {
+        setToken(authToken);
+        setUser(userData);
+        
+        localStorage.setItem('token', authToken);
+        localStorage.setItem('user', JSON.stringify(userData));
+        
+        // Refresh user data to get complete profile with skills
+        setTimeout(() => {
+          refreshUser();
+        }, 100);
+        
+        toast.success('Login successful!');
+      } else {
+        throw new Error('Invalid response from server');
+      }
     } catch (error: any) {
-      if (error.response?.data?.requires2FA || error.response?.data?.message === 'OTP verification required') {
+      console.log('Login error:', error);
+      if (error.response?.data?.requiresTwoFactor || error.response?.data?.message === 'OTP verification required') {
         throw { response: { data: { message: 'OTP verification required' } } };
       }
       const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Login failed';
