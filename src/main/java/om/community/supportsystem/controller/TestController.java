@@ -1,11 +1,15 @@
 package om.community.supportsystem.controller;
 
 import om.community.supportsystem.service.EmailService;
+import om.community.supportsystem.model.User;
+import om.community.supportsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/test")
@@ -19,6 +23,9 @@ public class TestController {
     
     @Autowired
     private EmailService emailService;
+    
+    @Autowired
+    private UserRepository userRepository;
     
     @PostMapping("/send-test-email")
     public ResponseEntity<?> sendTestEmail(@RequestBody Map<String, String> request) {
@@ -42,25 +49,41 @@ public class TestController {
         }
     }
     
-    @PostMapping("/send-test-otp")
-    public ResponseEntity<?> sendTestOTP(@RequestBody Map<String, String> request) {
+    @PostMapping("/send-verification-email")
+    public ResponseEntity<?> sendVerificationEmail(@RequestBody Map<String, String> request) {
         try {
             String email = request.get("email");
             if (email == null || email.isEmpty()) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Email is required"));
             }
             
-            // Send a test OTP
-            emailService.sendLoginOTP(email, "123456");
+            // Find user by email
+            Optional<User> userOpt = userRepository.findByEmail(email);
+            if (userOpt.isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "User not found"));
+            }
+            
+            User user = userOpt.get();
+            if (user.isEmailVerified()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Email is already verified"));
+            }
+            
+            // Generate new verification token
+            String newToken = UUID.randomUUID().toString();
+            user.setEmailVerificationToken(newToken);
+            userRepository.save(user);
+            
+            // Send verification email
+            emailService.sendEmailVerification(email, newToken);
             
             return ResponseEntity.ok(Map.of(
-                "message", "Test OTP sent successfully",
+                "message", "Verification email sent successfully",
                 "email", email,
-                "otp", "123456"
+                "token", newToken // For testing purposes
             ));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of(
-                "error", "Failed to send test OTP: " + e.getMessage()
+                "error", "Failed to send verification email: " + e.getMessage()
             ));
         }
     }
