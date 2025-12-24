@@ -21,6 +21,10 @@ const LoginPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isResendingVerification, setIsResendingVerification] = useState(false);
   const [verificationMessage, setVerificationMessage] = useState('');
+  const [showOtpField, setShowOtpField] = useState(false);
+  const [otpCode, setOtpCode] = useState('');
+  const [isResendingOtp, setIsResendingOtp] = useState(false);
+  const [loginCredentials, setLoginCredentials] = useState({ email: '', password: '' });
   const [searchParams] = useSearchParams();
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -49,19 +53,61 @@ const LoginPage: React.FC = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       setIsLoading(true);
-      await login(data.email, data.password);
-      navigate('/dashboard');
-    } catch (error: any) {
-      if (error.requires2FA) {
-        navigate('/2fa-verify', { 
-          state: { email: error.email, password: error.password } 
-        });
-      } else if (error.message?.includes('verify your email')) {
-        setVerificationMessage('Your email address is not verified. Please check your inbox for the verification link.');
+      
+      if (!showOtpField) {
+        // First step: send email and password
+        setLoginCredentials({ email: data.email, password: data.password });
+        try {
+          await login(data.email, data.password);
+          navigate('/dashboard');
+        } catch (error: any) {
+          if (error.response?.data?.message === 'OTP verification required') {
+            setShowOtpField(true);
+            toast.success('OTP sent to your email. Please check your inbox.');
+          } else if (error.message?.includes('verify your email')) {
+            setVerificationMessage('Your email address is not verified. Please check your inbox for the verification link.');
+          } else if (error.requires2FA) {
+            navigate('/2fa-verify', { 
+              state: { email: error.email, password: error.password } 
+            });
+          }
+        }
+      } else {
+        // Second step: verify OTP
+        if (!otpCode || otpCode.length !== 6) {
+          toast.error('Please enter a valid 6-digit OTP code');
+          return;
+        }
+        
+        try {
+          await login(loginCredentials.email, loginCredentials.password, otpCode);
+          navigate('/dashboard');
+        } catch (error: any) {
+          if (error.response?.data?.error?.includes('expired')) {
+            toast.error('OTP code has expired. Please request a new one.');
+            setShowOtpField(false);
+            setOtpCode('');
+          }
+        }
       }
+    } catch (error: any) {
       // Other errors are handled by the auth context
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    setIsResendingOtp(true);
+    try {
+      await login(loginCredentials.email, loginCredentials.password);
+      toast.success('New OTP sent to your email');
+    } catch (error: any) {
+      if (error.response?.data?.message !== 'OTP verification required') {
+        toast.error('Failed to resend OTP');
+      }
+    } finally {
+      setIsResendingOtp(false);
     }
   };
 
