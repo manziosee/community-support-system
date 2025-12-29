@@ -3,10 +3,10 @@ import type { AuthResponse, LoginRequest, RegisterRequest } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
   (import.meta.env.PROD 
-    ? 'https://community-support-system.onrender.com/api' 
+    ? 'https://community-support-system.fly.dev/api' 
     : window.location.hostname === 'localhost' && window.location.port === '3001'
       ? 'http://localhost:8080/api'
-      : '/api'
+      : 'https://community-support-system.fly.dev/api'
   );
 console.log('API Base URL:', API_BASE_URL);
 console.log('Environment:', import.meta.env.PROD ? 'Production' : 'Development');
