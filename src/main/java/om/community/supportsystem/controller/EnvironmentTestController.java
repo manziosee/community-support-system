@@ -12,7 +12,7 @@ import java.util.Map;
 @RequestMapping("/api/test/environment")
 public class EnvironmentTestController {
 
-    @Autowired
+    @Autowired(required = false)
     private SendGridEmailService sendGridEmailService;
     
     @Value("${frontend.url:http://localhost:3000}")
@@ -37,6 +37,13 @@ public class EnvironmentTestController {
 
     @PostMapping("/test-password-reset-url")
     public ResponseEntity<?> testPasswordResetUrl(@RequestBody Map<String, String> request) {
+        if (sendGridEmailService == null) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "error", "SendGrid email service is not configured. Set sendgrid.enabled=true to enable email functionality."
+            ));
+        }
+        
         try {
             String email = request.get("email");
             String testToken = "test-token-123";
@@ -60,6 +67,13 @@ public class EnvironmentTestController {
 
     @PostMapping("/test-verification-url")
     public ResponseEntity<?> testVerificationUrl(@RequestBody Map<String, String> request) {
+        if (sendGridEmailService == null) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "error", "SendGrid email service is not configured. Set sendgrid.enabled=true to enable email functionality."
+            ));
+        }
+        
         try {
             String email = request.get("email");
             String testToken = "test-verification-token-456";

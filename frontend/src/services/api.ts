@@ -1,13 +1,27 @@
 import axios from 'axios';
 import type { AuthResponse, LoginRequest, RegisterRequest } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
-  (import.meta.env.PROD 
-    ? 'https://community-support-system.fly.dev/api' 
-    : window.location.hostname === 'localhost' && window.location.port === '3001'
-      ? 'http://localhost:8080/api'
-      : 'https://community-support-system.fly.dev/api'
-  );
+function getApiBaseUrl(): string {
+  // Check for explicit environment variable first
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+  
+  // Production environment
+  if (import.meta.env.PROD) {
+    return 'https://community-support-system.onrender.com/api';
+  }
+  
+  // Development environment - check for local development
+  if (window.location.hostname === 'localhost' && window.location.port === '3001') {
+    return 'http://localhost:8080/api';
+  }
+  
+  // Default fallback
+  return 'https://community-support-system.onrender.com/api';
+}
+
+const API_BASE_URL = getApiBaseUrl();
 console.log('API Base URL:', API_BASE_URL);
 console.log('Environment:', import.meta.env.PROD ? 'Production' : 'Development');
 console.log('Current URL:', window.location.href);

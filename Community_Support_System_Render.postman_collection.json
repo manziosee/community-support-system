@@ -1,0 +1,316 @@
+{
+	"info": {
+		"_postman_id": "community-support-system-v2",
+		"name": "Community Support System API - Complete Collection",
+		"description": "Complete API collection for Community Support System with Authentication, 2FA, Rwanda Locations API, and all 130+ endpoints. Supports both local development and Render production deployment.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "community-support-system"
+	},
+	"item": [
+		{
+			"name": "🔐 Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@community.rw\",\n  \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Jean Claude Mugabo\",\n  \"email\": \"jean.mugabo@example.com\",\n  \"phoneNumber\": \"0788123456\",\n  \"password\": \"SecurePass123\",\n  \"role\": \"VOLUNTEER\",\n  \"province\": \"Kigali\",\n  \"district\": \"Gasabo\",\n  \"sector\": \"Remera\",\n  \"cell\": \"Nyabisindu\",\n  \"village\": \"Kabeza\",\n  \"skills\": [\n    {\"skillId\": 1},\n    {\"skillId\": 2}\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "register"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🏥 Health & Monitoring",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/actuator/health",
+							"host": ["{{baseUrl}}"],
+							"path": ["actuator", "health"]
+						},
+						"description": "Check application health status - used by Render for health monitoring"
+					}
+				},
+				{
+					"name": "Test CORS",
+					"request": {
+						"method": "OPTIONS",
+						"header": [
+							{
+								"key": "Origin",
+								"value": "https://your-frontend.vercel.app"
+							},
+							{
+								"key": "Access-Control-Request-Method",
+								"value": "GET"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/users",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users"]
+						},
+						"description": "Test CORS configuration for frontend integration"
+					}
+				}
+			]
+		},
+		{
+			"name": "🌐 Environment Switching",
+			"item": [
+				{
+					"name": "Switch to Local Development",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/actuator/health",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["actuator", "health"]
+						},
+						"description": "Test local development environment"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('baseUrl', 'http://localhost:8080');",
+									"console.log('Switched to Local Development environment');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Switch to Render Production",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{renderUrl}}/actuator/health",
+							"host": ["{{renderUrl}}"],
+							"path": ["actuator", "health"]
+						},
+						"description": "Test Render production environment"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('baseUrl', pm.collectionVariables.get('renderUrl'));",
+									"console.log('Switched to Render Production environment');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "👥 Users",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/users",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users"]
+						}
+					}
+				},
+				{
+					"name": "Get User by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📝 Requests",
+			"item": [
+				{
+					"name": "Get All Requests",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/requests",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "requests"]
+						}
+					}
+				},
+				{
+					"name": "Create Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Need help with grocery shopping\",\n  \"description\": \"I need someone to help me with grocery shopping this weekend.\",\n  \"citizen\": {\n    \"userId\": 3\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/requests",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "requests"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🇷🇼 Rwanda Locations",
+			"item": [
+				{
+					"name": "Get All Provinces",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/rwanda-locations/provinces",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "rwanda-locations", "provinces"]
+						}
+					}
+				},
+				{
+					"name": "Get Districts by Province",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/rwanda-locations/districts?province=Kigali",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "rwanda-locations", "districts"],
+							"query": [
+								{
+									"key": "province",
+									"value": "Kigali"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string",
+			"description": "Base URL for the API. Use http://localhost:8080 for local development or https://your-app.onrender.com for production"
+		},
+		{
+			"key": "renderUrl",
+			"value": "https://community-support-system.onrender.com",
+			"type": "string",
+			"description": "Production URL on Render - replace with your actual Render app URL"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string",
+			"description": "JWT token obtained from login endpoint"
+		}
+	]
+}

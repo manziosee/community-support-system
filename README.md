@@ -348,18 +348,73 @@ graph TD
 
 <div align="center">
 
-| Service | URL | Status |
-|---------|-----|--------|
-| 🚀 **Backend API** | [Render Deployment](https://community-support-system.onrender.com) | ✅ Live |
-| 🌐 **Frontend App** | [Vercel Deployment](https://community-support-system.vercel.app) | ✅ Live |
-| 🗺️ **API Docs** | [Swagger UI](http://localhost:8080/swagger-ui.html) | 🛠️ Dev Only |
-| 📄 **Postman** | [API Collection](./Community_Support_System_Updated.postman_collection.json) | 📚 Available |
+| Service | URL | Status | Platform |
+|---------|-----|--------|----------|
+| 🚀 **Backend API** | [Your Render App](https://your-app.onrender.com) | 🔄 Ready to Deploy | Render |
+| 🌐 **Frontend App** | [Your Vercel App](https://your-frontend.vercel.app) | 🔄 Ready to Deploy | Vercel |
+| 🗺️ **API Docs** | [Swagger UI](http://localhost:8080/swagger-ui.html) | 🛠️ Dev Only | Local |
+| 📄 **Postman** | [API Collection](./Community_Support_System_Updated.postman_collection.json) | 📚 Available | Local |
 
 </div>
 
+### 🚀 Deployment Status
+
+- **Backend**: Ready for Render deployment with optimized configuration
+- **Database**: PostgreSQL with connection pooling and performance tuning
+- **Security**: Environment variables, CORS, JWT authentication
+- **Monitoring**: Health checks, logging, and error handling
+- **Documentation**: Complete API documentation with Swagger
+
 ---
 
-## 🚀 Getting Started
+## 🚀 Render Deployment
+
+### 📋 Quick Deploy to Render
+
+<div align="center">
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/manziosee/community-support-system)
+
+</div>
+
+### 🔧 Manual Deployment Steps
+
+1. **Fork this repository** to your GitHub account
+2. **Create Render account** at [render.com](https://render.com)
+3. **Connect GitHub** repository to Render
+4. **Deploy using render.yaml** (recommended) or manual configuration
+
+### 📊 Render Configuration
+
+<div align="center">
+
+| Component | Configuration | Value |
+|-----------|---------------|-------|
+| **Runtime** | Java 21 | `java21` |
+| **Build Command** | Maven package | `mvn clean package -DskipTests` |
+| **Start Command** | Spring Boot | `java -Dspring.profiles.active=render -Dserver.port=$PORT -jar target/supportsystem-0.0.1-SNAPSHOT.jar` |
+| **Health Check** | Actuator endpoint | `/actuator/health` |
+| **Database** | PostgreSQL | Free tier included |
+
+</div>
+
+### 🔐 Required Environment Variables
+
+```bash
+# Automatically configured by render.yaml
+SPRING_PROFILES_ACTIVE=render
+DATABASE_URL=[Auto-generated from database service]
+JWT_SECRET=[Auto-generated secure secret]
+CORS_ALLOWED_ORIGINS=https://your-frontend.vercel.app
+FRONTEND_URL=https://your-frontend.vercel.app
+SENDGRID_ENABLED=false
+```
+
+### 📚 Detailed Deployment Guide
+
+For complete step-by-step instructions, see [RENDER_DEPLOYMENT.md](./RENDER_DEPLOYMENT.md)
+
+---
 
 ### 📋 Prerequisites
 
@@ -397,7 +452,7 @@ SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run
 ```bash
 # 1. Set environment variables
 export SPRING_PROFILES_ACTIVE=prod
-export PROD_DB_URL=your_neon_database_url
+export PROD_DB_URL=your_supabase_database_url
 export JWT_SECRET=your_secure_jwt_secret
 
 # 2. Build and run
@@ -415,7 +470,8 @@ java -jar target/supportsystem-0.0.1-SNAPSHOT.jar
 | 🛠️ **Development** | Swagger UI | http://localhost:8080/swagger-ui.html | API Docs |
 | 🛠️ **Development** | Database | localhost:5432 | Local PostgreSQL |
 | 🚀 **Production** | API Server | https://your-app.onrender.com | Render Deployment |
-| 🚀 **Production** | Database | Neon PostgreSQL | Cloud Database |
+| 🚀 **Production** | Database | Render PostgreSQL | Cloud Database |
+| 🚀 **Production** | Health Check | https://your-app.onrender.com/actuator/health | Monitoring |
 
 </div>
 
@@ -432,7 +488,7 @@ DB_USERNAME=postgres
 DB_PASSWORD=your_password
 
 # Production Database (Neon)
-PROD_DB_URL=jdbc:postgresql://your-neon-host/database?sslmode=require
+PROD_DB_URL=postgresql://postgres:your_password@db.your_project.supabase.co:5432/postgres
 PROD_DB_USERNAME=your_username
 PROD_DB_PASSWORD=your_password
 
@@ -449,10 +505,11 @@ SERVER_PORT=8080
 
 <div align="center">
 
-| Profile | Database | Use Case | Swagger | Logging |
-|---------|----------|----------|---------|----------|
-| `dev` | Local PostgreSQL | Development | ✅ Enabled | 🔍 Debug |
-| `prod` | Neon PostgreSQL | Production | ❌ Disabled | ℹ️ Info |
+| Profile | Database | Use Case | Swagger | Logging | Deployment |
+|---------|----------|----------|---------|----------|------------|
+| `dev` | Local PostgreSQL | Development | ✅ Enabled | 🔍 Debug | Local |
+| `render` | Render PostgreSQL | Production | ❌ Disabled | ℹ️ Info | Render.com |
+| `docker` | Docker PostgreSQL | Containerized | ✅ Enabled | ℹ️ Info | Docker |
 
 </div>
 
