@@ -17,17 +17,14 @@ WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
 # Environment variables with defaults
-ENV SPRING_PROFILES_ACTIVE=prod
+ENV SPRING_PROFILES_ACTIVE=render
 ENV PORT=8080
-ENV JWT_SECRET=5f566298b0ba4f8e38c1ff7c6e0844a1
-ENV CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001,https://community-support-system.vercel.app
-ENV MAIL_USERNAME=darkosee23@gmail.com
-ENV MAIL_PASSWORD="pciv ygjl uvwk petm"
+ENV SENDGRID_ENABLED=false
 
 EXPOSE ${PORT}
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
   CMD curl -f http://localhost:${PORT}/actuator/health || exit 1
 
-ENTRYPOINT ["sh", "-c", "java -Dserver.port=${PORT} -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE} -jar app.jar"]
+ENTRYPOINT ["sh", "-c", "java -Xmx512m -Dserver.port=${PORT} -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE} -jar app.jar"]

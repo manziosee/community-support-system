@@ -12,20 +12,20 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
     
-    @Autowired
+    @Autowired(required = false)
     private SendGridEmailService sendGridEmailService;
     
     @Value("${spring.mail.username:manziosee3@gmail.com}")
     private String fromEmail;
     
-    @Value("${sendgrid.enabled:true}")
+    @Value("${sendgrid.enabled:false}")
     private boolean sendGridEnabled;
     
     public void sendPasswordResetEmail(String toEmail, String resetToken) {
         try {
             System.out.println("🔄 Attempting to send password reset email to: " + toEmail);
             
-            if (sendGridEnabled) {
+            if (sendGridEnabled && sendGridEmailService != null) {
                 System.out.println("📧 Using SendGrid for email delivery");
                 sendGridEmailService.sendPasswordResetEmail(toEmail, "User", resetToken);
                 return;
@@ -56,7 +56,7 @@ public class EmailService {
         try {
             System.out.println("🔄 Attempting to send verification email to: " + toEmail);
             
-            if (sendGridEnabled) {
+            if (sendGridEnabled && sendGridEmailService != null) {
                 System.out.println("📧 Using SendGrid for email delivery");
                 sendGridEmailService.sendVerificationEmail(toEmail, "User", verificationToken);
                 return;

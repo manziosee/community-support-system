@@ -11,11 +11,18 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/assignments")
+@Tag(name = "🤝 Assignments", description = "Assignment management APIs - volunteer task assignments, completion tracking, and statistics")
 @CrossOrigin(origins = {"http://localhost:3001", "http://localhost:5173", "https://community-support-system.vercel.app"}, allowCredentials = "true")
 public class AssignmentController {
     
@@ -23,6 +30,11 @@ public class AssignmentController {
     private AssignmentService assignmentService;
     
     // Create
+    @Operation(summary = "Create new assignment", description = "Assign a volunteer to a help request")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Assignment created successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid assignment data or request already assigned")
+    })
     @PostMapping
     public ResponseEntity<?> createAssignment(@RequestBody Assignment assignment) {
         try {
@@ -42,6 +54,8 @@ public class AssignmentController {
     }
     
     // Read
+    @Operation(summary = "Get all assignments", description = "Retrieve all volunteer assignments in the system")
+    @ApiResponse(responseCode = "200", description = "Assignments retrieved successfully")
     @GetMapping
     public ResponseEntity<List<AssignmentResponseDTO>> getAllAssignments() {
         List<Assignment> assignments = assignmentService.getAllAssignments();
@@ -51,8 +65,14 @@ public class AssignmentController {
         return ResponseEntity.ok(assignmentDTOs);
     }
     
+    @Operation(summary = "Get assignment by ID", description = "Retrieve a specific assignment with detailed information")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Assignment found"),
+        @ApiResponse(responseCode = "404", description = "Assignment not found")
+    })
     @GetMapping("/{id}")
-    public ResponseEntity<?> getAssignmentById(@PathVariable Long id) {
+    public ResponseEntity<?> getAssignmentById(
+            @Parameter(description = "Assignment ID", required = true) @PathVariable Long id) {
         try {
             System.out.println("🔍 Fetching assignment by ID: " + id);
             Optional<Assignment> assignmentOpt = assignmentService.getAssignmentById(id);
@@ -128,8 +148,14 @@ public class AssignmentController {
         }
     }
     
+    @Operation(summary = "Get assignments by volunteer", description = "Retrieve all assignments for a specific volunteer")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Assignments retrieved successfully"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping("/volunteer/{volunteerId}")
-    public ResponseEntity<?> getAssignmentsByVolunteerId(@PathVariable Long volunteerId) {
+    public ResponseEntity<?> getAssignmentsByVolunteerId(
+            @Parameter(description = "Volunteer user ID", required = true) @PathVariable Long volunteerId) {
         try {
             System.out.println("🔍 Fetching assignments for volunteer ID: " + volunteerId);
             List<Assignment> assignments = assignmentService.getAssignmentsByVolunteerId(volunteerId);

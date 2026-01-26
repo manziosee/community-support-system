@@ -10,10 +10,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/skills")
+@Tag(name = "🎯 Skills", description = "Skill management APIs - volunteer capabilities, search, and popularity tracking")
 @CrossOrigin(origins = {"http://localhost:3001", "http://localhost:5173", "https://community-support-system.vercel.app"}, allowCredentials = "true")
 public class SkillController {
     
@@ -21,6 +28,11 @@ public class SkillController {
     private SkillService skillService;
     
     // Create
+    @Operation(summary = "Create new skill", description = "Create a new skill that volunteers can possess")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Skill created successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid skill data or skill already exists")
+    })
     @PostMapping
     public ResponseEntity<Skill> createSkill(@RequestBody Skill skill) {
         try {
@@ -32,14 +44,22 @@ public class SkillController {
     }
     
     // Read
+    @Operation(summary = "Get all skills", description = "Retrieve all available skills in the system")
+    @ApiResponse(responseCode = "200", description = "Skills retrieved successfully")
     @GetMapping
     public ResponseEntity<List<Skill>> getAllSkills() {
         List<Skill> skills = skillService.getAllSkills();
         return ResponseEntity.ok(skills);
     }
     
+    @Operation(summary = "Get skill by ID", description = "Retrieve a specific skill by its ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Skill found"),
+        @ApiResponse(responseCode = "404", description = "Skill not found")
+    })
     @GetMapping("/{id}")
-    public ResponseEntity<Skill> getSkillById(@PathVariable Long id) {
+    public ResponseEntity<Skill> getSkillById(
+            @Parameter(description = "Skill ID", required = true) @PathVariable Long id) {
         return skillService.getSkillById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -82,6 +102,8 @@ public class SkillController {
         return ResponseEntity.ok(skills);
     }
     
+    @Operation(summary = "Get popular skills", description = "Get skills ordered by the number of users who have them")
+    @ApiResponse(responseCode = "200", description = "Popular skills retrieved successfully")
     @GetMapping("/popular")
     public ResponseEntity<List<Object[]>> getSkillsOrderByUserCount() {
         List<Object[]> skills = skillService.getSkillsOrderByUserCount();

@@ -5,11 +5,13 @@ import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
 @Service
+@ConditionalOnProperty(name = "sendgrid.enabled", havingValue = "true", matchIfMissing = false)
 public class SendGridEmailService {
 
     @Value("${sendgrid.api.key}")

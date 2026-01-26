@@ -68,8 +68,8 @@ public class SwaggerConfig {
                                 .url("http://localhost:8080")
                                 .description("🔧 Development Server - Local Development"),
                         new Server()
-                                .url("https://api.community.rw")
-                                .description("🌐 Production Server - Live API")
+                                .url("https://community-support-system.onrender.com")
+                                .description("🚀 Production Server - Live API (Render)")
                 ))
                 .components(new Components()
                         .addSecuritySchemes("bearerAuth", new SecurityScheme()

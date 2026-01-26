@@ -10,10 +10,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/locations")
+@Tag(name = "🏦 Locations", description = "Location management APIs - Rwandan administrative divisions (provinces and districts)")
 @CrossOrigin(origins = {"http://localhost:3001", "http://localhost:5173", "https://community-support-system.vercel.app"}, allowCredentials = "true")
 public class LocationController {
     
@@ -28,6 +35,8 @@ public class LocationController {
     }
     
     // Read
+    @Operation(summary = "Get all locations", description = "Retrieve all locations (30 districts across 5 provinces in Rwanda)")
+    @ApiResponse(responseCode = "200", description = "Locations retrieved successfully")
     @GetMapping
     public ResponseEntity<List<Location>> getAllLocations() {
         List<Location> locations = locationService.getAllLocations();
@@ -53,14 +62,20 @@ public class LocationController {
         return ResponseEntity.ok(locations);
     }
     
+    @Operation(summary = "Get all provinces", description = "Get list of all 5 provinces in Rwanda")
+    @ApiResponse(responseCode = "200", description = "Provinces retrieved successfully")
     @GetMapping("/provinces")
     public ResponseEntity<List<String>> getAllProvinces() {
         List<String> provinces = locationService.getAllProvinces();
         return ResponseEntity.ok(provinces);
     }
     
+    @Operation(summary = "Get districts by province", description = "Get all districts within a specific province")
+    @ApiResponse(responseCode = "200", description = "Districts retrieved successfully")
     @GetMapping("/districts/{province}")
-    public ResponseEntity<List<Location>> getDistrictsByProvince(@PathVariable String province) {
+    public ResponseEntity<List<Location>> getDistrictsByProvince(
+            @Parameter(description = "Province name (e.g., 'Kigali City', 'Eastern Province')", required = true) 
+            @PathVariable String province) {
         List<Location> locations = locationService.getLocationsByProvince(province);
         return ResponseEntity.ok(locations);
     }

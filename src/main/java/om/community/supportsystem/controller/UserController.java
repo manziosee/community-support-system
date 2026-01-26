@@ -33,6 +33,11 @@ public class UserController {
     private UserService userService;
     
     // Create
+    @Operation(summary = "Create new user", description = "Create a new user account (citizen or volunteer)")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "User created successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid user data or email/phone already exists")
+    })
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody User user) {
         try {
@@ -44,6 +49,8 @@ public class UserController {
     }
     
     // Read
+    @Operation(summary = "Get all users", description = "Retrieve all users in the system")
+    @ApiResponse(responseCode = "200", description = "Users retrieved successfully")
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         List<User> users = userService.getAllUsers();
@@ -53,8 +60,14 @@ public class UserController {
         return ResponseEntity.ok(userDTOs);
     }
     
+    @Operation(summary = "Get user by ID", description = "Retrieve a specific user by their ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "User found"),
+        @ApiResponse(responseCode = "404", description = "User not found")
+    })
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<User> getUserById(
+            @Parameter(description = "User ID", required = true) @PathVariable Long id) {
         return userService.getUserById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -130,6 +143,8 @@ public class UserController {
         return ResponseEntity.ok(volunteers);
     }
     
+    @Operation(summary = "Search users", description = "Search users with various filters and pagination")
+    @ApiResponse(responseCode = "200", description = "Search results retrieved successfully")
     @GetMapping("/search")
     public ResponseEntity<?> searchUsers(
             @RequestParam(required = false) String query,
@@ -192,12 +207,16 @@ public class UserController {
     }
     
     // Statistics endpoints
+    @Operation(summary = "Get total volunteers count", description = "Get the total number of volunteers in the system")
+    @ApiResponse(responseCode = "200", description = "Volunteer count retrieved successfully")
     @GetMapping("/count/volunteers")
     public ResponseEntity<Long> getTotalVolunteers() {
         long count = userService.getTotalVolunteers();
         return ResponseEntity.ok(count);
     }
     
+    @Operation(summary = "Get total citizens count", description = "Get the total number of citizens in the system")
+    @ApiResponse(responseCode = "200", description = "Citizen count retrieved successfully")
     @GetMapping("/count/citizens")
     public ResponseEntity<Long> getTotalCitizens() {
         long count = userService.getTotalCitizens();
