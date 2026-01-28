@@ -11,3 +11,5 @@ frontend/
 node_modules/
 .env
 .env.local
+!start.sh
+!deploy.sh

@@ -4,6 +4,7 @@ import om.community.supportsystem.model.User;
 import om.community.supportsystem.repository.UserRepository;
 import om.community.supportsystem.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ import java.util.UUID;
 @RequestMapping("/api/admin")
 @Tag(name = "🔧 Admin Email", description = "Admin email verification management - Force send verification emails and manually verify users")
 @CrossOrigin(origins = {"http://localhost:3001", "http://localhost:5173", "https://community-support-system.vercel.app"}, allowCredentials = "true")
+@ConditionalOnProperty(name = "sendgrid.enabled", havingValue = "true")
 public class AdminEmailController {
     
     @Autowired

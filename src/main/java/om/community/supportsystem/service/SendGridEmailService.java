@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 
 @Service
-@ConditionalOnProperty(name = "sendgrid.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(name = "sendgrid.enabled", havingValue = "true")
 public class SendGridEmailService {
 
     @Value("${sendgrid.api.key}")

@@ -62,10 +62,10 @@ public class HomeController {
         );
     }
     
-    @Operation(summary = "Health Check", description = "Check the health status of the API and database connection")
+    @Operation(summary = "System Status", description = "Check the system status and basic information")
     @ApiResponse(responseCode = "200", description = "System is healthy")
-    @GetMapping("/health")
-    public Map<String, String> health() {
+    @GetMapping("/status")
+    public Map<String, String> status() {
         return Map.of(
             "status", "UP",
             "database", "Connected",

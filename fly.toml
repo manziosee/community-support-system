@@ -1,0 +1,30 @@
+app = "community-support-system"
+primary_region = "ord"
+
+[build]
+
+[env]
+  SPRING_PROFILES_ACTIVE = "fly"
+  SENDGRID_ENABLED = "true"
+  CORS_ALLOWED_ORIGINS = "https://community-support-system.vercel.app,http://localhost:3001"
+  FRONTEND_URL = "https://community-support-system.vercel.app"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+[[http_service.checks]]
+  grace_period = "120s"
+  interval = "60s"
+  method = "GET"
+  timeout = "30s"
+  path = "/health"
+
+[vm]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512

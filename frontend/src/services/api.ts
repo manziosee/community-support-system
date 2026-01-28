@@ -9,7 +9,7 @@ function getApiBaseUrl(): string {
   
   // Production environment
   if (import.meta.env.PROD) {
-    return 'https://community-support-system.onrender.com/api';
+    return 'https://community-support-system.fly.dev/api';
   }
   
   // Development environment - check for local development
@@ -18,7 +18,7 @@ function getApiBaseUrl(): string {
   }
   
   // Default fallback
-  return 'https://community-support-system.onrender.com/api';
+  return 'https://community-support-system.fly.dev/api';
 }
 
 const API_BASE_URL = getApiBaseUrl();
