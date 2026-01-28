@@ -56,11 +56,12 @@ public class EmailService {
     
     public void sendEmailVerification(String toEmail, String verificationToken) {
         try {
-            System.out.println("🔄 Attempting to send verification email to: " + toEmail);
+            System.out.println("🔄 Sending verification email to: " + toEmail);
             
-            if (sendGridEnabled && sendGridEmailService != null) {
+            if (sendGridEmailService != null) {
                 System.out.println("📧 Using SendGrid for email delivery");
                 sendGridEmailService.sendVerificationEmail(toEmail, "User", verificationToken);
+                System.out.println("✅ Verification email sent successfully");
                 return;
             }
             
@@ -191,7 +192,10 @@ public class EmailService {
     
     public void sendLoginOTP(String toEmail, String code) {
         try {
-            if (sendGridEnabled && sendGridEmailService != null) {
+            System.out.println("🔄 Attempting to send login OTP to: " + toEmail);
+            
+            if (sendGridEmailService != null) {
+                System.out.println("📧 Using SendGrid for OTP delivery");
                 String subject = "Login Verification Code - Community Support System";
                 String content = String.format(
                     "<div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>" +
@@ -209,6 +213,7 @@ public class EmailService {
                     code
                 );
                 sendGridEmailService.sendEmail(toEmail, subject, content);
+                System.out.println("✅ Login OTP sent successfully via SendGrid to: " + toEmail);
                 return;
             }
             
