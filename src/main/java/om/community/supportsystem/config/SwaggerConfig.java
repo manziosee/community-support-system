@@ -68,7 +68,7 @@ public class SwaggerConfig {
                                 .url("http://localhost:8080")
                                 .description("🔧 Development Server - Local Development"),
                         new Server()
-                                .url("https://community-support-system.onrender.com")
+                                .url("https://community-support-system.fly.dev")
                                 .description("🚀 Production Server - Live API (Render)")
                 ))
                 .components(new Components()

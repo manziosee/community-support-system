@@ -1,0 +1,142 @@
+{
+  "info": {
+    "name": "Community Support System API",
+    "description": "Essential API endpoints for the Community Support System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://community-support-system.fly.dev",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Get All Locations",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/locations",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "locations"]
+        }
+      }
+    },
+    {
+      "name": "Get All Skills",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/skills",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "skills"]
+        }
+      }
+    },
+    {
+      "name": "Get All Users",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/users",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "users"]
+        }
+      }
+    },
+    {
+      "name": "Get Volunteers",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/users/role/VOLUNTEER",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "users", "role", "VOLUNTEER"]
+        }
+      }
+    },
+    {
+      "name": "Get Pending Requests",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/requests/pending",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "requests", "pending"]
+        }
+      }
+    },
+    {
+      "name": "Create User",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"phoneNumber\": \"0781234567\",\n  \"role\": \"VOLUNTEER\",\n  \"province\": \"Kigali City\",\n  \"district\": \"Gasabo\",\n  \"sector\": \"Remera\",\n  \"cell\": \"Rukiri I\",\n  \"village\": \"Kabeza\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/users",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "users"]
+        }
+      }
+    },
+    {
+      "name": "Create Request",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Need help with groceries\",\n  \"description\": \"I need someone to help me buy groceries from the market\",\n  \"category\": \"SHOPPING_AND_ERRANDS\",\n  \"citizenId\": 1\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/requests",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "requests"]
+        }
+      }
+    },
+    {
+      "name": "Get Rwanda Provinces",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/rwanda-locations/provinces",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "rwanda-locations", "provinces"]
+        }
+      }
+    }
+  ]
+}
