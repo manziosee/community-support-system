@@ -5,7 +5,6 @@ import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,20 +25,10 @@ public class SendGridEmailService {
     private String frontendUrl;
     
     private String getFrontendUrl() {
-        // Check if we're running on Render (production)
-        String renderEnv = System.getenv("RENDER");
-        if (renderEnv != null) {
-            // Production - use configured frontend URL
+        // Use the injected frontendUrl property (from FRONTEND_URL env var or default)
+        if (frontendUrl != null && !frontendUrl.isEmpty()) {
             return frontendUrl;
         }
-        
-        // Local development - check for custom frontend URL
-        String localUrl = System.getenv("FRONTEND_URL");
-        if (localUrl != null && !localUrl.isEmpty()) {
-            return localUrl;
-        }
-        
-        // Default local frontend URL (port 3001)
         return "http://localhost:3001";
     }
 
