@@ -50,12 +50,11 @@ const VolunteerDashboard: React.FC = () => {
       try {
         setIsLoading(true);
         
-        const [assignmentsResponse, requestsResponse, notificationsResponse, unreadCountResponse, statsResponse] = await Promise.all([
+        const [assignmentsResponse, requestsResponse, notificationsResponse, unreadCountResponse] = await Promise.all([
           assignmentsApi.getByVolunteer(user.userId),
           requestsApi.getPending(),
           notificationsApi.getByUser(user.userId),
           notificationsApi.getUnreadCount(user.userId),
-          analyticsApi.getVolunteerStats(user.userId),
         ]);
 
         const userAssignments = assignmentsResponse.data;
@@ -65,16 +64,24 @@ const VolunteerDashboard: React.FC = () => {
         setAvailableRequests(pendingRequests.slice(0, 5));
         setNotifications(notificationsResponse.data.slice(0, 5));
 
-        const analyticsData = statsResponse.data;
+        // Try to get analytics, but don't fail if it's not available
+        let analyticsData = null;
+        try {
+          const statsResponse = await analyticsApi.getVolunteerStats(user.userId);
+          analyticsData = statsResponse.data;
+        } catch (analyticsError) {
+          console.warn('Analytics endpoint not available, using fallback stats');
+        }
+
         setStats({
-          totalAssignments: analyticsData.totalAssignments || userAssignments.length,
-          activeAssignments: analyticsData.activeAssignments || userAssignments.filter((a: Assignment) => !a.completedAt).length,
-          completedAssignments: analyticsData.completedAssignments || userAssignments.filter((a: Assignment) => a.completedAt).length,
+          totalAssignments: analyticsData?.totalAssignments || userAssignments.length,
+          activeAssignments: analyticsData?.activeAssignments || userAssignments.filter((a: Assignment) => !a.completedAt).length,
+          completedAssignments: analyticsData?.completedAssignments || userAssignments.filter((a: Assignment) => a.completedAt).length,
           availableRequests: pendingRequests.length,
           unreadNotifications: unreadCountResponse.data,
         });
 
-        setChartData(analyticsData.statusBreakdown || []);
+        setChartData(analyticsData?.statusBreakdown || []);
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
         setStats({

@@ -33,28 +33,35 @@ const CitizenDashboard: React.FC = () => {
 
       try {
         setIsLoading(true);
-        const [requestsResponse, notificationsResponse, unreadCountResponse, statsResponse] = await Promise.all([
+        const [requestsResponse, notificationsResponse, unreadCountResponse] = await Promise.all([
           requestsApi.getByCitizen(user.userId),
           notificationsApi.getByUser(user.userId),
           notificationsApi.getUnreadCount(user.userId),
-          analyticsApi.getCitizenStats(user.userId),
         ]);
 
         const userRequests = requestsResponse.data;
         setRequests(userRequests.slice(0, 5));
         setNotifications(notificationsResponse.data.slice(0, 5));
 
-        const analyticsData = statsResponse.data;
+        // Try to get analytics, but don't fail if it's not available
+        let analyticsData = null;
+        try {
+          const statsResponse = await analyticsApi.getCitizenStats(user.userId);
+          analyticsData = statsResponse.data;
+        } catch (analyticsError) {
+          console.warn('Analytics endpoint not available, using fallback stats');
+        }
+
         setStats({
-          totalRequests: analyticsData.totalRequests || userRequests.length,
-          pendingRequests: analyticsData.pendingRequests || userRequests.filter((r: Request) => r.status === 'PENDING').length,
-          completedRequests: analyticsData.completedRequests || userRequests.filter((r: Request) => r.status === 'COMPLETED').length,
-          acceptedRequests: analyticsData.acceptedRequests || 0,
-          cancelledRequests: analyticsData.cancelledRequests || 0,
+          totalRequests: analyticsData?.totalRequests || userRequests.length,
+          pendingRequests: analyticsData?.pendingRequests || userRequests.filter((r: Request) => r.status === 'PENDING').length,
+          completedRequests: analyticsData?.completedRequests || userRequests.filter((r: Request) => r.status === 'COMPLETED').length,
+          acceptedRequests: analyticsData?.acceptedRequests || 0,
+          cancelledRequests: analyticsData?.cancelledRequests || 0,
           unreadNotifications: unreadCountResponse.data,
         });
 
-        setChartData(analyticsData.statusBreakdown || []);
+        setChartData(analyticsData?.statusBreakdown || []);
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
       } finally {
