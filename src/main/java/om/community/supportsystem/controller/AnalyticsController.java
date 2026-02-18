@@ -99,6 +99,14 @@ public class AnalyticsController {
     @GetMapping("/citizen/{userId}")
     public ResponseEntity<?> getCitizenStats(@PathVariable Long userId) {
         try {
+            // Verify user exists
+            if (!userRepository.existsById(userId)) {
+                return ResponseEntity.status(404).body(Map.of(
+                    "error", "User not found",
+                    "message", "No user found with ID: " + userId
+                ));
+            }
+            
             long totalRequests = requestRepository.countByCitizenUserId(userId);
             long pendingRequests = requestRepository.countByCitizenUserIdAndStatus(userId, om.community.supportsystem.model.RequestStatus.PENDING);
             long acceptedRequests = requestRepository.countByCitizenUserIdAndStatus(userId, om.community.supportsystem.model.RequestStatus.ACCEPTED);
@@ -115,28 +123,16 @@ public class AnalyticsController {
             // Request status breakdown for chart
             List<Map<String, Object>> statusBreakdown = new ArrayList<>();
             if (pendingRequests > 0) {
-                Map<String, Object> pending = new HashMap<>();
-                pending.put("status", "Pending");
-                pending.put("count", pendingRequests);
-                statusBreakdown.add(pending);
+                statusBreakdown.add(Map.of("status", "Pending", "count", pendingRequests));
             }
             if (acceptedRequests > 0) {
-                Map<String, Object> accepted = new HashMap<>();
-                accepted.put("status", "Accepted");
-                accepted.put("count", acceptedRequests);
-                statusBreakdown.add(accepted);
+                statusBreakdown.add(Map.of("status", "Accepted", "count", acceptedRequests));
             }
             if (completedRequests > 0) {
-                Map<String, Object> completed = new HashMap<>();
-                completed.put("status", "Completed");
-                completed.put("count", completedRequests);
-                statusBreakdown.add(completed);
+                statusBreakdown.add(Map.of("status", "Completed", "count", completedRequests));
             }
             if (cancelledRequests > 0) {
-                Map<String, Object> cancelled = new HashMap<>();
-                cancelled.put("status", "Cancelled");
-                cancelled.put("count", cancelledRequests);
-                statusBreakdown.add(cancelled);
+                statusBreakdown.add(Map.of("status", "Cancelled", "count", cancelledRequests));
             }
             stats.put("statusBreakdown", statusBreakdown);
             
@@ -146,7 +142,7 @@ public class AnalyticsController {
             e.printStackTrace();
             return ResponseEntity.status(500).body(Map.of(
                 "error", "Failed to fetch citizen statistics",
-                "message", e.getMessage()
+                "message", e.getMessage() != null ? e.getMessage() : "Unknown error"
             ));
         }
     }
@@ -156,6 +152,14 @@ public class AnalyticsController {
     @GetMapping("/volunteer/{userId}")
     public ResponseEntity<?> getVolunteerStats(@PathVariable Long userId) {
         try {
+            // Verify user exists
+            if (!userRepository.existsById(userId)) {
+                return ResponseEntity.status(404).body(Map.of(
+                    "error", "User not found",
+                    "message", "No user found with ID: " + userId
+                ));
+            }
+            
             long totalAssignments = assignmentRepository.countByVolunteerUserId(userId);
             long activeAssignments = assignmentRepository.countByVolunteerUserIdAndCompletedAtIsNull(userId);
             long completedAssignments = assignmentRepository.countByVolunteerUserIdAndCompletedAtIsNotNull(userId);
@@ -168,16 +172,10 @@ public class AnalyticsController {
             // Assignment status breakdown for chart
             List<Map<String, Object>> statusBreakdown = new ArrayList<>();
             if (activeAssignments > 0) {
-                Map<String, Object> active = new HashMap<>();
-                active.put("status", "Active");
-                active.put("count", activeAssignments);
-                statusBreakdown.add(active);
+                statusBreakdown.add(Map.of("status", "Active", "count", activeAssignments));
             }
             if (completedAssignments > 0) {
-                Map<String, Object> completed = new HashMap<>();
-                completed.put("status", "Completed");
-                completed.put("count", completedAssignments);
-                statusBreakdown.add(completed);
+                statusBreakdown.add(Map.of("status", "Completed", "count", completedAssignments));
             }
             stats.put("statusBreakdown", statusBreakdown);
             
@@ -187,7 +185,7 @@ public class AnalyticsController {
             e.printStackTrace();
             return ResponseEntity.status(500).body(Map.of(
                 "error", "Failed to fetch volunteer statistics",
-                "message", e.getMessage()
+                "message", e.getMessage() != null ? e.getMessage() : "Unknown error"
             ));
         }
     }

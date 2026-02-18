@@ -150,3 +150,25 @@ export interface DashboardStats {
   completedRequests: number;
   totalAssignments: number;
 }
+
+// Analytics Types
+export interface CitizenAnalytics {
+  totalRequests: number;
+  pendingRequests: number;
+  acceptedRequests: number;
+  completedRequests: number;
+  cancelledRequests: number;
+  statusBreakdown: StatusBreakdown[];
+}
+
+export interface VolunteerAnalytics {
+  totalAssignments: number;
+  activeAssignments: number;
+  completedAssignments: number;
+  statusBreakdown: StatusBreakdown[];
+}
+
+export interface StatusBreakdown {
+  status: string;
+  count: number;
+}

@@ -1,8 +1,9 @@
 {
   "info": {
     "name": "Community Support System - Complete API",
-    "description": "Complete API collection for Community Support System",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "description": "Complete API collection for Community Support System with 135+ endpoints including Analytics Dashboard",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "2.0.0"
   },
   "variable": [
     {
@@ -38,21 +39,40 @@
           "name": "Dashboard Stats",
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/api/analytics/dashboard"
+            "url": "{{baseUrl}}/api/analytics/dashboard",
+            "description": "Get comprehensive dashboard statistics including users, requests, assignments, and completion rates"
           }
         },
         {
           "name": "Province Statistics",
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/api/analytics/provinces"
+            "url": "{{baseUrl}}/api/analytics/provinces",
+            "description": "Get statistics for all provinces including user count, request count, and completion rates"
           }
         },
         {
           "name": "Popular Skills",
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/api/analytics/skills/popular"
+            "url": "{{baseUrl}}/api/analytics/skills/popular",
+            "description": "Get list of skills ordered by number of users who have them"
+          }
+        },
+        {
+          "name": "Citizen Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/analytics/citizen/1",
+            "description": "Get dashboard statistics for a specific citizen including request breakdown and chart data"
+          }
+        },
+        {
+          "name": "Volunteer Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/analytics/volunteer/1",
+            "description": "Get dashboard statistics for a specific volunteer including assignment breakdown and chart data"
           }
         }
       ]
