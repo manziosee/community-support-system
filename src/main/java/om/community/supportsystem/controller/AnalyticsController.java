@@ -98,79 +98,97 @@ public class AnalyticsController {
     @ApiResponse(responseCode = "200", description = "Citizen stats retrieved successfully")
     @GetMapping("/citizen/{userId}")
     public ResponseEntity<?> getCitizenStats(@PathVariable Long userId) {
-        long totalRequests = requestRepository.countByCitizenUserId(userId);
-        long pendingRequests = requestRepository.countByCitizenUserIdAndStatus(userId, om.community.supportsystem.model.RequestStatus.PENDING);
-        long acceptedRequests = requestRepository.countByCitizenUserIdAndStatus(userId, om.community.supportsystem.model.RequestStatus.ACCEPTED);
-        long completedRequests = requestRepository.countByCitizenUserIdAndStatus(userId, om.community.supportsystem.model.RequestStatus.COMPLETED);
-        long cancelledRequests = requestRepository.countByCitizenUserIdAndStatus(userId, om.community.supportsystem.model.RequestStatus.CANCELLED);
-        
-        Map<String, Object> stats = new HashMap<>();
-        stats.put("totalRequests", totalRequests);
-        stats.put("pendingRequests", pendingRequests);
-        stats.put("acceptedRequests", acceptedRequests);
-        stats.put("completedRequests", completedRequests);
-        stats.put("cancelledRequests", cancelledRequests);
-        
-        // Request status breakdown for chart
-        List<Map<String, Object>> statusBreakdown = new ArrayList<>();
-        if (pendingRequests > 0) {
-            Map<String, Object> pending = new HashMap<>();
-            pending.put("status", "Pending");
-            pending.put("count", pendingRequests);
-            statusBreakdown.add(pending);
+        try {
+            long totalRequests = requestRepository.countByCitizenUserId(userId);
+            long pendingRequests = requestRepository.countByCitizenUserIdAndStatus(userId, om.community.supportsystem.model.RequestStatus.PENDING);
+            long acceptedRequests = requestRepository.countByCitizenUserIdAndStatus(userId, om.community.supportsystem.model.RequestStatus.ACCEPTED);
+            long completedRequests = requestRepository.countByCitizenUserIdAndStatus(userId, om.community.supportsystem.model.RequestStatus.COMPLETED);
+            long cancelledRequests = requestRepository.countByCitizenUserIdAndStatus(userId, om.community.supportsystem.model.RequestStatus.CANCELLED);
+            
+            Map<String, Object> stats = new HashMap<>();
+            stats.put("totalRequests", totalRequests);
+            stats.put("pendingRequests", pendingRequests);
+            stats.put("acceptedRequests", acceptedRequests);
+            stats.put("completedRequests", completedRequests);
+            stats.put("cancelledRequests", cancelledRequests);
+            
+            // Request status breakdown for chart
+            List<Map<String, Object>> statusBreakdown = new ArrayList<>();
+            if (pendingRequests > 0) {
+                Map<String, Object> pending = new HashMap<>();
+                pending.put("status", "Pending");
+                pending.put("count", pendingRequests);
+                statusBreakdown.add(pending);
+            }
+            if (acceptedRequests > 0) {
+                Map<String, Object> accepted = new HashMap<>();
+                accepted.put("status", "Accepted");
+                accepted.put("count", acceptedRequests);
+                statusBreakdown.add(accepted);
+            }
+            if (completedRequests > 0) {
+                Map<String, Object> completed = new HashMap<>();
+                completed.put("status", "Completed");
+                completed.put("count", completedRequests);
+                statusBreakdown.add(completed);
+            }
+            if (cancelledRequests > 0) {
+                Map<String, Object> cancelled = new HashMap<>();
+                cancelled.put("status", "Cancelled");
+                cancelled.put("count", cancelledRequests);
+                statusBreakdown.add(cancelled);
+            }
+            stats.put("statusBreakdown", statusBreakdown);
+            
+            return ResponseEntity.ok(stats);
+        } catch (Exception e) {
+            System.err.println("❌ Error getting citizen stats for userId " + userId + ": " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of(
+                "error", "Failed to fetch citizen statistics",
+                "message", e.getMessage()
+            ));
         }
-        if (acceptedRequests > 0) {
-            Map<String, Object> accepted = new HashMap<>();
-            accepted.put("status", "Accepted");
-            accepted.put("count", acceptedRequests);
-            statusBreakdown.add(accepted);
-        }
-        if (completedRequests > 0) {
-            Map<String, Object> completed = new HashMap<>();
-            completed.put("status", "Completed");
-            completed.put("count", completedRequests);
-            statusBreakdown.add(completed);
-        }
-        if (cancelledRequests > 0) {
-            Map<String, Object> cancelled = new HashMap<>();
-            cancelled.put("status", "Cancelled");
-            cancelled.put("count", cancelledRequests);
-            statusBreakdown.add(cancelled);
-        }
-        stats.put("statusBreakdown", statusBreakdown);
-        
-        return ResponseEntity.ok(stats);
     }
 
     @Operation(summary = "Get Volunteer Dashboard Stats", description = "Get dashboard statistics for a specific volunteer")
     @ApiResponse(responseCode = "200", description = "Volunteer stats retrieved successfully")
     @GetMapping("/volunteer/{userId}")
     public ResponseEntity<?> getVolunteerStats(@PathVariable Long userId) {
-        long totalAssignments = assignmentRepository.countByVolunteerUserId(userId);
-        long activeAssignments = assignmentRepository.countByVolunteerUserIdAndCompletedAtIsNull(userId);
-        long completedAssignments = assignmentRepository.countByVolunteerUserIdAndCompletedAtIsNotNull(userId);
-        
-        Map<String, Object> stats = new HashMap<>();
-        stats.put("totalAssignments", totalAssignments);
-        stats.put("activeAssignments", activeAssignments);
-        stats.put("completedAssignments", completedAssignments);
-        
-        // Assignment status breakdown for chart
-        List<Map<String, Object>> statusBreakdown = new ArrayList<>();
-        if (activeAssignments > 0) {
-            Map<String, Object> active = new HashMap<>();
-            active.put("status", "Active");
-            active.put("count", activeAssignments);
-            statusBreakdown.add(active);
+        try {
+            long totalAssignments = assignmentRepository.countByVolunteerUserId(userId);
+            long activeAssignments = assignmentRepository.countByVolunteerUserIdAndCompletedAtIsNull(userId);
+            long completedAssignments = assignmentRepository.countByVolunteerUserIdAndCompletedAtIsNotNull(userId);
+            
+            Map<String, Object> stats = new HashMap<>();
+            stats.put("totalAssignments", totalAssignments);
+            stats.put("activeAssignments", activeAssignments);
+            stats.put("completedAssignments", completedAssignments);
+            
+            // Assignment status breakdown for chart
+            List<Map<String, Object>> statusBreakdown = new ArrayList<>();
+            if (activeAssignments > 0) {
+                Map<String, Object> active = new HashMap<>();
+                active.put("status", "Active");
+                active.put("count", activeAssignments);
+                statusBreakdown.add(active);
+            }
+            if (completedAssignments > 0) {
+                Map<String, Object> completed = new HashMap<>();
+                completed.put("status", "Completed");
+                completed.put("count", completedAssignments);
+                statusBreakdown.add(completed);
+            }
+            stats.put("statusBreakdown", statusBreakdown);
+            
+            return ResponseEntity.ok(stats);
+        } catch (Exception e) {
+            System.err.println("❌ Error getting volunteer stats for userId " + userId + ": " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of(
+                "error", "Failed to fetch volunteer statistics",
+                "message", e.getMessage()
+            ));
         }
-        if (completedAssignments > 0) {
-            Map<String, Object> completed = new HashMap<>();
-            completed.put("status", "Completed");
-            completed.put("count", completedAssignments);
-            statusBreakdown.add(completed);
-        }
-        stats.put("statusBreakdown", statusBreakdown);
-        
-        return ResponseEntity.ok(stats);
     }
 }
