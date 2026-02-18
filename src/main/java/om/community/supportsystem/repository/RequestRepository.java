@@ -63,4 +63,13 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     // Count methods for stats
     long countByCitizenUserId(Long citizenId);
     long countByCitizenUserIdAndStatus(Long citizenId, RequestStatus status);
+    
+    // Analytics methods
+    @Query("SELECT COUNT(r) FROM Request r WHERE r.citizen.province = :province")
+    long countByProvince(@Param("province") String province);
+    
+    @Query("SELECT COUNT(r) FROM Request r WHERE r.citizen.province = :province AND r.status = :status")
+    long countByProvinceAndStatus(@Param("province") String province, @Param("status") String status);
+    
+    long countByStatus(String status);
 }

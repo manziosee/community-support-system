@@ -1,7 +1,7 @@
 {
   "info": {
-    "name": "Community Support System API",
-    "description": "Essential API endpoints for the Community Support System",
+    "name": "Community Support System - Complete API",
+    "description": "Complete API collection for Community Support System",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -13,130 +13,329 @@
   ],
   "item": [
     {
-      "name": "Health Check",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/health",
-          "host": ["{{baseUrl}}"],
-          "path": ["health"]
-        }
-      }
-    },
-    {
-      "name": "Get All Locations",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/api/locations",
-          "host": ["{{baseUrl}}"],
-          "path": ["api", "locations"]
-        }
-      }
-    },
-    {
-      "name": "Get All Skills",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/api/skills",
-          "host": ["{{baseUrl}}"],
-          "path": ["api", "skills"]
-        }
-      }
-    },
-    {
-      "name": "Get All Users",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/api/users",
-          "host": ["{{baseUrl}}"],
-          "path": ["api", "users"]
-        }
-      }
-    },
-    {
-      "name": "Get Volunteers",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/api/users/role/VOLUNTEER",
-          "host": ["{{baseUrl}}"],
-          "path": ["api", "users", "role", "VOLUNTEER"]
-        }
-      }
-    },
-    {
-      "name": "Get Pending Requests",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/api/requests/pending",
-          "host": ["{{baseUrl}}"],
-          "path": ["api", "requests", "pending"]
-        }
-      }
-    },
-    {
-      "name": "Create User",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
+      "name": "Health & Status",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/health"
           }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"phoneNumber\": \"0781234567\",\n  \"role\": \"VOLUNTEER\",\n  \"province\": \"Kigali City\",\n  \"district\": \"Gasabo\",\n  \"sector\": \"Remera\",\n  \"cell\": \"Rukiri I\",\n  \"village\": \"Kabeza\"\n}"
         },
-        "url": {
-          "raw": "{{baseUrl}}/api/users",
-          "host": ["{{baseUrl}}"],
-          "path": ["api", "users"]
-        }
-      }
-    },
-    {
-      "name": "Create Request",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
+        {
+          "name": "Actuator Health",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/actuator/health"
           }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"title\": \"Need help with groceries\",\n  \"description\": \"I need someone to help me buy groceries from the market\",\n  \"category\": \"SHOPPING_AND_ERRANDS\",\n  \"citizenId\": 1\n}"
-        },
-        "url": {
-          "raw": "{{baseUrl}}/api/requests",
-          "host": ["{{baseUrl}}"],
-          "path": ["api", "requests"]
         }
-      }
+      ]
     },
     {
-      "name": "Get Rwanda Provinces",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/api/rwanda-locations/provinces",
-          "host": ["{{baseUrl}}"],
-          "path": ["api", "rwanda-locations", "provinces"]
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/analytics/dashboard"
+          }
+        },
+        {
+          "name": "Province Statistics",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/analytics/provinces"
+          }
+        },
+        {
+          "name": "Popular Skills",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/analytics/skills/popular"
+          }
         }
-      }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/users"
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/users/1"
+          }
+        },
+        {
+          "name": "Get User by Email",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/users/email/test@example.com"
+          }
+        },
+        {
+          "name": "Get Volunteers",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/users/role/VOLUNTEER"
+          }
+        },
+        {
+          "name": "Get Citizens",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/users/role/CITIZEN"
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\",\n  \"phoneNumber\": \"0781234567\",\n  \"province\": \"Kigali\",\n  \"district\": \"Gasabo\"\n}"
+            },
+            "url": "{{baseUrl}}/api/users/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Verify User",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/admin/users/1/verify"
+          }
+        },
+        {
+          "name": "Unlock User",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/admin/users/1/unlock"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Skills",
+      "item": [
+        {
+          "name": "Get All Skills",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/skills"
+          }
+        },
+        {
+          "name": "Get Skill by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/skills/1"
+          }
+        },
+        {
+          "name": "Create Skill",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillName\": \"Programming\",\n  \"description\": \"Software development and coding\"\n}"
+            },
+            "url": "{{baseUrl}}/api/skills"
+          }
+        },
+        {
+          "name": "Update Skill",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillName\": \"Advanced Programming\",\n  \"description\": \"Expert software development\"\n}"
+            },
+            "url": "{{baseUrl}}/api/skills/1"
+          }
+        },
+        {
+          "name": "Delete Skill",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/skills/1"
+          }
+        },
+        {
+          "name": "Get Popular Skills",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/skills/popular"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Locations",
+      "item": [
+        {
+          "name": "Get All Locations",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/locations"
+          }
+        },
+        {
+          "name": "Get Provinces",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/locations/provinces"
+          }
+        },
+        {
+          "name": "Get Districts by Province",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/locations/districts/Kigali"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rwanda Locations API",
+      "item": [
+        {
+          "name": "Get Provinces",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/rwanda-locations/provinces"
+          }
+        },
+        {
+          "name": "Get Districts",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/rwanda-locations/districts?province=Kigali"
+          }
+        },
+        {
+          "name": "Get Sectors",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/rwanda-locations/sectors?province=Kigali&district=Gasabo"
+          }
+        },
+        {
+          "name": "Get Cells",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/rwanda-locations/cells?province=Kigali&district=Gasabo&sector=Remera"
+          }
+        },
+        {
+          "name": "Get Villages",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/rwanda-locations/villages?province=Kigali&district=Gasabo&sector=Remera&cell=Rukiri"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Requests",
+      "item": [
+        {
+          "name": "Get All Requests",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/requests"
+          }
+        },
+        {
+          "name": "Get Pending Requests",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/requests/pending"
+          }
+        },
+        {
+          "name": "Create Request",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Need help with groceries\",\n  \"description\": \"I need someone to help me buy groceries\",\n  \"category\": \"SHOPPING_AND_ERRANDS\",\n  \"citizen\": {\"userId\": 1}\n}"
+            },
+            "url": "{{baseUrl}}/api/requests"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Assignments",
+      "item": [
+        {
+          "name": "Get All Assignments",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/assignments"
+          }
+        },
+        {
+          "name": "Create Assignment",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"request\": {\"requestId\": 1},\n  \"volunteer\": {\"userId\": 2}\n}"
+            },
+            "url": "{{baseUrl}}/api/assignments"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Get User Notifications",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/notifications/user/1"
+          }
+        },
+        {
+          "name": "Mark as Read",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/notifications/1/read"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/categories"
+          }
+        }
+      ]
     }
   ]
 }

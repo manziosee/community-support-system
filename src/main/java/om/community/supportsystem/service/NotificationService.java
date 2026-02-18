@@ -18,6 +18,9 @@ public class NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
     
+    @Autowired
+    private om.community.supportsystem.repository.UserRepository userRepository;
+    
     // Create
     public Notification createNotification(Notification notification) {
         return notificationRepository.save(notification);
@@ -146,5 +149,27 @@ public class NotificationService {
         stats.put("unread", notificationRepository.countByUserUserIdAndIsReadFalse(userId));
         stats.put("read", notificationRepository.countByUserUserIdAndIsReadTrue(userId));
         return stats;
+    }
+    
+    // Notify all volunteers about a new request
+    public void notifyAllVolunteersAboutNewRequest(om.community.supportsystem.model.Request request) {
+        // Get all volunteers from user repository
+        List<User> volunteers = userRepository.findByRole(om.community.supportsystem.model.UserRole.VOLUNTEER);
+        
+        String message = String.format(
+            "🆕 New Request: %s - %s (📍 %s, %s). Click to view details and accept.",
+            request.getTitle(),
+            request.getCategory(),
+            request.getCitizen().getProvince(),
+            request.getCitizen().getDistrict()
+        );
+        
+        // Create notification for each volunteer
+        volunteers.forEach(volunteer -> {
+            Notification notification = new Notification(message, volunteer);
+            notificationRepository.save(notification);
+        });
+        
+        System.out.println("✅ Notified " + volunteers.size() + " volunteers about new request: " + request.getTitle());
     }
 }

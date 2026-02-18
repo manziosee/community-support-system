@@ -2,7 +2,6 @@ package om.community.supportsystem.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -19,38 +18,34 @@ public class EmailService {
     @Value("${spring.mail.username:}")
     private String fromEmail;
     
-    @Value("${sendgrid.enabled:false}")
-    private boolean sendGridEnabled;
-    
     public void sendPasswordResetEmail(String toEmail, String resetToken) {
         try {
             System.out.println("🔄 Attempting to send password reset email to: " + toEmail);
-            
-            if (sendGridEnabled && sendGridEmailService != null) {
-                System.out.println("📧 Using SendGrid for email delivery");
+
+            if (sendGridEmailService != null) {
+                System.out.println("📧 Using SendGrid for password reset email delivery");
                 sendGridEmailService.sendPasswordResetEmail(toEmail, "User", resetToken);
+                System.out.println("✅ Password reset email sent successfully via SendGrid to: " + toEmail);
                 return;
             }
-            
+
             // Check if SMTP is available
             if (mailSender != null && fromEmail != null && !fromEmail.isEmpty()) {
                 System.out.println("📧 Using SMTP for email delivery");
                 sendPasswordResetEmailSMTP(toEmail, resetToken);
                 return;
             }
-            
+
             // Email service unavailable - log token for manual use
             System.err.println("⚠️ Email service unavailable. Logging reset token for manual use:");
             System.err.println("🔑 MANUAL RESET TOKEN for " + toEmail + ": " + resetToken);
             System.err.println("🔗 MANUAL RESET URL: " + getFrontendUrl() + "/reset-password?token=" + resetToken);
-            
+            throw new RuntimeException("No email service available to send password reset email");
+
         } catch (Exception e) {
             System.err.println("❌ Failed to send password reset email to " + toEmail + ": " + e.getMessage());
-            
-            // Log the reset token so it can be used manually
-            System.err.println("🔑 MANUAL RESET TOKEN for " + toEmail + ": " + resetToken);
             System.err.println("🔗 MANUAL RESET URL: " + getFrontendUrl() + "/reset-password?token=" + resetToken);
-            System.err.println("⚠️ Email service unavailable. Use the above URL to reset password.");
+            throw new RuntimeException("Failed to send password reset email: " + e.getMessage(), e);
         }
     }
     
@@ -129,31 +124,18 @@ public class EmailService {
     }
     
     private String getFrontendUrl() {
-        // Check if we're running on Fly.io (production)
-        String flyEnv = System.getenv("FLY_APP_NAME");
-        if (flyEnv != null) {
-            return "https://community-support-system.vercel.app";
+        // Use FRONTEND_URL env var (set in fly.toml or locally)
+        String frontendUrl = System.getenv("FRONTEND_URL");
+        if (frontendUrl != null && !frontendUrl.isEmpty()) {
+            return frontendUrl;
         }
-        
-        // Check if we're running on Render (production)
-        String renderEnv = System.getenv("RENDER");
-        if (renderEnv != null) {
-            return "https://community-support-system.vercel.app";
-        }
-        
-        // Local development - check for custom frontend URL
-        String localUrl = System.getenv("FRONTEND_URL");
-        if (localUrl != null && !localUrl.isEmpty()) {
-            return localUrl;
-        }
-        
-        // Default local frontend URL (port 3001)
+        // Default local frontend URL
         return "http://localhost:3001";
     }
     
     public void sendTwoFactorCode(String toEmail, String code) {
         try {
-            if (sendGridEnabled && sendGridEmailService != null) {
+            if (sendGridEmailService != null) {
                 String subject = "Two-Factor Authentication Code - Community Support System";
                 String content = String.format(
                     "<h2>Two-Factor Authentication</h2>" +

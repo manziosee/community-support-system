@@ -27,32 +27,31 @@ public class SwaggerConfig {
                                 "### ✅ **All Requirements Implemented:**\n" +
                                 "1. **7 Entities** - User, Location, Request, Assignment, Notification, Skill, UserSkills\n" +
                                 "2. **Role-based Authentication** - CITIZEN, VOLUNTEER, ADMIN with JWT\n" +
-                                "3. **Password Reset via Email** - Complete email service with tokens\n" +
+                                "3. **Password Reset via Email** - SendGrid email service with tokens\n" +
                                 "4. **Two-Factor Authentication** - Email-based 2FA with 6-digit codes\n" +
-                                "5. **Dashboard with Business Analytics** - Comprehensive statistics and KPIs\n" +
+                                "5. **Dashboard with Business Analytics** - Real-time statistics and KPIs\n" +
                                 "6. **Pagination Support** - All endpoints support pagination and sorting\n" +
                                 "7. **🇷🇼 Rwanda Locations API** - Complete 5-level administrative hierarchy\n\n" +
                                 "### 🚀 **Key Features:**\n" +
-                                "- **130+ REST Endpoints** with full CRUD operations\n" +
+                                "- **140+ REST Endpoints** with full CRUD operations\n" +
                                 "- **JWT Authentication** with role-based access control\n" +
-                                "- **Email Service** for notifications and 2FA\n" +
-                                "- **Real-time Dashboard** with business intelligence\n" +
-                                "- **Admin Management** tools for system administration\n" +
+                                "- **SendGrid Email Service** for notifications and 2FA\n" +
+                                "- **Real-time Notifications** - Volunteers notified of new requests\n" +
+                                "- **Analytics Dashboard** - Province stats, popular skills, trends\n" +
+                                "- **Admin Management** - User verification, account unlock\n" +
                                 "- **Complete Security** with account lockout and encryption\n" +
                                 "- **🇷🇼 Complete Location Hierarchy** - Province → District → Sector → Cell → Village\n" +
-                                "- **External API Integration** - RDA Administrative Divisions API\n" +
-                                "- **Comprehensive Testing** with integration tests\n\n" +
-                                "### 📊 **Database Architecture:**\n" +
-                                "- **PostgreSQL** production database\n" +
-                                "- **7 tables** with complete relationships (1:1, 1:N, N:1, M:N)\n" +
-                                "- **Foreign key constraints** and data integrity\n" +
-                                "- **Optimized queries** with pagination and indexing\n" +
-                                "- **Location fields** - Province, District, Sector, Cell, Village\n\n" +
-                                "### 🇷🇼 **Rwanda Locations API:**\n" +
-                                "- **Real-time data** from official RDA API\n" +
-                                "- **5-level hierarchy** - Complete administrative structure\n" +
-                                "- **Cascading endpoints** - Each level depends on previous selection\n" +
-                                "- **External integration** - https://rda-ad-divisions.onrender.com\n\n" +
+                                "- **External API Integration** - RDA Administrative Divisions API\n\n" +
+                                "### 📊 **API Categories:**\n" +
+                                "- **Analytics** - Dashboard stats, province data, popular skills\n" +
+                                "- **Admin** - User verification, account management\n" +
+                                "- **Users** - CRUD, role management, location filtering\n" +
+                                "- **Requests** - Help requests with status tracking\n" +
+                                "- **Assignments** - Volunteer task management\n" +
+                                "- **Notifications** - Real-time alerts for volunteers\n" +
+                                "- **Skills** - Volunteer capabilities management\n" +
+                                "- **Locations** - Rwanda administrative divisions\n" +
+                                "- **Categories** - Request categories\n\n" +
                                 "### 🔐 **Authentication:**\n" +
                                 "Use the **Authorize** button above to authenticate with JWT token.\n" +
                                 "Get token from `/api/auth/login` endpoint.")
@@ -69,7 +68,7 @@ public class SwaggerConfig {
                                 .description("🔧 Development Server - Local Development"),
                         new Server()
                                 .url("https://community-support-system.fly.dev")
-                                .description("🚀 Production Server - Live API (Render)")
+                                .description("🚀 Production Server - Fly.io Deployment")
                 ))
                 .components(new Components()
                         .addSecuritySchemes("bearerAuth", new SecurityScheme()

@@ -84,4 +84,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     long countByEmailVerifiedTrue();
     long countByEmailVerifiedFalse();
     long countByTwoFactorEnabledTrue();
+    
+    // Analytics methods
+    long countByRole(String role);
+    long countByProvince(String province);
 }

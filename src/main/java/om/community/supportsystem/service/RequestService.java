@@ -19,9 +19,21 @@ public class RequestService {
     @Autowired
     private RequestRepository requestRepository;
     
+    @Autowired
+    private NotificationService notificationService;
+    
     // Create
     public Request createRequest(Request request) {
-        return requestRepository.save(request);
+        Request savedRequest = requestRepository.save(request);
+        
+        // Notify all volunteers about the new request
+        try {
+            notificationService.notifyAllVolunteersAboutNewRequest(savedRequest);
+        } catch (Exception e) {
+            System.err.println("⚠️ Failed to send notifications: " + e.getMessage());
+        }
+        
+        return savedRequest;
     }
     
     // Read

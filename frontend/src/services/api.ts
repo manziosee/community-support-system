@@ -357,16 +357,21 @@ export const categoriesApi = {
     api.get('/categories'),
 };
 
-// Rwanda Locations API (External API)
+// Rwanda Administrative Divisions API (External)
+const rwandaApi = axios.create({
+  baseURL: 'https://rda-ad-divisions.onrender.com',
+  headers: { 'Content-Type': 'application/json' },
+});
+
 export const rwandaLocationsApi = {
-  getProvinces: () => api.get('/rwanda-locations/provinces'),
-  getDistricts: (province: string) => api.get(`/rwanda-locations/districts?province=${encodeURIComponent(province)}`),
-  getSectors: (province: string, district: string) => 
-    api.get(`/rwanda-locations/sectors?province=${encodeURIComponent(province)}&district=${encodeURIComponent(district)}`),
-  getCells: (province: string, district: string, sector: string) => 
-    api.get(`/rwanda-locations/cells?province=${encodeURIComponent(province)}&district=${encodeURIComponent(district)}&sector=${encodeURIComponent(sector)}`),
-  getVillages: (province: string, district: string, sector: string, cell: string) => 
-    api.get(`/rwanda-locations/villages?province=${encodeURIComponent(province)}&district=${encodeURIComponent(district)}&sector=${encodeURIComponent(sector)}&cell=${encodeURIComponent(cell)}`),
+  getProvinces: () => rwandaApi.get('/provinces'),
+  getDistricts: (province: string) => rwandaApi.get(`/districts?province=${encodeURIComponent(province)}`),
+  getSectors: (province: string, district: string) =>
+    rwandaApi.get(`/sectors?province=${encodeURIComponent(province)}&district=${encodeURIComponent(district)}`),
+  getCells: (province: string, district: string, sector: string) =>
+    rwandaApi.get(`/cells?province=${encodeURIComponent(province)}&district=${encodeURIComponent(district)}&sector=${encodeURIComponent(sector)}`),
+  getVillages: (province: string, district: string, sector: string, cell: string) =>
+    rwandaApi.get(`/villages?province=${encodeURIComponent(province)}&district=${encodeURIComponent(district)}&sector=${encodeURIComponent(sector)}&cell=${encodeURIComponent(cell)}`),
 };
 
 // Settings API

@@ -199,22 +199,13 @@ public class AuthService {
         userRepository.save(user);
         
         try {
-            System.out.println("📧 Sending password reset email via SendGrid...");
+            System.out.println("📧 Sending password reset email...");
             emailService.sendPasswordResetEmail(email, resetToken);
             System.out.println("✅ Password reset email sent successfully");
         } catch (Exception e) {
             System.err.println("❌ Failed to send password reset email: " + e.getMessage());
-            
-            // Check if we're in production environment
-            String environment = System.getenv("RENDER");
-            if (environment != null) {
-                System.err.println("⚠️ Production environment - logging reset token");
-                System.err.println("🔑 Reset token: " + resetToken);
-                System.err.println("🔗 Reset URL: https://community-support-system.vercel.app/reset-password?token=" + resetToken);
-                // Don't throw exception in production - token is saved
-                return;
-            }
-            
+            System.err.println("🔗 Reset URL: https://community-support-system.vercel.app/reset-password?token=" + resetToken);
+            // Token is saved in DB, so even if email fails, manual reset is possible via logs
             throw new RuntimeException("Failed to send password reset email. Please try again later.");
         }
     }
