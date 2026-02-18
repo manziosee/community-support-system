@@ -10,10 +10,10 @@ import {
   Plus,
   TrendingUp
 } from 'lucide-react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { useAuth } from '../../contexts/AuthContext';
 import { assignmentsApi, requestsApi, notificationsApi, analyticsApi } from '../../services/api';
-import type { Assignment, Request, Notification } from '../../types';
+import type { Assignment, Request, Notification, VolunteerAnalytics } from '../../types';
+import StatusChart from '../../components/charts/StatusChart';
 import Button from '../../components/common/Button';
 import Card from '../../components/common/Card';
 import StatCard from '../../components/common/StatCard';
@@ -33,7 +33,7 @@ const VolunteerDashboard: React.FC = () => {
     availableRequests: 0,
     unreadNotifications: 0,
   });
-  const [chartData, setChartData] = useState<Array<{ status: string; count: number }>>([]);
+  const [analyticsData, setAnalyticsData] = useState<VolunteerAnalytics | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Refresh user data once on mount to ensure skills are loaded
@@ -64,24 +64,34 @@ const VolunteerDashboard: React.FC = () => {
         setAvailableRequests(pendingRequests.slice(0, 5));
         setNotifications(notificationsResponse.data.slice(0, 5));
 
-        // Try to get analytics, but don't fail if it's not available
-        let analyticsData = null;
-        try {
-          const statsResponse = await analyticsApi.getVolunteerStats(user.userId);
-          analyticsData = statsResponse.data;
-        } catch (analyticsError) {
-          console.warn('Analytics endpoint not available, using fallback stats');
-        }
-
+        // Calculate stats from actual data
+        const totalAssignments = userAssignments.length;
+        const activeAssignments = userAssignments.filter((a: Assignment) => !a.completedAt).length;
+        const completedAssignments = userAssignments.filter((a: Assignment) => a.completedAt).length;
+        
         setStats({
-          totalAssignments: analyticsData?.totalAssignments || userAssignments.length,
-          activeAssignments: analyticsData?.activeAssignments || userAssignments.filter((a: Assignment) => !a.completedAt).length,
-          completedAssignments: analyticsData?.completedAssignments || userAssignments.filter((a: Assignment) => a.completedAt).length,
+          totalAssignments,
+          activeAssignments,
+          completedAssignments,
           availableRequests: pendingRequests.length,
           unreadNotifications: unreadCountResponse.data,
         });
 
-        setChartData(analyticsData?.statusBreakdown || []);
+        // Create chart data from actual assignments
+        const statusBreakdown: Array<{ status: string; count: number }> = [];
+        if (activeAssignments > 0) {
+          statusBreakdown.push({ status: 'Active', count: activeAssignments });
+        }
+        if (completedAssignments > 0) {
+          statusBreakdown.push({ status: 'Completed', count: completedAssignments });
+        }
+        
+        setAnalyticsData({
+          totalAssignments,
+          activeAssignments,
+          completedAssignments,
+          statusBreakdown,
+        });
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
         setStats({
@@ -181,40 +191,12 @@ const VolunteerDashboard: React.FC = () => {
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6">
         {/* Assignment Status Chart */}
-        {chartData.length > 0 && (
-          <Card>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-gray-900 flex items-center">
-                <TrendingUp className="w-5 h-5 mr-2 text-sky-600" />
-                Assignment Status Overview
-              </h2>
-            </div>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={chartData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ status, count }) => `${status}: ${count}`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="count"
-                  nameKey="status"
-                >
-                  {chartData.map((entry, index) => {
-                    const colors = {
-                      'Active': '#f59e0b',
-                      'Completed': '#10b981',
-                    };
-                    return <Cell key={`cell-${index}`} fill={colors[entry.status as keyof typeof colors] || '#6b7280'} />;
-                  })}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </Card>
+        {analyticsData?.statusBreakdown && analyticsData.statusBreakdown.length > 0 && (
+          <StatusChart
+            data={analyticsData.statusBreakdown}
+            title="Assignment Status Overview"
+            type="pie"
+          />
         )}
 
         {/* My Active Assignments */}

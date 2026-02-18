@@ -28,7 +28,7 @@
 - 🔗 **User_Skills** - Many-to-many junction
 - ⚙️ **User_Settings** - Notification preferences
 
-## 🌐 API Endpoints (130+ Total)
+## 🌐 API Endpoints (135+ Total)
 
 | Entity | Endpoints | Key Features |
 |--------|-----------|-------------|
@@ -40,6 +40,7 @@
 | 🎯 Skills | 13 | Volunteer capabilities |
 | 🇷🇼 Rwanda API | 5 | Live location data (Province→Village) |
 | ⚙️ Settings | 4 | User preferences |
+| 📊 Analytics | 4 | Dashboard statistics, charts data |
 
 ## 🔧 Quick Setup
 
@@ -80,6 +81,7 @@ flyctl deploy
 ✅ **Role-based Access** - Citizens, Volunteers, Admins  
 ✅ **Real-time Notifications** - Assignment updates  
 ✅ **Advanced Queries** - Pagination, filtering, search  
+✅ **Analytics Dashboard** - Interactive charts with Recharts  
 ✅ **API Documentation** - Swagger UI  
 ✅ **Health Monitoring** - Actuator endpoints  
 ✅ **Production Ready** - Cloud deployed  
@@ -105,6 +107,12 @@ curl https://community-support-system.fly.dev/api/skills
 
 # Get volunteers
 curl https://community-support-system.fly.dev/api/users/role/VOLUNTEER
+
+# Get volunteer analytics
+curl https://community-support-system.fly.dev/api/analytics/volunteer/1
+
+# Get citizen analytics
+curl https://community-support-system.fly.dev/api/analytics/citizen/2
 ```
 
 ## 🤝 Contributing
@@ -114,10 +122,6 @@ curl https://community-support-system.fly.dev/api/users/role/VOLUNTEER
 3. Commit changes (`git commit -m 'Add amazing feature'`)
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open Pull Request
-
-## 📄 License
-
-MIT License - see LICENSE file for details.
 
 ---
 

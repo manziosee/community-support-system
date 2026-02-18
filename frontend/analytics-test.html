@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">Analytics Endpoints Test</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Volunteer Stats -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-xl font-semibold mb-4">Volunteer Stats (User ID: 1)</h2>
+                <button onclick="testVolunteerStats()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Test Volunteer Endpoint
+                </button>
+                <pre id="volunteer-result" class="mt-4 bg-gray-50 p-4 rounded text-sm overflow-auto max-h-96"></pre>
+            </div>
+            
+            <!-- Citizen Stats -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-xl font-semibold mb-4">Citizen Stats (User ID: 2)</h2>
+                <button onclick="testCitizenStats()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                    Test Citizen Endpoint
+                </button>
+                <pre id="citizen-result" class="mt-4 bg-gray-50 p-4 rounded text-sm overflow-auto max-h-96"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://community-support-system.fly.dev/api';
+        
+        async function testVolunteerStats() {
+            const resultEl = document.getElementById('volunteer-result');
+            resultEl.textContent = 'Loading...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/analytics/volunteer/1`);
+                const data = await response.json();
+                resultEl.textContent = JSON.stringify(data, null, 2);
+                resultEl.className = response.ok ? 
+                    'mt-4 bg-green-50 p-4 rounded text-sm overflow-auto max-h-96' : 
+                    'mt-4 bg-red-50 p-4 rounded text-sm overflow-auto max-h-96';
+            } catch (error) {
+                resultEl.textContent = `Error: ${error.message}`;
+                resultEl.className = 'mt-4 bg-red-50 p-4 rounded text-sm overflow-auto max-h-96';
+            }
+        }
+        
+        async function testCitizenStats() {
+            const resultEl = document.getElementById('citizen-result');
+            resultEl.textContent = 'Loading...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/analytics/citizen/2`);
+                const data = await response.json();
+                resultEl.textContent = JSON.stringify(data, null, 2);
+                resultEl.className = response.ok ? 
+                    'mt-4 bg-green-50 p-4 rounded text-sm overflow-auto max-h-96' : 
+                    'mt-4 bg-red-50 p-4 rounded text-sm overflow-auto max-h-96';
+            } catch (error) {
+                resultEl.textContent = `Error: ${error.message}`;
+                resultEl.className = 'mt-4 bg-red-50 p-4 rounded text-sm overflow-auto max-h-96';
+            }
+        }
+    </script>
+</body>
+</html>

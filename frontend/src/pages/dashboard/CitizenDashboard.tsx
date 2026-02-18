@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, Clock, CheckCircle, Plus, Bell, MapPin, TrendingUp } from 'lucide-react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { useAuth } from '../../contexts/AuthContext';
 import { requestsApi, notificationsApi, analyticsApi } from '../../services/api';
-import type { Request, Notification } from '../../types';
+import type { Request, Notification, CitizenAnalytics } from '../../types';
+import StatusChart from '../../components/charts/StatusChart';
 import Button from '../../components/common/Button';
 import Card from '../../components/common/Card';
 import StatCard from '../../components/common/StatCard';
@@ -24,7 +24,7 @@ const CitizenDashboard: React.FC = () => {
     acceptedRequests: 0,
     cancelledRequests: 0,
   });
-  const [chartData, setChartData] = useState<Array<{ status: string; count: number }>>([]);
+  const [analyticsData, setAnalyticsData] = useState<CitizenAnalytics | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -43,25 +43,45 @@ const CitizenDashboard: React.FC = () => {
         setRequests(userRequests.slice(0, 5));
         setNotifications(notificationsResponse.data.slice(0, 5));
 
-        // Try to get analytics, but don't fail if it's not available
-        let analyticsData = null;
-        try {
-          const statsResponse = await analyticsApi.getCitizenStats(user.userId);
-          analyticsData = statsResponse.data;
-        } catch (analyticsError) {
-          console.warn('Analytics endpoint not available, using fallback stats');
-        }
-
+        // Calculate stats from actual data
+        const totalRequests = userRequests.length;
+        const pendingRequests = userRequests.filter((r: Request) => r.status === 'PENDING').length;
+        const acceptedRequests = userRequests.filter((r: Request) => r.status === 'ACCEPTED').length;
+        const completedRequests = userRequests.filter((r: Request) => r.status === 'COMPLETED').length;
+        const cancelledRequests = userRequests.filter((r: Request) => r.status === 'CANCELLED').length;
+        
         setStats({
-          totalRequests: analyticsData?.totalRequests || userRequests.length,
-          pendingRequests: analyticsData?.pendingRequests || userRequests.filter((r: Request) => r.status === 'PENDING').length,
-          completedRequests: analyticsData?.completedRequests || userRequests.filter((r: Request) => r.status === 'COMPLETED').length,
-          acceptedRequests: analyticsData?.acceptedRequests || 0,
-          cancelledRequests: analyticsData?.cancelledRequests || 0,
+          totalRequests,
+          pendingRequests,
+          completedRequests,
+          acceptedRequests,
+          cancelledRequests,
           unreadNotifications: unreadCountResponse.data,
         });
 
-        setChartData(analyticsData?.statusBreakdown || []);
+        // Create chart data from actual requests
+        const statusBreakdown: Array<{ status: string; count: number }> = [];
+        if (pendingRequests > 0) {
+          statusBreakdown.push({ status: 'Pending', count: pendingRequests });
+        }
+        if (acceptedRequests > 0) {
+          statusBreakdown.push({ status: 'Accepted', count: acceptedRequests });
+        }
+        if (completedRequests > 0) {
+          statusBreakdown.push({ status: 'Completed', count: completedRequests });
+        }
+        if (cancelledRequests > 0) {
+          statusBreakdown.push({ status: 'Cancelled', count: cancelledRequests });
+        }
+        
+        setAnalyticsData({
+          totalRequests,
+          pendingRequests,
+          acceptedRequests,
+          completedRequests,
+          cancelledRequests,
+          statusBreakdown,
+        });
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
       } finally {
@@ -144,42 +164,12 @@ const CitizenDashboard: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Request Status Chart */}
-        {chartData.length > 0 && (
-          <Card>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-gray-900 flex items-center">
-                <TrendingUp className="w-5 h-5 mr-2 text-primary-600" />
-                Request Status Overview
-              </h2>
-            </div>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={chartData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ status, count }) => `${status}: ${count}`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="count"
-                  nameKey="status"
-                >
-                  {chartData.map((entry, index) => {
-                    const colors = {
-                      'Pending': '#f59e0b',
-                      'Accepted': '#3b82f6',
-                      'Completed': '#10b981',
-                      'Cancelled': '#ef4444',
-                    };
-                    return <Cell key={`cell-${index}`} fill={colors[entry.status as keyof typeof colors] || '#6b7280'} />;
-                  })}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </Card>
+        {analyticsData?.statusBreakdown && analyticsData.statusBreakdown.length > 0 && (
+          <StatusChart
+            data={analyticsData.statusBreakdown}
+            title="Request Status Overview"
+            type="pie"
+          />
         )}
 
         {/* Recent Requests */}
