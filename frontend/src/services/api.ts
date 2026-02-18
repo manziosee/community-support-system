@@ -395,7 +395,7 @@ export const adminApi = {
     api.get('/admin/dashboard/stats'),
   
   getAllUsers: (page = 0, size = 20) => 
-    api.get(`/admin/users/all?page=${page}&size=${size}`),
+    api.get(`/users?page=${page}&size=${size}`),
   
   updateUserStatus: (id: number, status: string) => 
     api.put(`/admin/users/${id}/status`, { status }),
@@ -412,6 +412,24 @@ export const adminApi = {
   getAnalytics: () => 
     api.get('/admin/analytics/reports'),
   
-  broadcastNotification: (message: string) => 
+  broadcastNotification: (message: string) =>
     api.post('/admin/notifications/broadcast', { message }),
+
+  lockUser: (id: number) =>
+    api.patch(`/admin/users/${id}/lock`),
+
+  unlockUser: (id: number) =>
+    api.patch(`/admin/users/${id}/unlock`),
+
+  verifyUser: (id: number) =>
+    api.patch(`/admin/users/${id}/verify`),
+
+  resetUserPassword: (id: number, newPassword: string) =>
+    api.patch(`/admin/users/${id}/reset-password`, { newPassword }),
+};
+
+// Analytics API
+export const analyticsApi = {
+  getCitizenStats: (userId: number) => api.get(`/analytics/citizen/${userId}`),
+  getVolunteerStats: (userId: number) => api.get(`/analytics/volunteer/${userId}`),
 };

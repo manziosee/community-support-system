@@ -1,193 +1,225 @@
-import React, { useState, useEffect } from 'react';
-import { MapPin, Search, Users, Plus, Edit, Trash2, Eye } from 'lucide-react';
-import { locationsApi } from '../../services/api';
-import type { Location } from '../../types';
+import React, { useState, useEffect, useCallback } from 'react';
+import { MapPin, Search, ChevronRight, ChevronDown, Loader2, RefreshCw, Globe, Building2, Landmark, Home, Map } from 'lucide-react';
+import { rwandaLocationsApi } from '../../services/api';
 import Card from '../../components/common/Card';
-import Button from '../../components/common/Button';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import EmptyState from '../../components/common/EmptyState';
-import Modal from '../../components/common/Modal';
-import Input from '../../components/common/Input';
+
+type Level = 'province' | 'district' | 'sector' | 'cell' | 'village';
+
+interface BreadcrumbItem {
+  level: Level;
+  name: string;
+}
+
+const PROVINCE_COLORS: Record<string, string> = {
+  'Kigali': 'bg-blue-100 text-blue-800 border-blue-200',
+  'East': 'bg-green-100 text-green-800 border-green-200',
+  'West': 'bg-purple-100 text-purple-800 border-purple-200',
+  'South': 'bg-orange-100 text-orange-800 border-orange-200',
+  'North': 'bg-red-100 text-red-800 border-red-200',
+};
+
+const PROVINCE_BG: Record<string, string> = {
+  'Kigali': 'from-blue-500 to-blue-600',
+  'East': 'from-green-500 to-green-600',
+  'West': 'from-purple-500 to-purple-600',
+  'South': 'from-orange-500 to-orange-600',
+  'North': 'from-red-500 to-red-600',
+};
+
+const LEVEL_ICONS: Record<Level, React.FC<{ className?: string }>> = {
+  province: Globe,
+  district: Building2,
+  sector: Landmark,
+  cell: Home,
+  village: Map,
+};
 
 const AdminLocationsPage: React.FC = () => {
-  const [locations, setLocations] = useState<Location[]>([]);
-  const [filteredLocations, setFilteredLocations] = useState<Location[]>([]);
+  const [provinces, setProvinces] = useState<string[]>([]);
+  const [items, setItems] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingItems, setIsLoadingItems] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [provinceFilter, setProvinceFilter] = useState<string>('ALL');
-  const [stats, setStats] = useState({
-    totalLocations: 0,
-    provinces: 0,
-    districts: 0,
-  });
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-  const [editingLocation, setEditingLocation] = useState<Location | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
-  const [formData, setFormData] = useState({
-    province: '',
-    district: '',
-    provinceCode: ''
-  });
+  const [error, setError] = useState<string | null>(null);
 
-  // Mock Rwanda locations data (30 districts)
-  const mockLocations: Location[] = [
-    // Kigali City
-    { locationId: 1, province: 'Kigali City', district: 'Gasabo', provinceCode: 'KG01' },
-    { locationId: 2, province: 'Kigali City', district: 'Kicukiro', provinceCode: 'KG02' },
-    { locationId: 3, province: 'Kigali City', district: 'Nyarugenge', provinceCode: 'KG03' },
-    
-    // Eastern Province
-    { locationId: 4, province: 'Eastern Province', district: 'Nyagatare', provinceCode: 'EP01' },
-    { locationId: 5, province: 'Eastern Province', district: 'Gatsibo', provinceCode: 'EP02' },
-    { locationId: 6, province: 'Eastern Province', district: 'Bugesera', provinceCode: 'EP03' },
-    { locationId: 7, province: 'Eastern Province', district: 'Kayonza', provinceCode: 'EP04' },
-    { locationId: 8, province: 'Eastern Province', district: 'Ngoma', provinceCode: 'EP05' },
-    { locationId: 9, province: 'Eastern Province', district: 'Kirehe', provinceCode: 'EP06' },
-    { locationId: 10, province: 'Eastern Province', district: 'Rwamagana', provinceCode: 'EP07' },
-    
-    // Western Province
-    { locationId: 11, province: 'Western Province', district: 'Rusizi', provinceCode: 'WP01' },
-    { locationId: 12, province: 'Western Province', district: 'Rubavu', provinceCode: 'WP02' },
-    { locationId: 13, province: 'Western Province', district: 'Nyamasheke', provinceCode: 'WP03' },
-    { locationId: 14, province: 'Western Province', district: 'Ngororero', provinceCode: 'WP04' },
-    { locationId: 15, province: 'Western Province', district: 'Karongi', provinceCode: 'WP05' },
-    { locationId: 16, province: 'Western Province', district: 'Rutsiro', provinceCode: 'WP06' },
-    { locationId: 17, province: 'Western Province', district: 'Nyabihu', provinceCode: 'WP07' },
-    
-    // Southern Province
-    { locationId: 18, province: 'Southern Province', district: 'Kamonyi', provinceCode: 'SP01' },
-    { locationId: 19, province: 'Southern Province', district: 'Nyamagabe', provinceCode: 'SP02' },
-    { locationId: 20, province: 'Southern Province', district: 'Huye', provinceCode: 'SP03' },
-    { locationId: 21, province: 'Southern Province', district: 'Nyanza', provinceCode: 'SP04' },
-    { locationId: 22, province: 'Southern Province', district: 'Gisagara', provinceCode: 'SP05' },
-    { locationId: 23, province: 'Southern Province', district: 'Ruhango', provinceCode: 'SP06' },
-    { locationId: 24, province: 'Southern Province', district: 'Muhanga', provinceCode: 'SP07' },
-    { locationId: 25, province: 'Southern Province', district: 'Nyaruguru', provinceCode: 'SP08' },
-    
-    // Northern Province
-    { locationId: 26, province: 'Northern Province', district: 'Gicumbi', provinceCode: 'NP01' },
-    { locationId: 27, province: 'Northern Province', district: 'Gakenke', provinceCode: 'NP02' },
-    { locationId: 28, province: 'Northern Province', district: 'Burera', provinceCode: 'NP03' },
-    { locationId: 29, province: 'Northern Province', district: 'Rulindo', provinceCode: 'NP04' },
-    { locationId: 30, province: 'Northern Province', district: 'Musanze', provinceCode: 'NP05' },
-  ];
+  // Navigation state
+  const [currentLevel, setCurrentLevel] = useState<Level>('province');
+  const [selectedProvince, setSelectedProvince] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [selectedSector, setSelectedSector] = useState('');
+  const [selectedCell, setSelectedCell] = useState('');
 
+  // Stats
+  const [districtCounts, setDistrictCounts] = useState<Record<string, number>>({});
+
+  // Load provinces on mount
   useEffect(() => {
-    const fetchLocations = async () => {
+    const fetchProvinces = async () => {
       try {
         setIsLoading(true);
-        try {
-          const response = await locationsApi.getAll();
-          setLocations(response.data);
-        } catch (error) {
-          setLocations(mockLocations);
-        }
-      } catch (error) {
-        console.error('Failed to fetch locations:', error);
-        setLocations(mockLocations);
+        setError(null);
+        const response = await rwandaLocationsApi.getProvinces();
+        const data = response.data?.data || response.data || [];
+        setProvinces(data);
+        setItems(data);
+      } catch (err) {
+        console.error('Failed to fetch provinces:', err);
+        setError('Failed to load provinces from Rwanda API');
       } finally {
         setIsLoading(false);
       }
     };
-
-    fetchLocations();
+    fetchProvinces();
   }, []);
 
+  // Load district counts for province summary
   useEffect(() => {
-    let filtered = locations;
-
-    if (searchTerm) {
-      filtered = filtered.filter(location => 
-        location.province.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        location.district.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        location.provinceCode.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    if (provinceFilter !== 'ALL') {
-      filtered = filtered.filter(location => location.province === provinceFilter);
-    }
-
-    setFilteredLocations(filtered);
-
-    const uniqueProvinces = [...new Set(locations.map(l => l.province))];
-    setStats({
-      totalLocations: locations.length,
-      provinces: uniqueProvinces.length,
-      districts: locations.length,
-    });
-  }, [locations, searchTerm, provinceFilter]);
-
-  const getProvinceColor = (province: string) => {
-    const colors = {
-      'Kigali City': 'bg-blue-100 text-blue-800',
-      'Eastern Province': 'bg-green-100 text-green-800',
-      'Western Province': 'bg-purple-100 text-purple-800',
-      'Southern Province': 'bg-orange-100 text-orange-800',
-      'Northern Province': 'bg-red-100 text-red-800',
+    if (provinces.length === 0) return;
+    const fetchCounts = async () => {
+      const counts: Record<string, number> = {};
+      for (const prov of provinces) {
+        try {
+          const res = await rwandaLocationsApi.getDistricts(prov);
+          const data = res.data?.data || res.data || [];
+          counts[prov] = data.length;
+        } catch {
+          counts[prov] = 0;
+        }
+      }
+      setDistrictCounts(counts);
     };
-    return colors[province as keyof typeof colors] || 'bg-gray-100 text-gray-800';
-  };
+    fetchCounts();
+  }, [provinces]);
 
-  const provinces = [...new Set(locations.map(l => l.province))];
+  const navigateTo = useCallback(async (level: Level, name: string) => {
+    setIsLoadingItems(true);
+    setError(null);
+    setSearchTerm('');
 
-  const handleAddLocation = () => {
-    setEditingLocation(null);
-    setFormData({
-      province: '',
-      district: '',
-      provinceCode: ''
-    });
-    setIsModalOpen(true);
-  };
-
-  const handleViewLocation = (location: Location) => {
-    setSelectedLocation(location);
-    setIsViewModalOpen(true);
-  };
-
-  const handleEditLocation = (location: Location) => {
-    setEditingLocation(location);
-    setFormData({
-      province: location.province,
-      district: location.district,
-      provinceCode: location.provinceCode
-    });
-    setIsModalOpen(true);
-  };
-
-  const handleSaveLocation = async () => {
     try {
-      if (editingLocation) {
-        const updatedLocation = { ...editingLocation, ...formData };
-        setLocations(prev => prev.map(l => l.locationId === editingLocation.locationId ? updatedLocation : l));
-      } else {
-        const newLocation: Location = {
-          locationId: Math.max(...locations.map(l => l.locationId)) + 1,
-          ...formData
-        };
-        setLocations(prev => [...prev, newLocation]);
+      let response;
+      let newProvince = selectedProvince;
+      let newDistrict = selectedDistrict;
+      let newSector = selectedSector;
+      let newCell = selectedCell;
+
+      switch (level) {
+        case 'province':
+          // Going back to province list
+          setCurrentLevel('province');
+          setSelectedProvince('');
+          setSelectedDistrict('');
+          setSelectedSector('');
+          setSelectedCell('');
+          setItems(provinces);
+          setIsLoadingItems(false);
+          return;
+
+        case 'district':
+          newProvince = name;
+          response = await rwandaLocationsApi.getDistricts(name);
+          setSelectedProvince(name);
+          setSelectedDistrict('');
+          setSelectedSector('');
+          setSelectedCell('');
+          break;
+
+        case 'sector':
+          newDistrict = name;
+          response = await rwandaLocationsApi.getSectors(selectedProvince, name);
+          setSelectedDistrict(name);
+          setSelectedSector('');
+          setSelectedCell('');
+          break;
+
+        case 'cell':
+          newSector = name;
+          response = await rwandaLocationsApi.getCells(selectedProvince, selectedDistrict, name);
+          setSelectedSector(name);
+          setSelectedCell('');
+          break;
+
+        case 'village':
+          newCell = name;
+          response = await rwandaLocationsApi.getVillages(selectedProvince, selectedDistrict, selectedSector, name);
+          setSelectedCell(name);
+          break;
       }
-      setIsModalOpen(false);
-    } catch (error) {
-      console.error('Failed to save location:', error);
+
+      const data = response?.data?.data || response?.data || [];
+      setItems(data);
+      setCurrentLevel(level);
+    } catch (err) {
+      console.error(`Failed to fetch ${level}:`, err);
+      setError(`Failed to load ${level} data`);
+    } finally {
+      setIsLoadingItems(false);
+    }
+  }, [provinces, selectedProvince, selectedDistrict, selectedSector, selectedCell]);
+
+  const breadcrumbs: BreadcrumbItem[] = [
+    { level: 'province', name: 'Provinces' },
+    ...(selectedProvince ? [{ level: 'district' as Level, name: selectedProvince }] : []),
+    ...(selectedDistrict ? [{ level: 'sector' as Level, name: selectedDistrict }] : []),
+    ...(selectedSector ? [{ level: 'cell' as Level, name: selectedSector }] : []),
+    ...(selectedCell ? [{ level: 'village' as Level, name: selectedCell }] : []),
+  ];
+
+  const handleBreadcrumbClick = (crumb: BreadcrumbItem, index: number) => {
+    if (index === breadcrumbs.length - 1) return; // Already on this level
+
+    if (index === 0) {
+      // Go back to provinces
+      navigateTo('province', '');
+    } else {
+      // Navigate to clicked level's children
+      const nextLevel: Level = ['province', 'district', 'sector', 'cell', 'village'][index + 1] as Level;
+      // We need to re-fetch the data at that level
+      switch (index) {
+        case 1: navigateTo('district', selectedProvince); break;
+        case 2: navigateTo('sector', selectedDistrict); break;
+        case 3: navigateTo('cell', selectedSector); break;
+      }
     }
   };
 
-  const handleDeleteLocation = async (locationId: number) => {
-    if (window.confirm('Are you sure you want to delete this location?')) {
-      try {
-        setLocations(prev => prev.filter(l => l.locationId !== locationId));
-      } catch (error) {
-        console.error('Failed to delete location:', error);
-      }
-    }
+  const getNextLevel = (): Level | null => {
+    const levels: Level[] = ['province', 'district', 'sector', 'cell', 'village'];
+    const currentIndex = levels.indexOf(currentLevel);
+    return currentIndex < levels.length - 1 ? levels[currentIndex + 1] : null;
   };
 
-  if (isLoading) {
-    return <LoadingSpinner size="lg" text="Loading locations..." />;
-  }
+  const handleItemClick = (name: string) => {
+    const nextLevel = getNextLevel();
+    if (!nextLevel) return; // At village level, nothing to drill into
+    navigateTo(nextLevel, name);
+  };
+
+  const filteredItems = searchTerm
+    ? items.filter(item => item.toLowerCase().includes(searchTerm.toLowerCase()))
+    : items;
+
+  const totalDistricts = Object.values(districtCounts).reduce((sum, c) => sum + c, 0);
+
+  const getLevelLabel = (level: Level): string => {
+    const labels: Record<Level, string> = {
+      province: 'Provinces',
+      district: 'Districts',
+      sector: 'Sectors',
+      cell: 'Cells',
+      village: 'Villages',
+    };
+    return labels[level];
+  };
+
+  const getChildLabel = (): string => {
+    const nextLevel = getNextLevel();
+    return nextLevel ? getLevelLabel(nextLevel) : 'Items';
+  };
+
+  if (isLoading) return <LoadingSpinner size="lg" text="Loading locations from Rwanda API..." />;
 
   return (
     <div className="space-y-6">
@@ -197,32 +229,36 @@ const AdminLocationsPage: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900">Location Management</h1>
           <p className="text-gray-600 mt-1">Manage Rwanda's administrative hierarchy</p>
         </div>
-        <Button icon={Plus} onClick={handleAddLocation}>
-          Add New Location
-        </Button>
+        <button
+          onClick={() => navigateTo('province', '')}
+          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+        >
+          <RefreshCw className="w-4 h-4" />
+          Refresh
+        </button>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <div className="flex items-center">
             <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <MapPin className="w-5 h-5 text-blue-600" />
+              <Globe className="w-5 h-5 text-blue-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Locations</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.totalLocations}</p>
+              <p className="text-sm font-medium text-gray-600">Provinces</p>
+              <p className="text-2xl font-bold text-gray-900">{provinces.length}</p>
             </div>
           </div>
         </Card>
         <Card>
           <div className="flex items-center">
             <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <MapPin className="w-5 h-5 text-green-600" />
+              <Building2 className="w-5 h-5 text-green-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Provinces</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.provinces}</p>
+              <p className="text-sm font-medium text-gray-600">Districts</p>
+              <p className="text-2xl font-bold text-gray-900">{totalDistricts}</p>
             </div>
           </div>
         </Card>
@@ -232,258 +268,189 @@ const AdminLocationsPage: React.FC = () => {
               <MapPin className="w-5 h-5 text-purple-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Districts</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.districts}</p>
+              <p className="text-sm font-medium text-gray-600">Current Level</p>
+              <p className="text-2xl font-bold text-gray-900 capitalize">{currentLevel}</p>
+            </div>
+          </div>
+        </Card>
+        <Card>
+          <div className="flex items-center">
+            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+              <Landmark className="w-5 h-5 text-orange-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Showing</p>
+              <p className="text-2xl font-bold text-gray-900">{filteredItems.length}</p>
             </div>
           </div>
         </Card>
       </div>
 
-      {/* Filters */}
+      {/* Breadcrumb Navigation */}
       <Card>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Search by province, district, or code..."
-                className="input-field pl-10"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="sm:w-64">
-            <select
-              className="input-field"
-              value={provinceFilter}
-              onChange={(e) => setProvinceFilter(e.target.value)}
-            >
-              <option value="ALL">All Provinces</option>
-              {provinces.map(province => (
-                <option key={province} value={province}>{province}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </Card>
-
-      {/* Locations Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredLocations.length === 0 ? (
-          <div className="col-span-full">
-            <EmptyState
-              icon={MapPin}
-              title="No locations found"
-              description="No locations match your search criteria"
-            />
-          </div>
-        ) : (
-          filteredLocations.map((location) => (
-            <Card key={location.locationId} hover>
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center mb-2">
-                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                      <MapPin className="w-4 h-4 text-blue-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">{location.district}</h3>
-                      <p className="text-xs text-gray-500">{location.provinceCode}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="mb-3">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getProvinceColor(location.province)}`}>
-                      {location.province}
-                    </span>
-                  </div>
-                  
-                  <div className="flex items-center text-xs text-gray-500">
-                    <Users className="w-3 h-3 mr-1" />
-                    <span>Active users in this location</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex items-center space-x-2 mt-4 pt-4 border-t border-gray-200">
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  icon={Eye}
-                  onClick={() => handleViewLocation(location)}
-                >
-                  View
-                </Button>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  icon={Edit}
-                  onClick={() => handleEditLocation(location)}
-                >
-                  Edit
-                </Button>
-                <Button
-                  size="sm"
-                  variant="danger"
-                  icon={Trash2}
-                  onClick={() => handleDeleteLocation(location.locationId)}
-                >
-                  Delete
-                </Button>
-              </div>
-            </Card>
-          ))
-        )}
-      </div>
-
-      {/* Province Summary */}
-      <Card padding="none">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Province Summary</h2>
-        </div>
-        <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            {provinces.map(province => {
-              const districtCount = locations.filter(l => l.province === province).length;
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="flex items-center flex-wrap gap-1 flex-1">
+            {breadcrumbs.map((crumb, index) => {
+              const isLast = index === breadcrumbs.length - 1;
+              const Icon = LEVEL_ICONS[crumb.level];
               return (
-                <div key={province} className="text-center p-4 border border-gray-200 rounded-lg">
-                  <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium mb-2 ${getProvinceColor(province)}`}>
-                    {province}
-                  </div>
-                  <p className="text-2xl font-bold text-gray-900">{districtCount}</p>
-                  <p className="text-xs text-gray-500">Districts</p>
-                </div>
+                <React.Fragment key={index}>
+                  {index > 0 && <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />}
+                  <button
+                    onClick={() => handleBreadcrumbClick(crumb, index)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                      isLast
+                        ? 'bg-blue-100 text-blue-800 cursor-default'
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    {crumb.name}
+                  </button>
+                </React.Fragment>
               );
             })}
           </div>
+
+          {/* Search */}
+          <div className="relative sm:w-64">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <input
+              type="text"
+              placeholder={`Search ${getLevelLabel(currentLevel === 'province' ? 'province' : currentLevel).toLowerCase()}...`}
+              className="input-field pl-10"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
         </div>
       </Card>
 
-      {/* Add/Edit Location Modal */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={editingLocation ? 'Edit Location' : 'Add New Location'}
-      >
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Province <span className="text-red-500">*</span>
-            </label>
-            <select
-              className="input-field"
-              value={formData.province}
-              onChange={(e) => setFormData(prev => ({ ...prev, province: e.target.value }))}
-              required
-            >
-              <option value="">Select Province</option>
-              <option value="Kigali City">Kigali City</option>
-              <option value="Eastern Province">Eastern Province</option>
-              <option value="Western Province">Western Province</option>
-              <option value="Southern Province">Southern Province</option>
-              <option value="Northern Province">Northern Province</option>
-            </select>
-          </div>
-          
-          <Input
-            label="District"
-            value={formData.district}
-            onChange={(e) => setFormData(prev => ({ ...prev, district: e.target.value }))}
-            placeholder="Enter district name"
-            required
-          />
-          
-          <Input
-            label="Province Code"
-            value={formData.provinceCode}
-            onChange={(e) => setFormData(prev => ({ ...prev, provinceCode: e.target.value.toUpperCase() }))}
-            placeholder="e.g., KG01, EP01, WP01"
-            required
-          />
-          
-          <div className="flex justify-end space-x-3 pt-4">
-            <Button
-              variant="secondary"
-              onClick={() => setIsModalOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleSaveLocation}
-              disabled={!formData.province.trim() || !formData.district.trim() || !formData.provinceCode.trim()}
-            >
-              {editingLocation ? 'Update' : 'Create'} Location
-            </Button>
-          </div>
+      {/* Error */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <p className="text-red-700">{error}</p>
+          <button onClick={() => navigateTo('province', '')} className="mt-2 text-sm text-red-600 underline hover:text-red-800">
+            Go back to provinces
+          </button>
         </div>
-      </Modal>
+      )}
 
-      {/* View Location Modal */}
-      {selectedLocation && (
-        <Modal
-          isOpen={isViewModalOpen}
-          onClose={() => setIsViewModalOpen(false)}
-          title="Location Details"
-        >
-          <div className="space-y-4">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <MapPin className="w-6 h-6 text-blue-600" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-gray-900">{selectedLocation.district}</h3>
-                <p className="text-sm text-gray-500">Location ID: {selectedLocation.locationId}</p>
-              </div>
+      {/* Loading state for sub-items */}
+      {isLoadingItems && (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-6 h-6 animate-spin text-blue-600 mr-3" />
+          <span className="text-gray-600">Loading {getChildLabel().toLowerCase()}...</span>
+        </div>
+      )}
+
+      {/* Items Grid */}
+      {!isLoadingItems && (
+        <>
+          {/* Province-level: special card layout */}
+          {currentLevel === 'province' && filteredItems.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+              {filteredItems.map((province) => (
+                <button
+                  key={province}
+                  onClick={() => handleItemClick(province)}
+                  className="group text-left"
+                >
+                  <div className={`relative overflow-hidden rounded-xl bg-gradient-to-br ${PROVINCE_BG[province] || 'from-gray-500 to-gray-600'} p-6 text-white transition-all hover:shadow-lg hover:scale-[1.02]`}>
+                    <Globe className="absolute top-3 right-3 w-8 h-8 opacity-20" />
+                    <h3 className="text-lg font-bold mb-1">{province}</h3>
+                    <p className="text-sm opacity-80">
+                      {districtCounts[province] !== undefined ? `${districtCounts[province]} Districts` : 'Loading...'}
+                    </p>
+                    <div className="mt-4 flex items-center text-sm opacity-80 group-hover:opacity-100 transition-opacity">
+                      <span>View Districts</span>
+                      <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </button>
+              ))}
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <h4 className="font-medium text-gray-900 mb-2">Administrative Details</h4>
-                <div className="bg-gray-50 p-3 rounded-lg space-y-2">
-                  <p><span className="font-medium">Province:</span> {selectedLocation.province}</p>
-                  <p><span className="font-medium">District:</span> {selectedLocation.district}</p>
-                  <p><span className="font-medium">Province Code:</span> {selectedLocation.provinceCode}</p>
-                </div>
-              </div>
-              
-              <div>
-                <h4 className="font-medium text-gray-900 mb-2">Province Information</h4>
-                <div className="bg-gray-50 p-3 rounded-lg">
-                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getProvinceColor(selectedLocation.province)}`}>
-                    {selectedLocation.province}
-                  </span>
-                  <p className="text-sm text-gray-600 mt-2">
-                    Part of Rwanda's administrative structure
+          )}
+
+          {/* Sub-levels: list layout */}
+          {currentLevel !== 'province' && filteredItems.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {filteredItems.map((item) => {
+                const nextLevel = getNextLevel();
+                const Icon = nextLevel ? LEVEL_ICONS[nextLevel] : LEVEL_ICONS[currentLevel];
+                const isClickable = nextLevel !== null;
+
+                return (
+                  <button
+                    key={item}
+                    onClick={() => isClickable && handleItemClick(item)}
+                    disabled={!isClickable}
+                    className={`flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg text-left transition-all ${
+                      isClickable ? 'hover:border-blue-300 hover:bg-blue-50 hover:shadow-sm cursor-pointer group' : 'cursor-default'
+                    }`}
+                  >
+                    <div className="flex items-center min-w-0">
+                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center mr-3 flex-shrink-0 ${
+                        selectedProvince ? (PROVINCE_COLORS[selectedProvince] || 'bg-gray-100 text-gray-700') : 'bg-gray-100 text-gray-700'
+                      }`}>
+                        <Icon className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-medium text-gray-900 truncate">{item}</p>
+                        {isClickable && (
+                          <p className="text-xs text-gray-500">Click to view {nextLevel}s</p>
+                        )}
+                        {!isClickable && (
+                          <p className="text-xs text-gray-500">Village</p>
+                        )}
+                      </div>
+                    </div>
+                    {isClickable && (
+                      <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Empty state */}
+          {!isLoadingItems && filteredItems.length === 0 && !error && (
+            <EmptyState
+              icon={MapPin}
+              title="No locations found"
+              description={searchTerm ? 'No locations match your search' : 'No data available at this level'}
+            />
+          )}
+        </>
+      )}
+
+      {/* Province Summary - always show at bottom */}
+      {provinces.length > 0 && (
+        <Card padding="none">
+          <div className="p-6 border-b border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-900">Province Summary</h2>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+              {provinces.map(province => (
+                <button
+                  key={province}
+                  onClick={() => navigateTo('district', province)}
+                  className="text-center p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-all"
+                >
+                  <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium mb-2 border ${PROVINCE_COLORS[province] || 'bg-gray-100 text-gray-800 border-gray-200'}`}>
+                    {province}
+                  </div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {districtCounts[province] !== undefined ? districtCounts[province] : '-'}
                   </p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <div className="flex items-center">
-                <Users className="w-5 h-5 text-blue-600 mr-2" />
-                <div>
-                  <p className="font-medium text-blue-900">User Activity</p>
-                  <p className="text-sm text-blue-700">Citizens and volunteers are registered in this location</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex justify-end space-x-3 pt-4">
-              <Button variant="secondary" onClick={() => setIsViewModalOpen(false)}>
-                Close
-              </Button>
-              <Button onClick={() => {
-                setIsViewModalOpen(false);
-                handleEditLocation(selectedLocation);
-              }} icon={Edit}>
-                Edit Location
-              </Button>
+                  <p className="text-xs text-gray-500">Districts</p>
+                </button>
+              ))}
             </div>
           </div>
-        </Modal>
+        </Card>
       )}
     </div>
   );

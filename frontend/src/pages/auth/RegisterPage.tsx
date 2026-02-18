@@ -79,7 +79,8 @@ const RegisterPage: React.FC = () => {
           rwandaLocationsApi.getProvinces(),
         ]);
         setSkills(skillsResponse.data);
-        setProvinces(provincesResponse.data);
+        const provData = provincesResponse.data?.data || provincesResponse.data || [];
+        setProvinces(Array.isArray(provData) ? provData : []);
 
       } catch (error) {
         console.error('Failed to fetch data:', error);
@@ -99,7 +100,8 @@ const RegisterPage: React.FC = () => {
       if (watchedProvince && watchedProvince !== '') {
         try {
           const response = await rwandaLocationsApi.getDistricts(watchedProvince);
-          setDistricts(response.data || []);
+          const distData = response.data?.data || response.data || [];
+          setDistricts(Array.isArray(distData) ? distData : []);
           setValue('district', '');
           setSectors([]);
           setCells([]);
@@ -131,10 +133,9 @@ const RegisterPage: React.FC = () => {
     const fetchSectors = async () => {
       if (watchedProvince && watchedDistrict && watchedDistrict !== '') {
         try {
-          console.log('Fetching sectors for:', watchedProvince, watchedDistrict);
           const response = await rwandaLocationsApi.getSectors(watchedProvince, watchedDistrict);
-          console.log('Sectors response:', response.data);
-          setSectors(response.data || []);
+          const secData = response.data?.data || response.data || [];
+          setSectors(Array.isArray(secData) ? secData : []);
           setValue('sector', '');
           setCells([]);
           setVillages([]);
@@ -162,10 +163,9 @@ const RegisterPage: React.FC = () => {
     const fetchCells = async () => {
       if (watchedProvince && watchedDistrict && watchedSector && watchedSector !== '') {
         try {
-          console.log('Fetching cells for:', watchedProvince, watchedDistrict, watchedSector);
           const response = await rwandaLocationsApi.getCells(watchedProvince, watchedDistrict, watchedSector);
-          console.log('Cells response:', response.data);
-          setCells(response.data || []);
+          const cellData = response.data?.data || response.data || [];
+          setCells(Array.isArray(cellData) ? cellData : []);
           setValue('cell', '');
           setVillages([]);
           setValue('village', '');
@@ -189,10 +189,9 @@ const RegisterPage: React.FC = () => {
     const fetchVillages = async () => {
       if (watchedProvince && watchedDistrict && watchedSector && watchedCell && watchedCell !== '') {
         try {
-          console.log('Fetching villages for:', watchedProvince, watchedDistrict, watchedSector, watchedCell);
           const response = await rwandaLocationsApi.getVillages(watchedProvince, watchedDistrict, watchedSector, watchedCell);
-          console.log('Villages response:', response.data);
-          setVillages(response.data || []);
+          const vilData = response.data?.data || response.data || [];
+          setVillages(Array.isArray(vilData) ? vilData : []);
           setValue('village', '');
         } catch (error) {
           console.error('Failed to fetch villages:', error);

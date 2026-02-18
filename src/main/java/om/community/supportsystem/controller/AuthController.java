@@ -71,9 +71,14 @@ public class AuthController {
     public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
         try {
             String email = request.get("email");
+            System.out.println("🔄 Password reset request received for: " + email);
             authService.requestPasswordReset(email);
+            System.out.println("✅ Password reset process completed for: " + email);
             return ResponseEntity.ok(Map.of("message", "Password reset email sent"));
         } catch (Exception e) {
+            System.err.println("❌ Password reset failed: " + e.getMessage());
+            e.printStackTrace();
+            // Don't reveal if email exists for security, but log the actual error
             return ResponseEntity.ok(Map.of("message", "If the email exists, a reset link has been sent"));
         }
     }

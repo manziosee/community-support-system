@@ -66,4 +66,13 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     
     @Query("SELECT COUNT(a) FROM Assignment a WHERE a.completedAt IS NULL")
     long countByCompletedAtIsNull();
+    
+    // Count by volunteer ID
+    long countByVolunteerUserId(Long volunteerId);
+    
+    // Count active assignments by volunteer ID
+    long countByVolunteerUserIdAndCompletedAtIsNull(Long volunteerId);
+    
+    // Count completed assignments by volunteer ID
+    long countByVolunteerUserIdAndCompletedAtIsNotNull(Long volunteerId);
 }
