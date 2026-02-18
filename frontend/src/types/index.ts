@@ -7,9 +7,13 @@ export interface User {
   role: UserRole;
   createdAt: string;
   location: Location;
+  province?: string;
+  district?: string;
   sector?: string;
   cell?: string;
   village?: string;
+  accountLocked?: boolean;
+  emailVerified?: boolean;
   skills?: Skill[];
 }
 

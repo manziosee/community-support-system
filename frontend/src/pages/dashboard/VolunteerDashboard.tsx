@@ -7,10 +7,12 @@ import {
   Award, 
   Bell, 
   MapPin,
-  Plus
+  Plus,
+  TrendingUp
 } from 'lucide-react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { useAuth } from '../../contexts/AuthContext';
-import { assignmentsApi, requestsApi, notificationsApi } from '../../services/api';
+import { assignmentsApi, requestsApi, notificationsApi, analyticsApi } from '../../services/api';
 import type { Assignment, Request, Notification } from '../../types';
 import Button from '../../components/common/Button';
 import Card from '../../components/common/Card';
@@ -31,6 +33,7 @@ const VolunteerDashboard: React.FC = () => {
     availableRequests: 0,
     unreadNotifications: 0,
   });
+  const [chartData, setChartData] = useState<Array<{ status: string; count: number }>>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Refresh user data once on mount to ensure skills are loaded
@@ -47,11 +50,12 @@ const VolunteerDashboard: React.FC = () => {
       try {
         setIsLoading(true);
         
-        const [assignmentsResponse, requestsResponse, notificationsResponse, unreadCountResponse] = await Promise.all([
+        const [assignmentsResponse, requestsResponse, notificationsResponse, unreadCountResponse, statsResponse] = await Promise.all([
           assignmentsApi.getByVolunteer(user.userId),
           requestsApi.getPending(),
           notificationsApi.getByUser(user.userId),
           notificationsApi.getUnreadCount(user.userId),
+          analyticsApi.getVolunteerStats(user.userId),
         ]);
 
         const userAssignments = assignmentsResponse.data;
@@ -61,16 +65,18 @@ const VolunteerDashboard: React.FC = () => {
         setAvailableRequests(pendingRequests.slice(0, 5));
         setNotifications(notificationsResponse.data.slice(0, 5));
 
+        const analyticsData = statsResponse.data;
         setStats({
-          totalAssignments: userAssignments.length,
-          activeAssignments: userAssignments.filter((a: Assignment) => !a.completedAt).length,
-          completedAssignments: userAssignments.filter((a: Assignment) => a.completedAt).length,
+          totalAssignments: analyticsData.totalAssignments || userAssignments.length,
+          activeAssignments: analyticsData.activeAssignments || userAssignments.filter((a: Assignment) => !a.completedAt).length,
+          completedAssignments: analyticsData.completedAssignments || userAssignments.filter((a: Assignment) => a.completedAt).length,
           availableRequests: pendingRequests.length,
           unreadNotifications: unreadCountResponse.data,
         });
+
+        setChartData(analyticsData.statusBreakdown || []);
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
-        // Set empty stats on error
         setStats({
           totalAssignments: 0,
           activeAssignments: 0,
@@ -167,6 +173,43 @@ const VolunteerDashboard: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6">
+        {/* Assignment Status Chart */}
+        {chartData.length > 0 && (
+          <Card>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-gray-900 flex items-center">
+                <TrendingUp className="w-5 h-5 mr-2 text-sky-600" />
+                Assignment Status Overview
+              </h2>
+            </div>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={chartData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ status, count }) => `${status}: ${count}`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="count"
+                  nameKey="status"
+                >
+                  {chartData.map((entry, index) => {
+                    const colors = {
+                      'Active': '#f59e0b',
+                      'Completed': '#10b981',
+                    };
+                    return <Cell key={`cell-${index}`} fill={colors[entry.status as keyof typeof colors] || '#6b7280'} />;
+                  })}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </Card>
+        )}
+
         {/* My Active Assignments */}
         <Card padding="none" hover>
           <div className="p-6 border-b border-sky-200 bg-gradient-to-r from-sky-50 to-sky-100">

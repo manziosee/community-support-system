@@ -2,6 +2,7 @@ package om.community.supportsystem.controller;
 
 import om.community.supportsystem.model.User;
 import om.community.supportsystem.repository.UserRepository;
+import om.community.supportsystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,9 @@ public class AdminUserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
 
     @Operation(summary = "Verify User Email", description = "Manually verify a user's email address and unlock their account")
     @ApiResponse(responseCode = "200", description = "User verified successfully")
@@ -46,16 +50,53 @@ public class AdminUserController {
     public ResponseEntity<?> unlockUser(@PathVariable Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        
+
         user.setAccountLocked(false);
         user.setFailedLoginAttempts(0);
-        
+
         userRepository.save(user);
-        
+
         return ResponseEntity.ok(Map.of(
             "message", "User unlocked successfully",
             "userId", userId,
             "email", user.getEmail()
+        ));
+    }
+
+    @Operation(summary = "Lock User Account", description = "Lock a user account to prevent login")
+    @ApiResponse(responseCode = "200", description = "User locked successfully")
+    @PatchMapping("/users/{userId}/lock")
+    public ResponseEntity<?> lockUser(@PathVariable Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setAccountLocked(true);
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok(Map.of(
+            "message", "User account locked successfully",
+            "userId", userId,
+            "email", user.getEmail()
+        ));
+    }
+
+    @Operation(summary = "Admin Reset Password", description = "Reset a user's password (admin only)")
+    @ApiResponse(responseCode = "200", description = "Password reset successfully")
+    @PatchMapping("/users/{userId}/reset-password")
+    public ResponseEntity<?> resetUserPassword(@PathVariable Long userId, @RequestBody Map<String, String> request) {
+        String newPassword = request.get("newPassword");
+        if (newPassword == null || newPassword.length() < 8) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "message", "Password must be at least 8 characters"
+            ));
+        }
+
+        userService.adminResetPassword(userId, newPassword);
+
+        return ResponseEntity.ok(Map.of(
+            "message", "Password reset successfully",
+            "userId", userId
         ));
     }
 }

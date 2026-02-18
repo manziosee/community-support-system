@@ -185,9 +185,11 @@ public class AuthService {
         }
         
         User user = userOpt.get();
+        System.out.println("✅ User found: " + user.getUserId() + " - " + user.getName());
         
         // Check if account is locked
         if (user.isAccountLocked()) {
+            System.out.println("⚠️ Account is locked for user: " + email);
             throw new RuntimeException("Account is locked. Please contact support.");
         }
         
@@ -196,14 +198,18 @@ public class AuthService {
         user.setPasswordResetTokenExpiry(LocalDateTime.now().plusHours(1));
         
         System.out.println("💾 Saving reset token for user: " + user.getUserId());
+        System.out.println("🔑 Reset token: " + resetToken);
         userRepository.save(user);
+        System.out.println("✅ Reset token saved successfully");
         
         try {
-            System.out.println("📧 Sending password reset email...");
+            System.out.println("📧 Attempting to send password reset email to: " + email);
+            System.out.println("📧 EmailService instance: " + (emailService != null ? "Available" : "NULL"));
             emailService.sendPasswordResetEmail(email, resetToken);
             System.out.println("✅ Password reset email sent successfully");
         } catch (Exception e) {
             System.err.println("❌ Failed to send password reset email: " + e.getMessage());
+            e.printStackTrace();
             System.err.println("🔗 Reset URL: https://community-support-system.vercel.app/reset-password?token=" + resetToken);
             // Token is saved in DB, so even if email fails, manual reset is possible via logs
             throw new RuntimeException("Failed to send password reset email. Please try again later.");

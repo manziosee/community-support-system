@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FileText, Clock, CheckCircle, Plus, Bell, MapPin } from 'lucide-react';
+import { FileText, Clock, CheckCircle, Plus, Bell, MapPin, TrendingUp } from 'lucide-react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { useAuth } from '../../contexts/AuthContext';
-import { requestsApi, notificationsApi } from '../../services/api';
+import { requestsApi, notificationsApi, analyticsApi } from '../../services/api';
 import type { Request, Notification } from '../../types';
 import Button from '../../components/common/Button';
 import Card from '../../components/common/Card';
@@ -20,7 +21,10 @@ const CitizenDashboard: React.FC = () => {
     pendingRequests: 0,
     completedRequests: 0,
     unreadNotifications: 0,
+    acceptedRequests: 0,
+    cancelledRequests: 0,
   });
+  const [chartData, setChartData] = useState<Array<{ status: string; count: number }>>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -29,22 +33,28 @@ const CitizenDashboard: React.FC = () => {
 
       try {
         setIsLoading(true);
-        const [requestsResponse, notificationsResponse, unreadCountResponse] = await Promise.all([
+        const [requestsResponse, notificationsResponse, unreadCountResponse, statsResponse] = await Promise.all([
           requestsApi.getByCitizen(user.userId),
           notificationsApi.getByUser(user.userId),
           notificationsApi.getUnreadCount(user.userId),
+          analyticsApi.getCitizenStats(user.userId),
         ]);
 
         const userRequests = requestsResponse.data;
-        setRequests(userRequests.slice(0, 5)); // Show latest 5 requests
-        setNotifications(notificationsResponse.data.slice(0, 5)); // Show latest 5 notifications
+        setRequests(userRequests.slice(0, 5));
+        setNotifications(notificationsResponse.data.slice(0, 5));
 
+        const analyticsData = statsResponse.data;
         setStats({
-          totalRequests: userRequests.length,
-          pendingRequests: userRequests.filter((r: Request) => r.status === 'PENDING').length,
-          completedRequests: userRequests.filter((r: Request) => r.status === 'COMPLETED').length,
+          totalRequests: analyticsData.totalRequests || userRequests.length,
+          pendingRequests: analyticsData.pendingRequests || userRequests.filter((r: Request) => r.status === 'PENDING').length,
+          completedRequests: analyticsData.completedRequests || userRequests.filter((r: Request) => r.status === 'COMPLETED').length,
+          acceptedRequests: analyticsData.acceptedRequests || 0,
+          cancelledRequests: analyticsData.cancelledRequests || 0,
           unreadNotifications: unreadCountResponse.data,
         });
+
+        setChartData(analyticsData.statusBreakdown || []);
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
       } finally {
@@ -126,6 +136,45 @@ const CitizenDashboard: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Request Status Chart */}
+        {chartData.length > 0 && (
+          <Card>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-gray-900 flex items-center">
+                <TrendingUp className="w-5 h-5 mr-2 text-primary-600" />
+                Request Status Overview
+              </h2>
+            </div>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={chartData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ status, count }) => `${status}: ${count}`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="count"
+                  nameKey="status"
+                >
+                  {chartData.map((entry, index) => {
+                    const colors = {
+                      'Pending': '#f59e0b',
+                      'Accepted': '#3b82f6',
+                      'Completed': '#10b981',
+                      'Cancelled': '#ef4444',
+                    };
+                    return <Cell key={`cell-${index}`} fill={colors[entry.status as keyof typeof colors] || '#6b7280'} />;
+                  })}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </Card>
+        )}
+
         {/* Recent Requests */}
         <Card padding="none" hover>
           <div className="p-6 border-b border-neutral-200 bg-gradient-to-r from-primary-50 to-secondary-50">
