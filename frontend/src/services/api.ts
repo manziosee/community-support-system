@@ -430,6 +430,67 @@ export const adminApi = {
 
 // Analytics API
 export const analyticsApi = {
-  getCitizenStats: (userId: number) => api.get(`/analytics/citizen/${userId}`),
-  getVolunteerStats: (userId: number) => api.get(`/analytics/volunteer/${userId}`),
+  getCitizenStats:  (userId: number) => api.get(`/analytics/citizen/${userId}`),
+  getVolunteerStats:(userId: number) => api.get(`/analytics/volunteer/${userId}`),
+};
+
+// Ratings API
+export const ratingsApi = {
+  create: (data: { assignmentId: number; citizenId: number; volunteerId: number; score: number; review?: string }) =>
+    api.post('/ratings', data),
+  getByVolunteer: (volunteerId: number) =>
+    api.get(`/ratings/volunteer/${volunteerId}`),
+  getByAssignment: (assignmentId: number) =>
+    api.get(`/ratings/assignment/${assignmentId}`),
+  getVolunteerAverage: (volunteerId: number) =>
+    api.get(`/ratings/volunteer/${volunteerId}/average`),
+};
+
+// Gamification API (backend may add later)
+export const gamificationApi = {
+  getProfile: (userId: number) =>
+    api.get(`/gamification/user/${userId}`),
+  getLeaderboard: (period: 'weekly' | 'monthly' | 'allTime' = 'allTime') =>
+    api.get(`/gamification/leaderboard?period=${period}`),
+  addPoints: (userId: number, points: number, reason: string) =>
+    api.post(`/gamification/user/${userId}/points`, { points, reason }),
+};
+
+// Availability API
+export const availabilityApi = {
+  getByVolunteer: (volunteerId: number) =>
+    api.get(`/availability/volunteer/${volunteerId}`),
+  save: (volunteerId: number, slots: any[]) =>
+    api.post(`/availability/volunteer/${volunteerId}`, { slots }),
+  updateStatus: (volunteerId: number, status: string) =>
+    api.patch(`/availability/volunteer/${volunteerId}/status`, { status }),
+};
+
+// Community API
+export const communityApi = {
+  getBulletinPosts: (page = 0, size = 20) =>
+    api.get(`/community/bulletin?page=${page}&size=${size}`),
+  createPost: (data: { title: string; content: string; category: string; authorId: number }) =>
+    api.post('/community/bulletin', data),
+  likePost: (postId: string) =>
+    api.post(`/community/bulletin/${postId}/like`),
+  getEvents: () =>
+    api.get('/community/events'),
+};
+
+// Appointments API
+export const appointmentsApi = {
+  create: (data: any) => api.post('/appointments', data),
+  getByUser: (userId: number) => api.get(`/appointments/user/${userId}`),
+  update: (id: string, data: any) => api.put(`/appointments/${id}`, data),
+  cancel: (id: string) => api.patch(`/appointments/${id}/cancel`),
+};
+
+// Expense Reports API
+export const expensesApi = {
+  create: (data: any) => api.post('/expenses', data),
+  getByAssignment: (assignmentId: number) => api.get(`/expenses/assignment/${assignmentId}`),
+  getByVolunteer: (volunteerId: number) => api.get(`/expenses/volunteer/${volunteerId}`),
+  approve: (expenseId: string) => api.patch(`/expenses/${expenseId}/approve`),
+  reject:  (expenseId: string) => api.patch(`/expenses/${expenseId}/reject`),
 };

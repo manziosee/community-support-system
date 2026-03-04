@@ -24,9 +24,9 @@ const Card: React.FC<CardProps> = ({
     lg: 'p-8',
   };
 
-  const baseClasses = 'bg-white rounded-xl shadow-sm border border-neutral-200';
-  const hoverClasses = hover ? 'hover:shadow-soft hover:border-primary-200 hover:-translate-y-1 transition-all duration-300' : '';
-  const interactiveClasses = interactive ? 'hover:shadow-soft-lg hover:border-primary-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer' : '';
+  const baseClasses = 'bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-neutral-200 dark:border-slate-700/60 transition-colors duration-200';
+  const hoverClasses = hover ? 'hover:shadow-soft hover:border-primary-200 dark:hover:border-primary-700/50 hover:-translate-y-1 transition-all duration-300' : '';
+  const interactiveClasses = interactive ? 'hover:shadow-soft-lg hover:border-primary-300 dark:hover:border-primary-600/50 hover:-translate-y-1 transition-all duration-300 cursor-pointer' : '';
   const clickableClasses = onClick ? 'cursor-pointer' : '';
 
   return (

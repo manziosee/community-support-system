@@ -85,6 +85,7 @@ const CreateRequestPage: React.FC = () => {
       const requestData = {
         title: formData.title.trim(),
         description: formData.description.trim(),
+        category: formData.category ?? 'GENERAL_HELP',
         citizen: { userId: user.userId }
       };
       

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Search, Eye, Edit, Trash2, Clock, CheckCircle, XCircle, MapPin, User } from 'lucide-react';
+import { FileText, Search, Eye, Edit, Trash2, Clock, CheckCircle, XCircle, MapPin, User, Download } from 'lucide-react';
 import { requestsApi } from '../../services/api';
 import type { Request } from '../../types';
 import { RequestStatus } from '../../types';
@@ -8,6 +8,7 @@ import Button from '../../components/common/Button';
 import Badge from '../../components/common/Badge';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import EmptyState from '../../components/common/EmptyState';
+import { exportToCSV } from '../../utils/exportUtils';
 import Modal from '../../components/common/Modal';
 import Input from '../../components/common/Input';
 
@@ -30,7 +31,7 @@ const AdminRequestsPage: React.FC = () => {
   const [editingRequest, setEditingRequest] = useState<Request | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState<number | null>(null);
-  const [editFormData, setEditFormData] = useState({
+  const [editFormData, setEditFormData] = useState<{ title: string; description: string; status: RequestStatus }>({
     title: '',
     description: '',
     status: RequestStatus.PENDING
@@ -211,7 +212,7 @@ const AdminRequestsPage: React.FC = () => {
     setEditFormData({
       title: request.title,
       description: request.description,
-      status: request.status
+      status: (request.status ?? RequestStatus.PENDING) as RequestStatus
     });
     setIsEditModalOpen(true);
   };
@@ -275,9 +276,29 @@ const AdminRequestsPage: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Request Management</h1>
-          <p className="text-gray-600 mt-1">Monitor and manage all community requests</p>
+          <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">Request Management</h1>
+          <p className="text-sm text-neutral-500 dark:text-slate-400 mt-0.5">Monitor and manage all community requests</p>
         </div>
+        <Button
+          type="button"
+          variant="secondary"
+          icon={Download}
+          onClick={() => {
+            const rows = filteredRequests.map((r) => ({
+              ID: r.requestId,
+              Title: r.title,
+              Status: r.status,
+              Citizen: r.citizen?.name ?? '',
+              District: r.citizen?.location?.district ?? '',
+              Province: r.citizen?.location?.province ?? '',
+              'Created At': new Date(r.createdAt).toLocaleDateString(),
+            }));
+            exportToCSV(rows as Record<string, unknown>[], 'requests');
+          }}
+          disabled={filteredRequests.length === 0}
+        >
+          Export CSV
+        </Button>
       </div>
 
       {/* Stats Cards */}
@@ -391,7 +412,7 @@ const AdminRequestsPage: React.FC = () => {
                 return (
                   <div
                     key={request.requestId}
-                    className="border border-gray-200 rounded-lg p-6 hover:bg-gray-50 transition-colors"
+                    className="border border-gray-200 rounded-lg p-6 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
@@ -559,7 +580,7 @@ const AdminRequestsPage: React.FC = () => {
               <select
                 className="input-field"
                 value={editFormData.status}
-                onChange={(e) => setEditFormData(prev => ({ ...prev, status: e.target.value as RequestStatus }))}
+                onChange={(e) => setEditFormData(prev => ({ ...prev, status: e.target.value as RequestStatus } as typeof prev))}
                 required
               >
                 <option value={RequestStatus.PENDING}>Pending</option>

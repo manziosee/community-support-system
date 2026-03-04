@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Eye, Edit, Trash2, FileText, Clock, CheckCircle, Search, Filter } from 'lucide-react';
+import { Plus, Eye, Edit, Trash2, FileText, Clock, CheckCircle, Search, Filter, Download } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { requestsApi } from '../../services/api';
 import type { Request } from '../../types';
@@ -10,6 +10,7 @@ import Button from '../../components/common/Button';
 import Badge from '../../components/common/Badge';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import EmptyState from '../../components/common/EmptyState';
+import { exportToCSV } from '../../utils/exportUtils';
 import toast from 'react-hot-toast';
 
 const RequestsPage: React.FC = () => {
@@ -188,16 +189,34 @@ const RequestsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">My Requests</h1>
-          <p className="text-gray-600">Manage your help requests</p>
+          <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">My Requests</h1>
+          <p className="text-sm text-neutral-500 dark:text-slate-400 mt-0.5">Manage your help requests</p>
         </div>
-        <Link to="/requests/create">
-          <Button icon={Plus}>
-            Create Request
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="secondary"
+            icon={Download}
+            onClick={() => {
+              const rows = filteredRequests.map((r) => ({
+                ID: r.requestId,
+                Title: r.title,
+                Status: r.status,
+                Category: r.category ?? '',
+                'Created At': new Date(r.createdAt).toLocaleDateString(),
+              }));
+              exportToCSV(rows as Record<string, unknown>[], 'my_requests');
+            }}
+            disabled={filteredRequests.length === 0}
+          >
+            Export
           </Button>
-        </Link>
+          <Link to="/requests/create">
+            <Button icon={Plus}>Create Request</Button>
+          </Link>
+        </div>
       </div>
 
       {/* Stats Cards */}

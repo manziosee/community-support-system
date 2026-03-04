@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, Users, FileText, CheckSquare, Award, Calendar, Activity } from 'lucide-react';
+import { TrendingUp, Users, FileText, CheckSquare, Award, Calendar, Activity, Download } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   PieChart, Pie, Cell, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis
 } from 'recharts';
 import Card from '../../components/common/Card';
+import Button from '../../components/common/Button';
+import { exportToCSV } from '../../utils/exportUtils';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import { api } from '../../services/api';
 
@@ -144,17 +146,40 @@ const AdminAnalyticsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Analytics Dashboard</h1>
-          <p className="text-gray-600 mt-1">System performance and usage insights</p>
+          <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">Analytics Dashboard</h1>
+          <p className="text-sm text-neutral-500 dark:text-slate-400 mt-0.5">System performance and usage insights</p>
         </div>
-        <select title="Time range" className="input-field w-auto" value={timeRange} onChange={(e) => setTimeRange(e.target.value)}>
-          <option value="7d">Last 7 days</option>
-          <option value="30d">Last 30 days</option>
-          <option value="90d">Last 90 days</option>
-          <option value="1y">Last year</option>
-        </select>
+        <div className="flex items-center gap-2">
+          <select title="Time range" className="input-field w-auto" value={timeRange} onChange={(e) => setTimeRange(e.target.value)}>
+            <option value="7d">Last 7 days</option>
+            <option value="30d">Last 30 days</option>
+            <option value="90d">Last 90 days</option>
+            <option value="1y">Last year</option>
+          </select>
+          <Button
+            type="button"
+            variant="secondary"
+            icon={Download}
+            onClick={() => exportToCSV([{
+              'Total Users': analytics.totalUsers,
+              Volunteers: analytics.totalVolunteers,
+              Citizens: analytics.totalCitizens,
+              'Total Requests': analytics.totalRequests,
+              'Pending Requests': analytics.pendingRequests,
+              'Accepted Requests': analytics.acceptedRequests,
+              'Completed Requests': analytics.completedRequests,
+              'Cancelled Requests': analytics.cancelledRequests,
+              'Total Assignments': analytics.totalAssignments,
+              'Completion Rate': `${analytics.completionRate}%`,
+              'Active Volunteers': analytics.activeVolunteers,
+              'Avg Response Time': analytics.averageResponseTime,
+            }], 'analytics_report')}
+          >
+            Export Report
+          </Button>
+        </div>
       </div>
 
       {/* Key Metrics */}

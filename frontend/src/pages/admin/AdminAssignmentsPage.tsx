@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckSquare, Search, Eye, Edit, Trash2, Clock, CheckCircle, User, FileText, Award } from 'lucide-react';
+import { CheckSquare, Search, Eye, Edit, Trash2, Clock, CheckCircle, User, FileText, Award, Download } from 'lucide-react';
 import { assignmentsApi } from '../../services/api';
 import type { Assignment } from '../../types';
 import Card from '../../components/common/Card';
@@ -7,6 +7,7 @@ import Button from '../../components/common/Button';
 import Badge from '../../components/common/Badge';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import EmptyState from '../../components/common/EmptyState';
+import { exportToCSV } from '../../utils/exportUtils';
 import Modal from '../../components/common/Modal';
 
 const AdminAssignmentsPage: React.FC = () => {
@@ -280,9 +281,29 @@ const AdminAssignmentsPage: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Assignment Management</h1>
-          <p className="text-gray-600 mt-1">Monitor volunteer assignments and their progress</p>
+          <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">Assignment Management</h1>
+          <p className="text-sm text-neutral-500 dark:text-slate-400 mt-0.5">Monitor volunteer assignments and their progress</p>
         </div>
+        <Button
+          type="button"
+          variant="secondary"
+          icon={Download}
+          onClick={() => {
+            const rows = filteredAssignments.map((a) => ({
+              ID: a.assignmentId,
+              Request: a.request?.title ?? '',
+              Volunteer: a.volunteer?.name ?? '',
+              Citizen: a.request?.citizen?.name ?? '',
+              Status: a.completedAt ? 'Completed' : 'Active',
+              'Accepted At': new Date(a.acceptedAt).toLocaleDateString(),
+              'Completed At': a.completedAt ? new Date(a.completedAt).toLocaleDateString() : '',
+            }));
+            exportToCSV(rows as Record<string, unknown>[], 'assignments');
+          }}
+          disabled={filteredAssignments.length === 0}
+        >
+          Export CSV
+        </Button>
       </div>
 
       {/* Stats Cards */}
@@ -370,7 +391,7 @@ const AdminAssignmentsPage: React.FC = () => {
               {filteredAssignments.map((assignment) => (
                 <div
                   key={assignment.assignmentId}
-                  className="border border-gray-200 rounded-lg p-6 hover:bg-gray-50 transition-colors"
+                  className="border border-gray-200 rounded-lg p-6 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">

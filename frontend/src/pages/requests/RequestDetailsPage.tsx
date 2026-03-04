@@ -182,7 +182,7 @@ const RequestDetailsPage: React.FC = () => {
                 <User className="w-4 h-4 text-gray-400" />
                 <div>
                   <p className="font-medium text-gray-900">
-                    {request.citizen.name || `${request.citizen.firstName || ''} ${request.citizen.lastName || ''}`.trim() || 'Unknown User'}
+                    {request.citizen.name || 'Unknown User'}
                   </p>
                   <p className="text-sm text-gray-600">{request.citizen.email}</p>
                 </div>

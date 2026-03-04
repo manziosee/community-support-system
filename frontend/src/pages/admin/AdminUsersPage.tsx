@@ -501,8 +501,8 @@ const AdminUsersPage: React.FC = () => {
               {filteredUsers.map((user) => (
                 <div
                   key={user.userId}
-                  className={`flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors ${
-                    user.accountLocked ? 'border-red-200 bg-red-50' : 'border-gray-200'
+                  className={`flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:bg-gray-800 transition-colors ${
+                    user.accountLocked ? 'border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950' : 'border-gray-200 dark:border-gray-700'
                   }`}
                 >
                   <div className="flex items-center space-x-4">
