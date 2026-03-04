@@ -278,7 +278,7 @@ const MySkillsPage: React.FC = () => {
                   </p>
                 ) : (
                   availableSkills.map((skill) => (
-                    <div key={skill.skillId} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+                    <div key={skill.skillId} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-800">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <h3 className="font-semibold text-gray-900">{skill.skillName}</h3>

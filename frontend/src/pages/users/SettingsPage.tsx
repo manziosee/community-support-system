@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { settingsApi } from '../../services/api';
 import Button from '../../components/common/Button';
-import { Settings, Lock, Bell, User, Save } from 'lucide-react';
+import LanguageSwitcher from '../../components/common/LanguageSwitcher';
+import { Settings, Lock, Bell, User, Save, Globe } from 'lucide-react';
 
 interface UserSettings {
   emailNotifications: boolean;
@@ -329,6 +330,18 @@ const SettingsPage: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Language Settings */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:col-span-2">
+          <div className="flex items-center space-x-2 mb-6">
+            <Globe className="w-5 h-5 text-sky-600" />
+            <h2 className="text-lg font-semibold text-gray-900">Language Preferences</h2>
+          </div>
+          <p className="text-sm text-gray-600 mb-4">
+            Choose your preferred language. All pages, notifications, and messages will be displayed in the selected language.
+          </p>
+          <LanguageSwitcher />
         </div>
       </div>
     </div>

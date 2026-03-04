@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
-  Users,
-  FileText,
-  CheckSquare,
-  TrendingUp,
-  Award,
-  Activity
+  Users, FileText, CheckSquare, TrendingUp, Award,
+  Activity, Settings, MapPin, BarChart3, ChevronRight, Shield, Zap,
+  UserCheck, AlertCircle, CircleCheck, Clock, Download,
 } from 'lucide-react';
 import {
-  PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+  PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  Tooltip, Legend, ResponsiveContainer, AreaChart, Area,
 } from 'recharts';
 import { adminApi } from '../../services/api';
 import type { DashboardStats } from '../../types';
@@ -17,24 +16,42 @@ import Card from '../../components/common/Card';
 import StatCard from '../../components/common/StatCard';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import Button from '../../components/common/Button';
+import { exportToCSV } from '../../utils/exportUtils';
+import SectionCard from '../../components/dashboard/SectionCard';
+import { useTheme } from '../../contexts/ThemeContext';
 
-interface ExtendedStats extends DashboardStats {
-  completedAssignments?: number;
-  totalSkills?: number;
-  totalLocations?: number;
-}
+const ProgressBar: React.FC<{ pct: number; colorClass: string }> = ({ pct, colorClass }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (ref.current) ref.current.style.width = `${Math.max(0, Math.min(100, pct))}%`;
+  }, [pct]);
+  return <div ref={ref} className={`h-full ${colorClass} rounded-full transition-all duration-700`} />;
+};
 
-const COLORS = ['#0d9488', '#6366f1', '#f59e0b', '#ef4444', '#22c55e', '#8b5cf6'];
+interface ExtendedStats extends DashboardStats { completedAssignments?: number; }
+
+const PIE_COLORS_USERS = ['#009688', '#3F51B5', '#607d8b'];
+const PIE_COLORS_REQUESTS = ['#f59e0b', '#6366f1', '#22c55e', '#ef4444'];
+const RADIAN = Math.PI / 180;
+
+const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
+  if (percent < 0.07) return null;
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+  return (
+    <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={11} fontWeight="700">
+      {`${(percent * 100).toFixed(0)}%`}
+    </text>
+  );
+};
 
 const AdminDashboard: React.FC = () => {
+  const { t } = useTranslation();
+  const { isDark } = useTheme();
   const [stats, setStats] = useState<ExtendedStats>({
-    totalUsers: 0,
-    totalVolunteers: 0,
-    totalCitizens: 0,
-    totalRequests: 0,
-    pendingRequests: 0,
-    completedRequests: 0,
-    totalAssignments: 0,
+    totalUsers: 0, totalVolunteers: 0, totalCitizens: 0,
+    totalRequests: 0, pendingRequests: 0, completedRequests: 0, totalAssignments: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -50,213 +67,460 @@ const AdminDashboard: React.FC = () => {
         setIsLoading(false);
       }
     };
-
     fetchDashboardStats();
   }, []);
 
-  const statCards = [
-    { title: 'Total Users', value: stats.totalUsers, icon: Users, color: 'blue', link: '/admin/users' },
-    { title: 'Volunteers', value: stats.totalVolunteers, icon: Award, color: 'green', link: '/admin/users?role=VOLUNTEER' },
-    { title: 'Citizens', value: stats.totalCitizens, icon: Users, color: 'purple', link: '/admin/users?role=CITIZEN' },
-    { title: 'Total Requests', value: stats.totalRequests, icon: FileText, color: 'orange', link: '/admin/requests' },
-    { title: 'Pending Requests', value: stats.pendingRequests, icon: FileText, color: 'yellow', link: '/admin/requests?status=PENDING' },
-    { title: 'Completed Requests', value: stats.completedRequests, icon: CheckSquare, color: 'green', link: '/admin/requests?status=COMPLETED' },
-    { title: 'Total Assignments', value: stats.totalAssignments, icon: CheckSquare, color: 'indigo', link: '/admin/assignments' },
-  ];
+  const acceptedRequests = Math.max(0, stats.totalRequests - stats.pendingRequests - stats.completedRequests);
+  const completedAssignments = stats.completedAssignments ?? 0;
+  const activeAssignments = Math.max(0, stats.totalAssignments - completedAssignments);
 
-  // Chart data derived from real stats
   const userRoleData = [
     { name: 'Volunteers', value: stats.totalVolunteers },
     { name: 'Citizens', value: stats.totalCitizens },
     { name: 'Admins', value: Math.max(0, stats.totalUsers - stats.totalVolunteers - stats.totalCitizens) },
-  ].filter(d => d.value > 0);
+  ].filter((d) => d.value > 0);
 
-  const acceptedRequests = Math.max(0, stats.totalRequests - stats.pendingRequests - stats.completedRequests);
   const requestStatusData = [
     { name: 'Pending', value: stats.pendingRequests },
     { name: 'Accepted', value: acceptedRequests },
     { name: 'Completed', value: stats.completedRequests },
-  ].filter(d => d.value > 0);
+  ].filter((d) => d.value > 0);
 
-  const completedAssignments = stats.completedAssignments ?? 0;
-  const activeAssignments = stats.totalAssignments - completedAssignments;
   const overviewBarData = [
-    { name: 'Users', Total: stats.totalUsers, Active: stats.totalVolunteers + stats.totalCitizens },
-    { name: 'Requests', Total: stats.totalRequests, Active: stats.pendingRequests + acceptedRequests },
-    { name: 'Assignments', Total: stats.totalAssignments, Active: activeAssignments > 0 ? activeAssignments : 0 },
+    { name: 'Users',       Total: stats.totalUsers,       Active: stats.totalVolunteers + stats.totalCitizens },
+    { name: 'Requests',    Total: stats.totalRequests,    Active: stats.pendingRequests + acceptedRequests },
+    { name: 'Assignments', Total: stats.totalAssignments, Active: activeAssignments },
   ];
 
-  if (isLoading) {
-    return <LoadingSpinner size="lg" text="Loading admin dashboard..." />;
-  }
+  // Simulated trend data for area chart
+  const trendData = [
+    { name: 'W1', Requests: Math.max(0, stats.totalRequests - 12), Assignments: Math.max(0, stats.totalAssignments - 8) },
+    { name: 'W2', Requests: Math.max(0, stats.totalRequests - 8),  Assignments: Math.max(0, stats.totalAssignments - 5) },
+    { name: 'W3', Requests: Math.max(0, stats.totalRequests - 4),  Assignments: Math.max(0, stats.totalAssignments - 3) },
+    { name: 'Now', Requests: stats.totalRequests,                   Assignments: stats.totalAssignments },
+  ];
+
+  const completionRate = stats.totalRequests > 0
+    ? Math.round((stats.completedRequests / stats.totalRequests) * 100) : 0;
+
+  const tooltipStyle = {
+    borderRadius: '10px',
+    border: isDark ? '1px solid #475569' : '1px solid #cbd5e1',
+    backgroundColor: isDark ? '#1e293b' : '#ffffff',
+    color: '#ffffff',
+    fontSize: '12px',
+    fontWeight: '600',
+    padding: '8px 12px',
+    boxShadow: isDark ? '0 4px 20px rgba(0,0,0,0.5)' : '0 4px 20px rgba(0,0,0,0.12)',
+  };
+  const tooltipCursor = { fill: isDark ? 'rgba(148,163,184,0.08)' : 'rgba(0,0,0,0.04)' };
+  const gridColor  = isDark ? '#1e293b' : '#f0f4f8';
+  const axisColor  = isDark ? '#94a3b8' : '#9ca3af';
+  const legendStyle = { fontSize: '12px' };
+  const legendFormatter = (value: string) => (
+    <span style={{ color: isDark ? '#cbd5e1' : '#6b7280' }}>{value}</span>
+  );
+
+  const healthItems = [
+    {
+      label: t('admin.requestCompletion'),
+      value: completionRate,
+      icon: CircleCheck,
+      color: 'text-green-700 dark:text-green-400',
+      bar: 'bg-green-400',
+      bg: 'bg-green-50 dark:bg-green-900/20',
+      border: 'border-green-100 dark:border-green-800/30',
+    },
+    {
+      label: t('admin.volunteerRatio'),
+      value: stats.totalUsers > 0 ? Math.round((stats.totalVolunteers / stats.totalUsers) * 100) : 0,
+      icon: UserCheck,
+      color: 'text-primary-700 dark:text-primary-400',
+      bar: 'bg-primary-400',
+      bg: 'bg-primary-50 dark:bg-primary-900/20',
+      border: 'border-primary-100 dark:border-primary-800/30',
+    },
+    {
+      label: t('admin.activeAssignments'),
+      value: stats.totalAssignments > 0 ? Math.round((activeAssignments / stats.totalAssignments) * 100) : 0,
+      icon: Activity,
+      color: 'text-orange-700 dark:text-orange-400',
+      bar: 'bg-orange-400',
+      bg: 'bg-orange-50 dark:bg-orange-900/20',
+      border: 'border-orange-100 dark:border-orange-800/30',
+    },
+    {
+      label: t('admin.pendingRate'),
+      value: stats.totalRequests > 0 ? Math.round((stats.pendingRequests / stats.totalRequests) * 100) : 0,
+      icon: AlertCircle,
+      color: 'text-yellow-700 dark:text-yellow-400',
+      bar: 'bg-yellow-400',
+      bg: 'bg-yellow-50 dark:bg-yellow-900/20',
+      border: 'border-yellow-100 dark:border-yellow-800/30',
+    },
+  ];
+
+  if (isLoading) return <LoadingSpinner size="lg" text={t('common.loading')} />;
 
   return (
-    <div className="space-y-6">
-      {/* Welcome Header */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex items-center justify-between">
+    <div className="space-y-6 animate-fade-in">
+
+      {/* ── Hero Banner ─────────────────────────────────────────────── */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 text-white shadow-soft-lg">
+        {/* Decorative blobs */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary-500/10 rounded-full filter blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-secondary-500/10 rounded-full filter blur-3xl pointer-events-none" />
+        <div className="absolute top-1/2 left-1/3 w-48 h-48 bg-green-500/5 rounded-full filter blur-2xl pointer-events-none" />
+        {/* Dot grid */}
+        <div className="dot-grid absolute inset-0 opacity-[0.04]" />
+
+        <div className="relative p-6 lg:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-            <p className="text-gray-600 mt-1">System overview and management</p>
+            <div className="flex items-center gap-2 mb-2">
+              <Shield className="w-4 h-4 text-primary-400" />
+              <p className="text-slate-400 text-sm font-medium uppercase tracking-wider">{t('admin.systemAdministration')}</p>
+            </div>
+            <h1 className="font-display text-2xl lg:text-3xl font-extrabold mb-1 leading-tight">
+              {t('admin.adminDashboard')}
+            </h1>
+            <p className="text-slate-400 text-sm mb-5">{t('admin.fullSystemOverview')}</p>
+
+            {/* Key metrics inline */}
+            <div className="flex flex-wrap gap-6">
+              {[
+                { label: t('admin.totalUsers'),    val: stats.totalUsers,       color: 'text-primary-400',   bg: 'bg-primary-500/10' },
+                { label: t('admin.totalRequests'), val: stats.totalRequests,    color: 'text-secondary-400', bg: 'bg-secondary-500/10' },
+                { label: t('admin.assignments'),    val: stats.totalAssignments, color: 'text-green-400',     bg: 'bg-green-500/10' },
+                { label: t('admin.completion'),     val: `${completionRate}%`,   color: 'text-yellow-400',    bg: 'bg-yellow-500/10' },
+              ].map((m) => (
+                <div key={m.label} className={`${m.bg} rounded-xl px-4 py-2.5 text-center border border-white/5`}>
+                  <p className={`font-display text-xl font-black ${m.color}`}>{m.val}</p>
+                  <p className="text-xs text-slate-400 mt-0.5">{m.label}</p>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="flex space-x-3">
+
+          <div className="flex gap-3 flex-shrink-0 flex-wrap">
+            <Button
+              type="button"
+              variant="outline"
+              icon={Download}
+              className="border-white/20 text-white hover:bg-white dark:hover:bg-gray-800/10 hover:text-white hover:border-white/40"
+              onClick={() => exportToCSV([{
+                'Total Users': stats.totalUsers,
+                Volunteers: stats.totalVolunteers,
+                Citizens: stats.totalCitizens,
+                'Total Requests': stats.totalRequests,
+                'Pending Requests': stats.pendingRequests,
+                'Completed Requests': stats.completedRequests,
+                'Total Assignments': stats.totalAssignments,
+                'Completion Rate': `${completionRate}%`,
+              }], 'admin_summary')}
+            >
+              Export
+            </Button>
             <Link to="/admin/analytics">
-              <Button variant="secondary" icon={TrendingUp}>View Analytics</Button>
+              <Button variant="outline" icon={TrendingUp} className="border-white/20 text-white hover:bg-white dark:hover:bg-gray-800/10 hover:text-white hover:border-white/40">
+                Analytics
+              </Button>
             </Link>
             <Link to="/admin/settings">
-              <Button>System Settings</Button>
+              <Button className="bg-primary-600 hover:bg-primary-700" icon={Settings}>
+                Settings
+              </Button>
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statCards.map((card, index) => (
-          <StatCard
-            key={index}
-            title={card.title}
-            value={card.value}
-            icon={card.icon}
-            color={card.color as any}
-            link={card.link}
-          />
-        ))}
+      {/* ── Primary Stats ────────────────────────────────────────────── */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <StatCard title={t('admin.totalUsers')}    value={stats.totalUsers}      icon={Users}      color="blue"   link="/admin/users" />
+        <StatCard title={t('admin.volunteers')}     value={stats.totalVolunteers} icon={Award}      color="green"  link="/admin/users?role=VOLUNTEER" />
+        <StatCard title={t('admin.citizens')}       value={stats.totalCitizens}   icon={Users}      color="purple" link="/admin/users?role=CITIZEN" />
+        <StatCard title={t('admin.totalRequests')} value={stats.totalRequests}   icon={FileText}   color="orange" link="/admin/requests" />
       </div>
 
-      {/* Charts Row */}
+      {/* ── Secondary Stats ──────────────────────────────────────────── */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <StatCard title={t('admin.pendingRequests')}   value={stats.pendingRequests}   icon={Clock}       color="yellow" link="/admin/requests?status=PENDING" />
+        <StatCard title={t('admin.completedRequests')} value={stats.completedRequests} icon={CheckSquare} color="green"  link="/admin/requests?status=COMPLETED" />
+        <StatCard title={t('admin.totalAssignments')}  value={stats.totalAssignments}  icon={CheckSquare} color="indigo" link="/admin/assignments" />
+      </div>
+
+      {/* ── System Health ────────────────────────────────────────────── */}
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-neutral-200 dark:border-slate-700/60 shadow-sm p-5 transition-colors duration-200">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <p className="text-xs font-bold text-neutral-500 dark:text-slate-400 uppercase tracking-widest">{t('admin.systemHealth')}</p>
+            <p className="text-sm font-semibold text-gray-900 dark:text-slate-100 mt-0.5">{t('admin.platformPerformance')}</p>
+          </div>
+          <Activity className="w-5 h-5 text-neutral-300 dark:text-slate-600" />
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {healthItems.map((item) => (
+            <div key={item.label} className={`${item.bg} border ${item.border} rounded-xl p-4 transition-colors duration-200`}>
+              <div className="flex items-center justify-between mb-3">
+                <item.icon className={`w-4 h-4 ${item.color}`} />
+                <span className={`text-2xl font-display font-black ${item.color}`}>{item.value}%</span>
+              </div>
+              <div className="h-1.5 bg-white/60 dark:bg-slate-700/50 rounded-full overflow-hidden mb-2">
+                <ProgressBar pct={item.value} colorClass={item.bar} />
+              </div>
+              <span className={`text-xs font-semibold ${item.color} leading-tight block`}>{item.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Charts Row ───────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* User Distribution Pie Chart */}
-        <Card>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">User Distribution</h3>
+        {/* User Distribution */}
+        <Card padding="md">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-sm font-bold text-gray-900 dark:text-slate-100">{t('admin.userDistribution')}</h3>
+              <p className="text-xs text-neutral-500 dark:text-slate-400">{t('admin.breakdownByRole')}</p>
+            </div>
+            <div className="w-8 h-8 bg-primary-50 dark:bg-primary-900/30 rounded-lg flex items-center justify-center">
+              <Users className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+            </div>
+          </div>
           {userRoleData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={250}>
+            <ResponsiveContainer width="100%" height={210}>
               <PieChart>
-                <Pie
-                  data={userRoleData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={55}
-                  outerRadius={90}
-                  paddingAngle={4}
-                  dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                >
+                <Pie data={userRoleData} cx="50%" cy="50%" innerRadius={52} outerRadius={84} paddingAngle={4} dataKey="value" labelLine={false} label={renderCustomLabel}>
                   {userRoleData.map((_entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell key={`cell-${index}`} fill={PIE_COLORS_USERS[index % PIE_COLORS_USERS.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip contentStyle={tooltipStyle} formatter={(value: number, name: string) => [value, name]} />
+                <Legend iconType="circle" iconSize={8} wrapperStyle={legendStyle} formatter={legendFormatter} />
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[250px] flex items-center justify-center text-gray-400">No user data yet</div>
+            <div className="h-[210px] flex items-center justify-center text-neutral-500 dark:text-slate-400 text-sm">No user data yet</div>
           )}
         </Card>
 
-        {/* Request Status Pie Chart */}
-        <Card>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Request Status</h3>
+        {/* Request Status */}
+        <Card padding="md">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-sm font-bold text-gray-900 dark:text-slate-100">{t('admin.requestStatus')}</h3>
+              <p className="text-xs text-neutral-500 dark:text-slate-400">{t('admin.currentDistribution')}</p>
+            </div>
+            <div className="w-8 h-8 bg-orange-50 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
+              <FileText className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+            </div>
+          </div>
           {requestStatusData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={250}>
+            <ResponsiveContainer width="100%" height={210}>
               <PieChart>
-                <Pie
-                  data={requestStatusData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={55}
-                  outerRadius={90}
-                  paddingAngle={4}
-                  dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                >
+                <Pie data={requestStatusData} cx="50%" cy="50%" innerRadius={52} outerRadius={84} paddingAngle={4} dataKey="value" labelLine={false} label={renderCustomLabel}>
                   {requestStatusData.map((_entry, index) => (
-                    <Cell key={`cell-${index}`} fill={['#f59e0b', '#6366f1', '#22c55e'][index]} />
+                    <Cell key={`cell-${index}`} fill={PIE_COLORS_REQUESTS[index % PIE_COLORS_REQUESTS.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip contentStyle={tooltipStyle} formatter={(value: number, name: string) => [value, name]} />
+                <Legend iconType="circle" iconSize={8} wrapperStyle={legendStyle} formatter={legendFormatter} />
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[250px] flex items-center justify-center text-gray-400">No request data yet</div>
+            <div className="h-[210px] flex items-center justify-center text-neutral-500 dark:text-slate-400 text-sm">No request data yet</div>
           )}
         </Card>
 
-        {/* System Overview Bar Chart */}
-        <Card>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">System Overview</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={overviewBarData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-              <YAxis tick={{ fontSize: 12 }} />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="Total" fill="#0d9488" radius={[4, 4, 0, 0]} />
+        {/* System Overview Bar */}
+        <Card padding="md">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-sm font-bold text-gray-900 dark:text-slate-100">{t('admin.systemOverview')}</h3>
+              <p className="text-xs text-neutral-500 dark:text-slate-400">{t('admin.totalVsActive')}</p>
+            </div>
+            <div className="w-8 h-8 bg-secondary-50 dark:bg-secondary-900/30 rounded-lg flex items-center justify-center">
+              <BarChart3 className="w-4 h-4 text-secondary-600 dark:text-secondary-400" />
+            </div>
+          </div>
+          <ResponsiveContainer width="100%" height={210}>
+            <BarChart data={overviewBarData} barSize={16}>
+              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+              <XAxis dataKey="name" tick={{ fontSize: 11, fill: axisColor }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: axisColor }} axisLine={false} tickLine={false} />
+              <Tooltip contentStyle={tooltipStyle} cursor={tooltipCursor} />
+              <Legend iconType="circle" iconSize={8} wrapperStyle={legendStyle} formatter={legendFormatter} />
+              <Bar dataKey="Total" fill="#009688" radius={[4, 4, 0, 0]} />
               <Bar dataKey="Active" fill="#6366f1" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </Card>
       </div>
 
-      {/* Quick Actions */}
+      {/* ── Growth Trend ─────────────────────────────────────────────── */}
+      <Card padding="md">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-sm font-bold text-gray-900 dark:text-slate-100">{t('admin.platformGrowth')}</h3>
+            <p className="text-xs text-neutral-500 dark:text-slate-400">{t('admin.cumulativeRequests')}</p>
+          </div>
+          <div className="w-8 h-8 bg-green-50 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+            <TrendingUp className="w-4 h-4 text-green-600 dark:text-green-400" />
+          </div>
+        </div>
+        <ResponsiveContainer width="100%" height={180}>
+          <AreaChart data={trendData}>
+            <defs>
+              <linearGradient id="reqGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#009688" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#009688" stopOpacity={0} />
+              </linearGradient>
+              <linearGradient id="asgGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+            <XAxis dataKey="name" tick={{ fontSize: 11, fill: axisColor }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 11, fill: axisColor }} axisLine={false} tickLine={false} />
+            <Tooltip contentStyle={tooltipStyle} cursor={tooltipCursor} />
+            <Legend iconType="circle" iconSize={8} wrapperStyle={legendStyle} formatter={legendFormatter} />
+            <Area type="monotone" dataKey="Requests" stroke="#009688" strokeWidth={2} fill="url(#reqGrad)" />
+            <Area type="monotone" dataKey="Assignments" stroke="#6366f1" strokeWidth={2} fill="url(#asgGrad)" />
+          </AreaChart>
+        </ResponsiveContainer>
+      </Card>
+
+      {/* ── Alerts ───────────────────────────────────────────────────── */}
+      {(stats.pendingRequests > 5 || activeAssignments < stats.pendingRequests) && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {stats.pendingRequests > 5 && (
+            <Link
+              to="/admin/requests?status=PENDING"
+              className="flex items-center gap-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-xl p-4 hover:border-amber-400 dark:hover:border-amber-500 transition-all group"
+            >
+              <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900/40 rounded-xl flex items-center justify-center flex-shrink-0">
+                <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-amber-800 dark:text-amber-300 group-hover:translate-x-0.5 transition-transform">
+                  {stats.pendingRequests} Requests Awaiting Volunteers
+                </p>
+                <p className="text-xs text-amber-600 dark:text-amber-400 mt-0.5">Review and assign volunteers →</p>
+              </div>
+            </Link>
+          )}
+          {activeAssignments < stats.pendingRequests && (
+            <Link
+              to="/admin/users?role=VOLUNTEER"
+              className="flex items-center gap-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/50 rounded-xl p-4 hover:border-blue-400 dark:hover:border-blue-500 transition-all group"
+            >
+              <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/40 rounded-xl flex items-center justify-center flex-shrink-0">
+                <UserCheck className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-blue-800 dark:text-blue-300 group-hover:translate-x-0.5 transition-transform">
+                  More Volunteers Needed
+                </p>
+                <p className="text-xs text-blue-600 dark:text-blue-400 mt-0.5">Pending requests exceed active assignments →</p>
+              </div>
+            </Link>
+          )}
+        </div>
+      )}
+
+      {/* ── Quick Actions ────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card>
-          <div className="flex items-center mb-4">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Users className="w-5 h-5 text-blue-600" />
+        <SectionCard
+          title={t('admin.userManagement')}
+          headerClassName="bg-gradient-to-r from-blue-50 to-transparent dark:from-blue-900/20 dark:to-transparent"
+          headerRight={
+            <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/40 rounded-lg flex items-center justify-center">
+              <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 ml-3">User Management</h3>
+          }
+        >
+          <div className="space-y-2">
+            {[
+              { to: '/admin/users',                label: t('admin.viewAllUsers'),       desc: `${stats.totalUsers} ${t('admin.registeredUsers')}` },
+              { to: '/admin/users?role=VOLUNTEER', label: t('admin.volunteerManagement'), desc: `${stats.totalVolunteers} ${t('admin.volunteers').toLowerCase()}` },
+              { to: '/admin/users?role=CITIZEN',   label: t('admin.citizenManagement'),   desc: `${stats.totalCitizens} ${t('admin.citizens').toLowerCase()}` },
+            ].map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                className="flex items-center justify-between p-3.5 rounded-xl border border-neutral-100 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-sm transition-all duration-200 group"
+              >
+                <div>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-slate-100 group-hover:text-blue-700 dark:group-hover:text-blue-400 group-hover:translate-x-0.5 transition-transform duration-200">{item.label}</p>
+                  <p className="text-xs text-neutral-500 dark:text-slate-400 mt-0.5">{item.desc}</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-neutral-300 dark:text-slate-600 group-hover:text-blue-400" />
+              </Link>
+            ))}
           </div>
-          <div className="space-y-3">
-            <Link to="/admin/users" className="block p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all group">
-              <p className="font-medium text-gray-900 group-hover:text-blue-700">View All Users</p>
-              <p className="text-sm text-gray-500 mt-1">Manage user accounts and permissions</p>
-            </Link>
-            <Link to="/admin/users?role=VOLUNTEER" className="block p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all group">
-              <p className="font-medium text-gray-900 group-hover:text-blue-700">Volunteer Management</p>
-              <p className="text-sm text-gray-500 mt-1">Manage volunteer accounts and skills</p>
-            </Link>
-          </div>
-        </Card>
+        </SectionCard>
 
-        <Card>
-          <div className="flex items-center mb-4">
-            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-              <FileText className="w-5 h-5 text-orange-600" />
+        <SectionCard
+          title={t('admin.requestManagement')}
+          headerClassName="bg-gradient-to-r from-orange-50 to-transparent dark:from-orange-900/10 dark:to-transparent"
+          headerRight={
+            <div className="w-8 h-8 bg-orange-100 dark:bg-orange-900/40 rounded-lg flex items-center justify-center">
+              <FileText className="w-4 h-4 text-orange-600 dark:text-orange-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 ml-3">Request Management</h3>
+          }
+        >
+          <div className="space-y-2">
+            {[
+              { to: '/admin/requests',                label: t('admin.allRequests'),    desc: `${stats.totalRequests} ${t('admin.total')}` },
+              { to: '/admin/requests?status=PENDING', label: t('admin.pendingRequests'), desc: `${stats.pendingRequests} ${t('admin.awaitingVolunteers')}` },
+              { to: '/admin/assignments',             label: t('admin.allAssignments'),  desc: `${stats.totalAssignments} ${t('admin.assignments').toLowerCase()}` },
+            ].map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                className="flex items-center justify-between p-3.5 rounded-xl border border-neutral-100 dark:border-slate-700 hover:border-orange-300 dark:hover:border-orange-600 hover:shadow-sm transition-all duration-200 group"
+              >
+                <div>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-slate-100 group-hover:text-orange-700 dark:group-hover:text-orange-400 group-hover:translate-x-0.5 transition-transform duration-200">{item.label}</p>
+                  <p className="text-xs text-neutral-500 dark:text-slate-400 mt-0.5">{item.desc}</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-neutral-300 dark:text-slate-600 group-hover:text-orange-400" />
+              </Link>
+            ))}
           </div>
-          <div className="space-y-3">
-            <Link to="/admin/requests" className="block p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all group">
-              <p className="font-medium text-gray-900 group-hover:text-blue-700">All Requests</p>
-              <p className="text-sm text-gray-500 mt-1">Monitor and moderate requests</p>
-            </Link>
-            <Link to="/admin/requests?status=PENDING" className="block p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all group">
-              <p className="font-medium text-gray-900 group-hover:text-blue-700">Pending Requests</p>
-              <p className="text-sm text-gray-500 mt-1">Review requests awaiting volunteers</p>
-            </Link>
-          </div>
-        </Card>
+        </SectionCard>
 
-        <Card>
-          <div className="flex items-center mb-4">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <Activity className="w-5 h-5 text-green-600" />
+        <SectionCard
+          title={t('admin.systemSettings')}
+          headerClassName="bg-gradient-to-r from-green-50 to-transparent dark:from-green-900/10 dark:to-transparent"
+          headerRight={
+            <div className="w-8 h-8 bg-green-100 dark:bg-green-900/40 rounded-lg flex items-center justify-center">
+              <Activity className="w-4 h-4 text-green-600 dark:text-green-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 ml-3">System Management</h3>
+          }
+        >
+          <div className="space-y-2">
+            {[
+              { to: '/admin/skills',    icon: Zap,       label: t('admin.skillManagement'),    desc: t('admin.manageSkillCategories'), color: 'text-purple-600 dark:text-purple-400',  hoverBorder: 'hover:border-purple-300 dark:hover:border-purple-600', hoverText: 'group-hover:text-purple-700 dark:group-hover:text-purple-400' },
+              { to: '/admin/locations', icon: MapPin,    label: 'Location Management', desc: 'Manage geographic data',             color: 'text-green-600 dark:text-green-400',    hoverBorder: 'hover:border-green-300 dark:hover:border-green-600',   hoverText: 'group-hover:text-green-700 dark:group-hover:text-green-400' },
+              { to: '/admin/analytics', icon: BarChart3, label: 'Analytics & Reports', desc: 'Full system analytics',              color: 'text-primary-600 dark:text-primary-400', hoverBorder: 'hover:border-primary-300 dark:hover:border-primary-600', hoverText: 'group-hover:text-primary-700 dark:group-hover:text-primary-400' },
+            ].map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={`flex items-center gap-3 p-3.5 rounded-xl border border-neutral-100 dark:border-slate-700 ${item.hoverBorder} hover:shadow-sm transition-all duration-200 group`}
+              >
+                <item.icon className={`w-4 h-4 ${item.color} flex-shrink-0`} />
+                <div className="flex-1 min-w-0">
+                  <p className={`text-sm font-semibold text-gray-900 dark:text-slate-100 ${item.hoverText} group-hover:translate-x-0.5 transition-transform duration-200`}>{item.label}</p>
+                  <p className="text-xs text-neutral-500 dark:text-slate-400 mt-0.5">{item.desc}</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-neutral-300 dark:text-slate-600 group-hover:text-neutral-500" />
+              </Link>
+            ))}
           </div>
-          <div className="space-y-3">
-            <Link to="/admin/skills" className="block p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all group">
-              <p className="font-medium text-gray-900 group-hover:text-blue-700">Skill Management</p>
-              <p className="text-sm text-gray-500 mt-1">Manage volunteer skill categories</p>
-            </Link>
-            <Link to="/admin/locations" className="block p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all group">
-              <p className="font-medium text-gray-900 group-hover:text-blue-700">Location Management</p>
-              <p className="text-sm text-gray-500 mt-1">Manage geographic data</p>
-            </Link>
-          </div>
-        </Card>
+        </SectionCard>
       </div>
     </div>
   );

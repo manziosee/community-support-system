@@ -571,7 +571,7 @@ const RegisterPage: React.FC = () => {
                 {skills.map((skill) => (
                   <label
                     key={skill.skillId}
-                    className="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50"
+                    className="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800"
                   >
                     <input
                       type="checkbox"
