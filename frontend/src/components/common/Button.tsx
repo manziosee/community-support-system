@@ -3,7 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 
 interface ButtonProps {
   children: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'accent' | 'danger' | 'success' | 'outline';
+  variant?: 'primary' | 'secondary' | 'accent' | 'danger' | 'success' | 'outline' | 'create' | 'edit' | 'delete' | 'view' | 'export' | 'analytics';
   size?: 'sm' | 'md' | 'lg';
   icon?: LucideIcon;
   iconPosition?: 'left' | 'right';
@@ -27,63 +27,106 @@ const Button: React.FC<ButtonProps> = ({
   className = '',
 }) => {
   const baseClasses = [
-    'inline-flex items-center justify-center font-bold rounded-xl',
+    'inline-flex items-center justify-center font-semibold rounded-xl',
     'transition-all duration-200 ease-out',
-    'focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-900',
+    'focus:outline-none focus:ring-2 focus:ring-offset-2',
     'active:scale-[0.97]',
     'select-none',
   ].join(' ');
 
   const variantClasses: Record<string, string> = {
+    // Primary — solid black
     primary: [
-      'bg-gradient-to-r from-primary-600 to-primary-500',
-      'hover:from-primary-700 hover:to-primary-600',
-      'text-white font-bold',
-      'shadow-sm hover:shadow-glow hover:-translate-y-0.5',
-      'focus:ring-primary-500',
+      'bg-gray-900 dark:bg-white text-white dark:text-gray-900',
+      'hover:bg-black dark:hover:bg-gray-100 hover:-translate-y-0.5 hover:shadow-lifted',
+      'focus:ring-gray-900',
+      'shadow-crisp',
     ].join(' '),
 
+    // Secondary — outlined B&W
     secondary: [
-      'bg-white dark:bg-slate-700',
-      'hover:bg-primary-50 dark:hover:bg-slate-600',
-      'text-primary-700 dark:text-primary-200 font-bold',
-      'border-2 border-primary-500 dark:border-primary-400',
-      'hover:-translate-y-0.5 hover:border-primary-600 dark:hover:border-primary-300',
-      'shadow-sm focus:ring-primary-400',
+      'bg-white dark:bg-neutral-900 border-2 border-gray-900 dark:border-gray-100 text-gray-900 dark:text-gray-100',
+      'hover:bg-gray-900 dark:hover:bg-white hover:text-white dark:hover:text-gray-900 hover:-translate-y-0.5',
+      'focus:ring-gray-900',
     ].join(' '),
 
+    // Accent — dark gray
     accent: [
-      'bg-gradient-to-r from-secondary-500 to-secondary-600',
-      'hover:from-secondary-600 hover:to-secondary-700',
-      'text-white font-bold',
-      'shadow-sm hover:shadow-glow-secondary hover:-translate-y-0.5',
-      'focus:ring-secondary-400',
+      'bg-gray-700 text-white',
+      'hover:bg-gray-800 hover:-translate-y-0.5 hover:shadow-lifted',
+      'focus:ring-gray-700',
+      'shadow-crisp',
     ].join(' '),
 
+    // Danger — dark gray (semantic severity, not CRUD)
     danger: [
-      'bg-gradient-to-r from-red-600 to-red-500',
-      'hover:from-red-700 hover:to-red-600',
-      'text-white font-bold',
-      'shadow-sm hover:shadow-[0_0_20px_rgba(239,68,68,0.35)] hover:-translate-y-0.5',
-      'focus:ring-red-500',
+      'bg-gray-800 text-white',
+      'hover:bg-black hover:-translate-y-0.5 hover:shadow-lifted',
+      'focus:ring-gray-800',
+      'shadow-crisp',
     ].join(' '),
 
+    // Success — medium gray
     success: [
-      'bg-gradient-to-r from-green-600 to-green-500',
-      'hover:from-green-700 hover:to-green-600',
-      'text-white font-bold',
-      'shadow-sm hover:shadow-[0_0_20px_rgba(34,197,94,0.35)] hover:-translate-y-0.5',
-      'focus:ring-green-500',
+      'bg-gray-600 text-white',
+      'hover:bg-gray-700 hover:-translate-y-0.5 hover:shadow-lifted',
+      'focus:ring-gray-600',
+      'shadow-crisp',
     ].join(' '),
 
+    // Outline — light border
     outline: [
-      'border-2 border-primary-500 dark:border-primary-400',
-      'bg-transparent',
-      'hover:bg-primary-50 dark:hover:bg-primary-900/30',
-      'hover:border-primary-600 dark:hover:border-primary-300',
-      'text-primary-700 dark:text-primary-300 font-bold',
-      'hover:-translate-y-0.5',
-      'focus:ring-primary-400',
+      'border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-neutral-900 text-gray-700 dark:text-gray-200',
+      'hover:border-gray-900 dark:hover:border-gray-100 hover:text-gray-900 dark:hover:text-white hover:-translate-y-0.5',
+      'focus:ring-gray-900',
+    ].join(' '),
+
+    // Create — teal (add / new)
+    create: [
+      'bg-[#0d9488] text-white',
+      'hover:bg-[#0f766e] hover:-translate-y-0.5 hover:shadow-lifted',
+      'focus:ring-[#0d9488]',
+      'shadow-crisp',
+    ].join(' '),
+
+    // Edit — blue (modify)
+    edit: [
+      'bg-[#2563eb] text-white',
+      'hover:bg-[#1d4ed8] hover:-translate-y-0.5 hover:shadow-lifted',
+      'focus:ring-[#2563eb]',
+      'shadow-crisp',
+    ].join(' '),
+
+    // Delete — red (remove)
+    delete: [
+      'bg-[#dc2626] text-white',
+      'hover:bg-[#b91c1c] hover:-translate-y-0.5 hover:shadow-lifted',
+      'focus:ring-[#dc2626]',
+      'shadow-crisp',
+    ].join(' '),
+
+    // View — purple (inspect / read-only)
+    view: [
+      'bg-[#7c3aed] text-white',
+      'hover:bg-[#6d28d9] hover:-translate-y-0.5 hover:shadow-lifted',
+      'focus:ring-[#7c3aed]',
+      'shadow-crisp',
+    ].join(' '),
+
+    // Export — orange (download data)
+    export: [
+      'bg-[#ea580c] text-white',
+      'hover:bg-[#c2410c] hover:-translate-y-0.5 hover:shadow-lifted',
+      'focus:ring-[#ea580c]',
+      'shadow-crisp',
+    ].join(' '),
+
+    // Analytics — indigo (insights / reports)
+    analytics: [
+      'bg-[#4f46e5] text-white',
+      'hover:bg-[#4338ca] hover:-translate-y-0.5 hover:shadow-lifted',
+      'focus:ring-[#4f46e5]',
+      'shadow-crisp',
     ].join(' '),
   };
 
@@ -93,7 +136,7 @@ const Button: React.FC<ButtonProps> = ({
     lg: 'px-7 py-3.5 text-base gap-2',
   };
 
-  const disabledClasses = disabled || loading ? 'opacity-50 cursor-not-allowed pointer-events-none' : '';
+  const disabledClasses = disabled || loading ? 'opacity-40 cursor-not-allowed pointer-events-none' : '';
 
   const classes = [baseClasses, variantClasses[variant], sizeClasses[size], disabledClasses, className]
     .filter(Boolean).join(' ');

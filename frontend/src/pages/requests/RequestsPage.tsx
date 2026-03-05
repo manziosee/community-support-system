@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Eye, Edit, Trash2, FileText, Clock, CheckCircle, Search, Filter, Download } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { requestsApi } from '../../services/api';
 import type { Request } from '../../types';
@@ -14,6 +15,7 @@ import { exportToCSV } from '../../utils/exportUtils';
 import toast from 'react-hot-toast';
 
 const RequestsPage: React.FC = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [requests, setRequests] = useState<Request[]>([]);
   const [filteredRequests, setFilteredRequests] = useState<Request[]>([]);
@@ -87,7 +89,7 @@ const RequestsPage: React.FC = () => {
   }, [requests, statusFilter, searchTerm]);
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm('Are you sure you want to delete this request?')) return;
+    if (!window.confirm(t('requests_confirm_delete'))) return;
     
     try {
       await requestsApi.delete(id);
@@ -113,7 +115,7 @@ const RequestsPage: React.FC = () => {
   };
 
   if (isLoading) {
-    return <LoadingSpinner size="lg" text="Loading your requests..." />;
+    return <LoadingSpinner size="lg" text={t('common_loading')} />;
   }
 
   const getStatusColor = (status: string) => {
@@ -160,20 +162,20 @@ const RequestsPage: React.FC = () => {
       render: (_: any, request: Request) => (
         <div className="flex items-center space-x-2">
           <Link to={`/requests/${request.requestId}`}>
-            <Button size="sm" variant="outline" icon={Eye}>
+            <Button size="sm" variant="view" icon={Eye}>
               View
             </Button>
           </Link>
           {request.status === 'PENDING' && (
             <>
               <Link to={`/requests/${request.requestId}/edit`}>
-                <Button size="sm" variant="outline" icon={Edit}>
+                <Button size="sm" variant="edit" icon={Edit}>
                   Edit
                 </Button>
               </Link>
               <Button
                 size="sm"
-                variant="danger"
+                variant="delete"
                 icon={Trash2}
                 onClick={() => handleDelete(request.requestId)}
               >
@@ -191,13 +193,13 @@ const RequestsPage: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
-          <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">My Requests</h1>
-          <p className="text-sm text-neutral-500 dark:text-slate-400 mt-0.5">Manage your help requests</p>
+          <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">{t('requests_title')}</h1>
+          <p className="text-sm text-neutral-500 dark:text-slate-400 mt-0.5">{t('requests_subtitle')}</p>
         </div>
         <div className="flex items-center gap-2">
           <Button
             type="button"
-            variant="secondary"
+            variant="export"
             icon={Download}
             onClick={() => {
               const rows = filteredRequests.map((r) => ({
@@ -211,23 +213,23 @@ const RequestsPage: React.FC = () => {
             }}
             disabled={filteredRequests.length === 0}
           >
-            Export
+            {t('requests_export')}
           </Button>
           <Link to="/requests/create">
-            <Button icon={Plus}>Create Request</Button>
+            <Button icon={Plus}>{t('requests_create')}</Button>
           </Link>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
           <div className="flex items-center">
             <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
               <FileText className="w-5 h-5 text-blue-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total</p>
+              <p className="text-sm font-medium text-gray-600">{t('requests_total')}</p>
               <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
             </div>
           </div>
@@ -238,7 +240,7 @@ const RequestsPage: React.FC = () => {
               <Clock className="w-5 h-5 text-yellow-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Pending</p>
+              <p className="text-sm font-medium text-gray-600">{t('status_pending')}</p>
               <p className="text-2xl font-bold text-gray-900">{stats.pending}</p>
             </div>
           </div>
@@ -249,7 +251,7 @@ const RequestsPage: React.FC = () => {
               <FileText className="w-5 h-5 text-blue-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Accepted</p>
+              <p className="text-sm font-medium text-gray-600">{t('status_accepted')}</p>
               <p className="text-2xl font-bold text-gray-900">{stats.accepted}</p>
             </div>
           </div>
@@ -260,7 +262,7 @@ const RequestsPage: React.FC = () => {
               <CheckCircle className="w-5 h-5 text-green-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Completed</p>
+              <p className="text-sm font-medium text-gray-600">{t('status_completed')}</p>
               <p className="text-2xl font-bold text-gray-900">{stats.completed}</p>
             </div>
           </div>
@@ -277,7 +279,7 @@ const RequestsPage: React.FC = () => {
             </div>
             <input
               type="text"
-              placeholder="Search requests by title or description..."
+              placeholder={t('requests_search_placeholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="input-field pl-10"
@@ -287,7 +289,7 @@ const RequestsPage: React.FC = () => {
           {/* Filter Buttons */}
           <div className="flex items-center space-x-4">
             <Filter className="w-4 h-4 text-gray-400" />
-            <div className="flex space-x-2">
+            <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setStatusFilter('all')}
                 className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
@@ -296,7 +298,7 @@ const RequestsPage: React.FC = () => {
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                All ({stats.total})
+                {t('requests_all')} ({stats.total})
               </button>
               <button
                 onClick={() => setStatusFilter('PENDING')}
@@ -306,7 +308,7 @@ const RequestsPage: React.FC = () => {
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                Pending ({stats.pending})
+                {t('status_pending')} ({stats.pending})
               </button>
               <button
                 onClick={() => setStatusFilter('ACCEPTED')}
@@ -316,7 +318,7 @@ const RequestsPage: React.FC = () => {
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                Accepted ({stats.accepted})
+                {t('status_accepted')} ({stats.accepted})
               </button>
               <button
                 onClick={() => setStatusFilter('COMPLETED')}
@@ -326,7 +328,7 @@ const RequestsPage: React.FC = () => {
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                Completed ({stats.completed})
+                {t('status_completed')} ({stats.completed})
               </button>
             </div>
             {(searchTerm || statusFilter !== 'all') && (
@@ -337,7 +339,7 @@ const RequestsPage: React.FC = () => {
                 }}
                 className="text-sm text-gray-500 hover:text-gray-700 underline"
               >
-                Clear filters
+                {t('requests_clear_filters')}
               </button>
             )}
           </div>
@@ -349,54 +351,54 @@ const RequestsPage: React.FC = () => {
         {filteredRequests.length === 0 ? (
           <EmptyState
             icon={FileText}
-            title={requests.length === 0 ? "No requests yet" : "No requests found"}
+            title={requests.length === 0 ? t('requests_no_requests') : t('requests_no_match')}
             description={
               requests.length === 0 
-                ? "Create your first request to get help from volunteers"
+                ? t('requests_no_requests_desc')
                 : searchTerm 
-                  ? `No requests match "${searchTerm}"${statusFilter !== 'all' ? ` in ${statusFilter.toLowerCase()} requests` : ''}`
+                  ? `${t('requests_no_match')} "${searchTerm}"${statusFilter !== 'all' ? ` in ${statusFilter.toLowerCase()} requests` : ''}`
                   : `No ${statusFilter === 'all' ? '' : statusFilter.toLowerCase()} requests found`
             }
-            actionLabel={requests.length === 0 ? "Create Request" : undefined}
+            actionLabel={requests.length === 0 ? t('requests_create') : undefined}
             onAction={requests.length === 0 ? () => window.location.href = '/requests/create' : undefined}
           />
         ) : (
           filteredRequests.map((request) => (
             <Card key={request.requestId} hover>
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-3 mb-2">
-                    <FileText className="w-5 h-5 text-gray-400" />
-                    <h3 className="font-semibold text-gray-900">{request.title}</h3>
+              <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <FileText className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                    <h3 className="font-semibold text-gray-900 dark:text-slate-100">{request.title}</h3>
                     <Badge variant={getStatusBadgeVariant(request.status)}>
                       {request.status}
                     </Badge>
                   </div>
-                  <p className="text-gray-600 mb-4">{request.description}</p>
-                  <div className="text-sm text-gray-500">
-                    Created: {new Date(request.createdAt).toLocaleDateString()}
+                  <p className="text-gray-600 dark:text-slate-400 mb-4">{request.description}</p>
+                  <div className="text-sm text-gray-500 dark:text-slate-400">
+                    {t('requests_created')}: {new Date(request.createdAt).toLocaleDateString()}
                   </div>
                 </div>
-                <div className="flex items-center space-x-2 ml-6">
+                <div className="flex flex-wrap items-center gap-1.5 flex-shrink-0">
                   <Link to={`/requests/${request.requestId}`}>
-                    <Button size="sm" variant="secondary" icon={Eye}>
-                      View
+                    <Button size="sm" variant="view" icon={Eye}>
+                      {t('requests_view')}
                     </Button>
                   </Link>
                   {request.status === RequestStatus.PENDING && (
                     <>
                       <Link to={`/requests/${request.requestId}/edit`}>
-                        <Button size="sm" variant="secondary" icon={Edit}>
-                          Edit
+                        <Button size="sm" variant="edit" icon={Edit}>
+                          {t('requests_edit')}
                         </Button>
                       </Link>
                       <Button
                         size="sm"
-                        variant="danger"
+                        variant="delete"
                         icon={Trash2}
                         onClick={() => handleDelete(request.requestId)}
                       >
-                        Delete
+                        {t('requests_delete')}
                       </Button>
                     </>
                   )}

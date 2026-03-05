@@ -1,9 +1,40 @@
-import React, { useState } from 'react';
-import { MessageSquare, Heart, Pin, Plus, Search, Megaphone, Calendar, BookOpen, Star, Users, X } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { MessageSquare, Heart, Pin, Plus, Search, Megaphone, Calendar, BookOpen, Star, Users, X, Send } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import Breadcrumb from '../../components/common/Breadcrumb';
 import { timeAgo } from '../../utils/dateUtils';
 import type { BulletinPost } from '../../types';
+
+interface MockComment {
+  id: string;
+  author: string;
+  text: string;
+  createdAt: string;
+}
+
+const MOCK_COMMENTS: Record<string, MockComment[]> = {
+  '1': [
+    { id: 'c1', author: 'Jean Habimana',   text: 'Count me in! I will bring extra gloves for my team.',          createdAt: '2026-03-01T09:15:00Z' },
+    { id: 'c2', author: 'Marie Mukamana',  text: 'Amazing initiative! Can families also join?',                  createdAt: '2026-03-01T10:30:00Z' },
+    { id: 'c3', author: 'Patrick Niyonzima', text: 'Shared this with our district WhatsApp group. See you there!', createdAt: '2026-03-01T11:00:00Z' },
+  ],
+  '2': [
+    { id: 'c4', author: 'Amina Uwase',     text: 'This is so heartwarming! 100 deliveries is incredible. 🎉',    createdAt: '2026-02-28T15:00:00Z' },
+    { id: 'c5', author: 'Claudine Ingabire', text: 'You all are heroes. Keep up the amazing work!',               createdAt: '2026-02-28T16:20:00Z' },
+  ],
+  '3': [
+    { id: 'c6', author: 'Patrick Niyonzima', text: 'Will there be a recording for those who can\'t attend?',       createdAt: '2026-02-27T11:00:00Z' },
+    { id: 'c7', author: 'Amina Uwase',     text: 'Registered! Looking forward to it.',                           createdAt: '2026-02-27T12:45:00Z' },
+  ],
+  '4': [
+    { id: 'c8', author: 'Jean Habimana',   text: 'Very useful resource, thank you for putting this together!',   createdAt: '2026-02-25T17:00:00Z' },
+  ],
+  '5': [
+    { id: 'c9',  author: 'Marie Mukamana', text: 'I always take a walk and call a friend after tough sessions.', createdAt: '2026-02-24T10:00:00Z' },
+    { id: 'c10', author: 'Amina Uwase',    text: 'Journaling helps me a lot. Great topic to discuss!',           createdAt: '2026-02-24T10:45:00Z' },
+    { id: 'c11', author: 'Jean Habimana',  text: 'We should organize a peer support circle for volunteers.',     createdAt: '2026-02-24T11:30:00Z' },
+  ],
+};
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
 const MOCK_POSTS: BulletinPost[] = [
@@ -40,37 +71,79 @@ const MOCK_POSTS: BulletinPost[] = [
 ];
 
 const CATEGORY_CONFIG: Record<string, { label: string; icon: React.ElementType; bg: string; text: string; border: string }> = {
-  ANNOUNCEMENT:  { label: 'Announcement',  icon: Megaphone,     bg: 'bg-blue-100 dark:bg-blue-900/30',   text: 'text-blue-700 dark:text-blue-400',   border: 'border-blue-200 dark:border-blue-700/40' },
-  EVENT:         { label: 'Event',          icon: Calendar,      bg: 'bg-purple-100 dark:bg-purple-900/30',text: 'text-purple-700 dark:text-purple-400',border: 'border-purple-200 dark:border-purple-700/40' },
-  RESOURCE:      { label: 'Resource',       icon: BookOpen,      bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-700 dark:text-green-400',  border: 'border-green-200 dark:border-green-700/40' },
-  SUCCESS_STORY: { label: 'Success Story',  icon: Star,          bg: 'bg-yellow-100 dark:bg-yellow-900/30',text: 'text-yellow-700 dark:text-yellow-400',border: 'border-yellow-200 dark:border-yellow-700/40' },
-  DISCUSSION:    { label: 'Discussion',     icon: MessageSquare, bg: 'bg-orange-100 dark:bg-orange-900/30',text: 'text-orange-700 dark:text-orange-400',border: 'border-orange-200 dark:border-orange-700/40' },
+  ANNOUNCEMENT:  { label: 'Announcement',  icon: Megaphone,     bg: 'bg-[#eff6ff] dark:bg-[#1e3a5f]/40',  text: 'text-[#1d4ed8] dark:text-[#93c5fd]',  border: 'border-[#bfdbfe] dark:border-[#1d4ed8]/50' },
+  EVENT:         { label: 'Event',          icon: Calendar,      bg: 'bg-[#faf5ff] dark:bg-[#2e1065]/40',  text: 'text-[#7c3aed] dark:text-[#c4b5fd]',  border: 'border-[#e9d5ff] dark:border-[#7c3aed]/50' },
+  RESOURCE:      { label: 'Resource',       icon: BookOpen,      bg: 'bg-[#f0fdf4] dark:bg-[#14532d]/40',  text: 'text-[#15803d] dark:text-[#86efac]',  border: 'border-[#bbf7d0] dark:border-[#15803d]/50' },
+  SUCCESS_STORY: { label: 'Success Story',  icon: Star,          bg: 'bg-[#fffbeb] dark:bg-[#451a03]/40',  text: 'text-[#b45309] dark:text-[#fcd34d]',  border: 'border-[#fde68a] dark:border-[#b45309]/50' },
+  DISCUSSION:    { label: 'Discussion',     icon: MessageSquare, bg: 'bg-[#fff7ed] dark:bg-[#431407]/40',  text: 'text-[#c2410c] dark:text-[#fdba74]',  border: 'border-[#fed7aa] dark:border-[#c2410c]/50' },
 };
+
+const AVATAR_GRADIENTS = [
+  'from-[#0d9488] to-[#6366f1]',
+  'from-[#6366f1] to-[#8b5cf6]',
+  'from-[#f59e0b] to-[#ef4444]',
+  'from-[#10b981] to-[#0d9488]',
+  'from-[#3b82f6] to-[#6366f1]',
+];
+
+const avatarGradient = (name: string) =>
+  AVATAR_GRADIENTS[name.charCodeAt(0) % AVATAR_GRADIENTS.length];
 
 const PostCard: React.FC<{
   post: BulletinPost;
   liked: boolean;
   onLike: () => void;
-}> = ({ post, liked, onLike }) => {
+  currentUserName: string;
+}> = ({ post, liked, onLike, currentUserName }) => {
   const cfg = CATEGORY_CONFIG[post.category] ?? CATEGORY_CONFIG.DISCUSSION;
   const Icon = cfg.icon;
-  const [expanded, setExpanded] = useState(false);
+  const [expanded,       setExpanded]       = useState(false);
+  const [showComments,   setShowComments]   = useState(false);
+  const [comments,       setComments]       = useState<MockComment[]>(MOCK_COMMENTS[post.postId] ?? []);
+  const [newComment,     setNewComment]     = useState('');
+  const [heartBurst,     setHeartBurst]     = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
   const isLong = post.content.length > 200;
 
+  const handleLike = () => {
+    if (!liked) {
+      setHeartBurst(true);
+      setTimeout(() => setHeartBurst(false), 600);
+    }
+    onLike();
+  };
+
+  const handleOpenComments = () => {
+    setShowComments((p) => !p);
+    if (!showComments) setTimeout(() => inputRef.current?.focus(), 150);
+  };
+
+  const handleSendComment = () => {
+    const text = newComment.trim();
+    if (!text) return;
+    setComments((prev) => [
+      ...prev,
+      { id: `new-${Date.now()}`, author: currentUserName, text, createdAt: new Date().toISOString() },
+    ]);
+    setNewComment('');
+  };
+
+  const totalComments = comments.length;
+
   return (
-    <article className={`bg-white dark:bg-slate-800 rounded-xl border shadow-sm transition-all duration-200 hover:shadow-soft overflow-hidden ${post.isPinned ? 'border-primary-200 dark:border-primary-700/40' : 'border-neutral-200 dark:border-slate-700/60'}`}>
+    <article className={`bg-white dark:bg-slate-800 rounded-xl border shadow-sm transition-all duration-200 hover:shadow-soft overflow-hidden ${post.isPinned ? 'border-[#fde68a] dark:border-[#b45309]/40' : 'border-neutral-200 dark:border-slate-700/60'}`}>
       {/* Pin indicator */}
       {post.isPinned && (
-        <div className="bg-primary-50 dark:bg-primary-900/20 px-4 py-1.5 flex items-center gap-1.5 border-b border-primary-100 dark:border-primary-700/30">
-          <Pin className="w-3 h-3 text-primary-500" />
-          <span className="text-xs font-semibold text-primary-600 dark:text-primary-400">Pinned Post</span>
+        <div className="bg-[#fffbeb] dark:bg-[#451a03]/30 px-4 py-1.5 flex items-center gap-1.5 border-b border-[#fde68a] dark:border-[#b45309]/30">
+          <Pin className="w-3 h-3 text-[#d97706]" />
+          <span className="text-xs font-semibold text-[#b45309] dark:text-[#fcd34d]">Pinned Post</span>
         </div>
       )}
 
       <div className="p-5">
         {/* Header */}
         <div className="flex items-start gap-3 mb-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-secondary-600 flex items-center justify-center flex-shrink-0">
+          <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${avatarGradient(post.author.name)} flex items-center justify-center flex-shrink-0`}>
             <span className="text-white font-bold text-sm">{post.author.name.charAt(0)}</span>
           </div>
           <div className="flex-1 min-w-0">
@@ -89,7 +162,7 @@ const PostCard: React.FC<{
           {isLong && !expanded ? `${post.content.slice(0, 200)}…` : post.content}
         </p>
         {isLong && (
-          <button onClick={() => setExpanded((p) => !p)} className="text-xs font-semibold text-primary-600 dark:text-primary-400 mt-1 hover:underline">
+          <button onClick={() => setExpanded((p) => !p)} className="text-xs font-semibold text-[#0d9488] dark:text-[#5eead4] mt-1 hover:underline">
             {expanded ? 'Show less' : 'Read more'}
           </button>
         )}
@@ -107,19 +180,91 @@ const PostCard: React.FC<{
 
         {/* Footer */}
         <div className="flex items-center gap-4 mt-4 pt-3 border-t border-neutral-100 dark:border-slate-700">
+          {/* Love button */}
           <button
-            onClick={onLike}
-            className={`flex items-center gap-1.5 text-sm font-medium transition-all hover:scale-110 active:scale-95 ${liked ? 'text-red-500' : 'text-neutral-500 dark:text-slate-400 hover:text-red-400'}`}
+            onClick={handleLike}
+            className={`relative flex items-center gap-1.5 text-sm font-medium transition-all select-none ${liked ? 'text-[#ef4444]' : 'text-neutral-500 dark:text-slate-400 hover:text-[#ef4444]'}`}
           >
-            <Heart className={`w-4 h-4 transition-all ${liked ? 'fill-current' : ''}`} />
-            <span>{liked ? post.likes + 1 : post.likes}</span>
+            <span className="relative">
+              <Heart
+                className={`w-4 h-4 transition-all duration-200 ${liked ? 'fill-[#ef4444] scale-110' : ''} ${heartBurst ? 'scale-150' : ''}`}
+              />
+              {heartBurst && (
+                <span className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <span className="w-6 h-6 rounded-full bg-[#ef4444]/30 animate-ping absolute" />
+                </span>
+              )}
+            </span>
+            <span className={`tabular-nums transition-all ${liked ? 'font-bold' : ''}`}>
+              {liked ? post.likes + 1 : post.likes}
+            </span>
           </button>
-          <button className="flex items-center gap-1.5 text-sm font-medium text-neutral-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-            <MessageSquare className="w-4 h-4" />
-            <span>{post.comments}</span>
+
+          {/* Comment toggle */}
+          <button
+            onClick={handleOpenComments}
+            className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${showComments ? 'text-[#6366f1]' : 'text-neutral-500 dark:text-slate-400 hover:text-[#6366f1]'}`}
+          >
+            <MessageSquare className={`w-4 h-4 ${showComments ? 'fill-[#6366f1]/20' : ''}`} />
+            <span className="tabular-nums">{totalComments}</span>
+            <span className="text-xs hidden sm:inline">{showComments ? 'Hide' : 'Comment'}</span>
           </button>
         </div>
       </div>
+
+      {/* Comments Section */}
+      {showComments && (
+        <div className="border-t border-neutral-100 dark:border-slate-700 bg-neutral-50 dark:bg-slate-900/50 px-5 py-4 space-y-4">
+          {/* Existing comments */}
+          {comments.length === 0 ? (
+            <p className="text-xs text-neutral-400 dark:text-slate-500 text-center py-2">No comments yet — be the first!</p>
+          ) : (
+            <div className="space-y-3">
+              {comments.map((c) => (
+                <div key={c.id} className="flex gap-2.5">
+                  <div className={`w-7 h-7 rounded-full bg-gradient-to-br ${avatarGradient(c.author)} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                    <span className="text-white font-bold text-xs">{c.author.charAt(0)}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="bg-white dark:bg-slate-800 rounded-xl px-3 py-2 border border-neutral-100 dark:border-slate-700">
+                      <p className="text-xs font-semibold text-gray-900 dark:text-slate-100 mb-0.5">{c.author}</p>
+                      <p className="text-sm text-neutral-700 dark:text-slate-300 leading-snug">{c.text}</p>
+                    </div>
+                    <p className="text-xs text-neutral-400 dark:text-slate-500 mt-1 ml-1">{timeAgo(c.createdAt)}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* New comment input */}
+          <div className="flex gap-2 items-center">
+            <div className={`w-7 h-7 rounded-full bg-gradient-to-br ${avatarGradient(currentUserName)} flex items-center justify-center flex-shrink-0`}>
+              <span className="text-white font-bold text-xs">{currentUserName.charAt(0)}</span>
+            </div>
+            <div className="flex-1 flex items-center gap-2 bg-white dark:bg-slate-800 border border-neutral-200 dark:border-slate-600 rounded-xl px-3 py-2 focus-within:border-[#6366f1] transition-colors">
+              <input
+                ref={inputRef}
+                type="text"
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSendComment()}
+                placeholder="Write a comment…"
+                className="flex-1 text-sm bg-transparent outline-none text-gray-900 dark:text-slate-100 placeholder:text-neutral-400 dark:placeholder:text-slate-500"
+              />
+              <button
+                onClick={handleSendComment}
+                disabled={!newComment.trim()}
+                title="Send comment"
+                aria-label="Send comment"
+                className="text-[#6366f1] disabled:text-neutral-300 dark:disabled:text-slate-600 hover:text-[#4f46e5] transition-colors disabled:cursor-not-allowed"
+              >
+                <Send className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </article>
   );
 };
@@ -158,7 +303,7 @@ const CreatePostModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             <button onClick={onClose} className="flex-1 py-2.5 border border-neutral-200 dark:border-slate-600 rounded-xl text-sm font-semibold hover:bg-neutral-50 dark:hover:bg-slate-700 transition-colors">Cancel</button>
             <button
               disabled={!title.trim() || !content.trim()}
-              className="flex-1 py-2.5 bg-gradient-to-r from-primary-600 to-secondary-600 text-white text-sm font-bold rounded-xl hover:from-primary-700 hover:to-secondary-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 py-2.5 bg-gradient-to-r from-[#0d9488] to-[#6366f1] text-white text-sm font-bold rounded-xl hover:from-[#0f766e] hover:to-[#4f46e5] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={onClose}
             >
               Publish Post
@@ -199,7 +344,7 @@ const BulletinBoardPage: React.FC = () => {
       <Breadcrumb />
 
       {/* Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-600 via-secondary-500 to-purple-600 text-white shadow-soft-lg p-6">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0d9488] via-[#6366f1] to-[#8b5cf6] text-white shadow-soft-lg p-6">
         <div className="dot-grid absolute inset-0 opacity-[0.07]" />
         <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -211,7 +356,7 @@ const BulletinBoardPage: React.FC = () => {
           </div>
           <button
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-2 bg-white text-primary-700 px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-primary-50 hover:scale-105 transition-all flex-shrink-0 shadow-md"
+            className="flex items-center gap-2 bg-white text-[#0d9488] px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-gray-50 hover:scale-105 transition-all flex-shrink-0 shadow-md"
           >
             <Plus className="w-4 h-4" />New Post
           </button>
@@ -239,8 +384,8 @@ const BulletinBoardPage: React.FC = () => {
                 onClick={() => setActiveFilter(f)}
                 className={`px-3 py-2 rounded-xl text-xs font-semibold flex-shrink-0 transition-all ${
                   activeFilter === f
-                    ? 'bg-primary-600 text-white shadow-sm'
-                    : 'bg-white dark:bg-slate-800 border border-neutral-200 dark:border-slate-700 text-neutral-600 dark:text-slate-400 hover:border-primary-300'
+                    ? 'bg-[#0d9488] text-white shadow-sm'
+                    : 'bg-white dark:bg-slate-800 border border-neutral-200 dark:border-slate-700 text-neutral-600 dark:text-slate-400 hover:border-[#0d9488]/50'
                 }`}
               >
                 {f === 'ALL' ? 'All Posts' : cfg?.label ?? f}
@@ -265,6 +410,7 @@ const BulletinBoardPage: React.FC = () => {
               post={post}
               liked={likedPosts.has(post.postId)}
               onLike={() => toggleLike(post.postId)}
+              currentUserName={user?.name ?? 'You'}
             />
           ))
         )}

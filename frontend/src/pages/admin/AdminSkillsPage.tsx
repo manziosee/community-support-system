@@ -162,10 +162,10 @@ const AdminSkillsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Skill Management</h1>
-          <p className="text-gray-600 mt-1">Manage volunteer skill categories and descriptions</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Skill Management</h1>
+          <p className="text-gray-600 dark:text-slate-400 mt-1">Manage volunteer skill categories and descriptions</p>
         </div>
         <Button onClick={handleAddSkill} icon={Plus}>
           Add New Skill
@@ -228,10 +228,10 @@ const AdminSkillsPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center space-x-2 mt-4 pt-4 border-t border-gray-200">
+              <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-slate-700">
                 <Button
                   size="sm"
-                  variant="secondary"
+                  variant="view"
                   icon={Eye}
                   onClick={() => handleViewSkill(skill)}
                 >
@@ -239,7 +239,7 @@ const AdminSkillsPage: React.FC = () => {
                 </Button>
                 <Button
                   size="sm"
-                  variant="secondary"
+                  variant="edit"
                   icon={Edit}
                   onClick={() => handleEditSkill(skill)}
                 >
@@ -247,7 +247,7 @@ const AdminSkillsPage: React.FC = () => {
                 </Button>
                 <Button
                   size="sm"
-                  variant="danger"
+                  variant="delete"
                   icon={Trash2}
                   onClick={() => handleDeleteSkill(skill.skillId)}
                 >
@@ -322,16 +322,16 @@ const AdminSkillsPage: React.FC = () => {
             </div>
             
             <div>
-              <h4 className="font-medium text-gray-900 mb-2">Description</h4>
-              <p className="text-gray-600 bg-gray-50 p-3 rounded-lg">{selectedSkill.description}</p>
+              <h4 className="font-medium text-[#111827] dark:text-slate-100 mb-2">Description</h4>
+              <p className="text-[#374151] dark:text-slate-300 bg-gray-50 dark:bg-slate-700/60 border border-gray-100 dark:border-slate-600/40 p-3 rounded-lg">{selectedSkill.description}</p>
             </div>
-            
-            <div className="bg-blue-50 p-4 rounded-lg">
+
+            <div className="bg-[#dbeafe] dark:bg-[#1e3a5f]/50 border border-[#bfdbfe] dark:border-[#1e40af]/30 p-4 rounded-lg">
               <div className="flex items-center">
-                <Users className="w-5 h-5 text-blue-600 mr-2" />
+                <Users className="w-5 h-5 text-[#2563eb] mr-2" />
                 <div>
-                  <p className="font-medium text-blue-900">Volunteer Usage</p>
-                  <p className="text-sm text-blue-700">This skill is used by volunteers in the system</p>
+                  <p className="font-medium text-[#1e3a8a] dark:text-[#93c5fd]">Volunteer Usage</p>
+                  <p className="text-sm text-[#1d4ed8] dark:text-[#60a5fa]">This skill is used by volunteers in the system</p>
                 </div>
               </div>
             </div>

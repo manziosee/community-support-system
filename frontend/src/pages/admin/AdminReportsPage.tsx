@@ -14,7 +14,7 @@ import StatCard from '../../components/common/StatCard';
 import SectionCard from '../../components/dashboard/SectionCard';
 import { exportToCSV } from '../../utils/exportUtils';
 
-const COLORS = ['#009688', '#3F51B5', '#ff5247', '#CDDC39', '#FFC107', '#E91E63'];
+const COLORS = ['#0d9488', '#6366f1', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6'];
 
 // ─── Mock analytics data ──────────────────────────────────────────────────────
 const MONTHLY_DATA = [
@@ -142,7 +142,7 @@ const AdminReportsPage: React.FC = () => {
       )}
 
       {/* Charts Row 1 */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Monthly Growth */}
         <SectionCard title="Monthly Growth Trend">
           <ResponsiveContainer width="100%" height={220}>
@@ -152,8 +152,8 @@ const AdminReportsPage: React.FC = () => {
               <YAxis tick={{ fontSize: 11 }} />
               <ReTooltip contentStyle={{ borderRadius: 12, border: 'none', boxShadow: '0 8px 32px rgba(0,0,0,0.12)', fontSize: 12 }} />
               <Legend wrapperStyle={{ fontSize: 12 }} />
-              <Line type="monotone" dataKey="requests"    stroke="#009688" strokeWidth={2.5} dot={false} name="Requests" />
-              <Line type="monotone" dataKey="completions" stroke="#3F51B5" strokeWidth={2.5} dot={false} name="Completions" strokeDasharray="5 3" />
+              <Line type="monotone" dataKey="requests"    stroke="#0d9488" strokeWidth={2.5} dot={false} name="Requests" />
+              <Line type="monotone" dataKey="completions" stroke="#6366f1" strokeWidth={2.5} dot={false} name="Completions" strokeDasharray="5 3" />
             </LineChart>
           </ResponsiveContainer>
         </SectionCard>
@@ -166,16 +166,16 @@ const AdminReportsPage: React.FC = () => {
               <XAxis dataKey="month" tick={{ fontSize: 11 }} />
               <YAxis domain={[60, 100]} tick={{ fontSize: 11 }} />
               <ReTooltip contentStyle={{ borderRadius: 12, border: 'none', boxShadow: '0 8px 32px rgba(0,0,0,0.12)', fontSize: 12 }} formatter={(v) => [`${v}%`, 'Retention Rate']} />
-              <Bar dataKey="rate" fill="#009688" radius={[6, 6, 0, 0]} name="Retention" />
+              <Bar dataKey="rate" fill="#0d9488" radius={[6, 6, 0, 0]} name="Retention" />
             </BarChart>
           </ResponsiveContainer>
         </SectionCard>
       </div>
 
       {/* Charts Row 2 */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Category Breakdown */}
-        <div className="xl:col-span-2">
+        <div className="lg:col-span-2">
           <SectionCard title="Requests by Category">
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={CATEGORY_DATA} layout="vertical" margin={{ top: 0, right: 20, bottom: 0, left: 60 }}>
@@ -216,7 +216,7 @@ const AdminReportsPage: React.FC = () => {
             <ReTooltip contentStyle={{ borderRadius: 12, border: 'none', boxShadow: '0 8px 32px rgba(0,0,0,0.12)', fontSize: 12 }} formatter={(v) => [v, 'Requests']} labelFormatter={(l) => `Hour: ${l}`} />
             <Bar dataKey="count" radius={[4, 4, 0, 0]}>
               {PEAK_HOURS.map((entry, index) => (
-                <Cell key={index} fill={entry.hour >= 8 && entry.hour <= 18 ? '#009688' : '#3F51B5'} opacity={0.7 + (entry.count / 50) * 0.3} />
+                <Cell key={index} fill={entry.hour >= 8 && entry.hour <= 18 ? '#0d9488' : '#6366f1'} opacity={0.7 + (entry.count / 50) * 0.3} />
               ))}
             </Bar>
           </BarChart>

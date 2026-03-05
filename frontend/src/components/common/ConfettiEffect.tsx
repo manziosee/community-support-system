@@ -11,7 +11,7 @@ interface Particle {
   shape: 'rect' | 'circle' | 'star';
 }
 
-const COLORS = ['#009688', '#3F51B5', '#ff5247', '#CDDC39', '#FFC107', '#E91E63', '#00BCD4', '#FF9800'];
+const COLORS = ['#000000', '#222222', '#444444', '#666666', '#888888', '#aaaaaa', '#cccccc', '#ffffff'];
 
 function randomBetween(a: number, b: number) {
   return a + Math.random() * (b - a);

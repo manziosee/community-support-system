@@ -56,12 +56,12 @@ const ResetPasswordPage: React.FC = () => {
 
   if (!token) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50 py-12 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black py-12 px-4">
         <div className="max-w-md w-full">
           <Card>
             <div className="text-center">
-              <div className="mx-auto w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-2xl flex items-center justify-center shadow-lg mb-6">
-                <Lock className="w-8 h-8 text-white" />
+              <div className="mx-auto w-16 h-16 bg-gray-900 dark:bg-white rounded-2xl flex items-center justify-center shadow-lg mb-6">
+                <Lock className="w-8 h-8 text-white dark:text-gray-900" />
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
                 Invalid Reset Link
@@ -81,12 +81,12 @@ const ResetPasswordPage: React.FC = () => {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50 py-12 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black py-12 px-4">
         <div className="max-w-md w-full">
           <Card>
             <div className="text-center">
-              <div className="mx-auto w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center shadow-lg mb-6">
-                <CheckCircle className="w-8 h-8 text-white" />
+              <div className="mx-auto w-16 h-16 bg-gray-900 dark:bg-white rounded-2xl flex items-center justify-center shadow-lg mb-6">
+                <CheckCircle className="w-8 h-8 text-white dark:text-gray-900" />
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
                 Password Reset Successfully!
@@ -105,12 +105,12 @@ const ResetPasswordPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50 py-12 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black py-12 px-4">
       <div className="max-w-md w-full">
         <Card>
           <div className="text-center mb-6">
-            <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <Lock className="w-8 h-8 text-white" />
+            <div className="mx-auto w-16 h-16 bg-gray-900 dark:bg-white rounded-2xl flex items-center justify-center shadow-lg">
+              <Lock className="w-8 h-8 text-white dark:text-gray-900" />
             </div>
             <h2 className="mt-4 text-2xl font-bold text-gray-900">
               Reset Your Password
@@ -183,8 +183,8 @@ const ResetPasswordPage: React.FC = () => {
               )}
             </div>
 
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <p className="text-sm text-blue-700">
+            <div className="bg-gray-50 dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 p-4 rounded-lg">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 Your password should be at least 8 characters long and contain a mix of letters, numbers, and symbols.
               </p>
             </div>

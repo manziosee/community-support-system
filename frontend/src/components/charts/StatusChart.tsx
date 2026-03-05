@@ -15,11 +15,11 @@ interface StatusChartProps {
 }
 
 const DEFAULT_COLORS: Record<string, string> = {
-  Pending:   '#f59e0b',
-  Accepted:  '#3b82f6',
-  Completed: '#10b981',
-  Cancelled: '#ef4444',
-  Active:    '#f97316',
+  Pending:   '#555555',
+  Accepted:  '#111111',
+  Completed: '#000000',
+  Cancelled: '#aaaaaa',
+  Active:    '#333333',
 };
 
 const RADIAN = Math.PI / 180;
@@ -186,8 +186,8 @@ const StatusChart: React.FC<StatusChartProps> = ({
             <defs>
               {data.map((entry) => (
                 <linearGradient key={entry.status} id={`bar-grad-${entry.status}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%"   stopColor={colors[entry.status] || '#009688'} stopOpacity={1} />
-                  <stop offset="100%" stopColor={colors[entry.status] || '#009688'} stopOpacity={0.65} />
+                  <stop offset="0%"   stopColor={colors[entry.status] || '#111111'} stopOpacity={1} />
+                  <stop offset="100%" stopColor={colors[entry.status] || '#111111'} stopOpacity={0.65} />
                 </linearGradient>
               ))}
             </defs>

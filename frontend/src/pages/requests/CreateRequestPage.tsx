@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, ArrowLeft } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { requestsApi, api } from '../../services/api';
 import Card from '../../components/common/Card';
@@ -8,6 +9,7 @@ import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
 
 const CreateRequestPage: React.FC = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,15 +61,15 @@ const CreateRequestPage: React.FC = () => {
     const newErrors: {[key: string]: string} = {};
     
     if (!formData.title.trim()) {
-      newErrors.title = 'Title is required';
+      newErrors.title = t('create_request_title_required');
     } else if (formData.title.length < 5) {
-      newErrors.title = 'Title must be at least 5 characters';
+      newErrors.title = t('create_request_title_min');
     }
     
     if (!formData.description.trim()) {
-      newErrors.description = 'Description is required';
+      newErrors.description = t('create_request_description_required');
     } else if (formData.description.length < 20) {
-      newErrors.description = 'Description must be at least 20 characters';
+      newErrors.description = t('create_request_description_min');
     }
     
     setErrors(newErrors);
@@ -97,11 +99,11 @@ const CreateRequestPage: React.FC = () => {
       }
       
       // Show success message and redirect
-      alert('Request created successfully! Volunteers in your area will be notified.');
+      alert(t('create_request_success'));
       navigate('/requests');
     } catch (error) {
       console.error('Failed to create request:', error);
-      alert('Failed to create request. Please try again.');
+      alert(t('create_request_error'));
     } finally {
       setIsSubmitting(false);
     }
@@ -124,11 +126,11 @@ const CreateRequestPage: React.FC = () => {
           icon={ArrowLeft}
           onClick={() => navigate('/requests')}
         >
-          Back to Requests
+          {t('create_request_back')}
         </Button>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Create New Request</h1>
-          <p className="text-gray-600 mt-1">Request help from volunteers in your community</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('create_request_title')}</h1>
+          <p className="text-gray-600 mt-1">{t('create_request_subtitle')}</p>
         </div>
       </div>
 
@@ -141,23 +143,23 @@ const CreateRequestPage: React.FC = () => {
                 <FileText className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">Request Details</h2>
-                <p className="text-sm text-gray-600">Provide clear information about what help you need</p>
+                <h2 className="text-lg font-semibold text-gray-900">{t('create_request_details')}</h2>
+                <p className="text-sm text-gray-600">{t('create_request_details_desc')}</p>
               </div>
             </div>
 
             <Input
-              label="Request Title"
+              label={t('create_request_title_label')}
               value={formData.title}
               onChange={(e) => handleInputChange('title', e.target.value)}
-              placeholder="e.g., Need help with grocery shopping"
+              placeholder={t('create_request_title_placeholder')}
               error={errors.title}
               required
             />
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Category <span className="text-red-500">*</span>
+                {t('create_request_category')} <span className="text-red-500">*</span>
               </label>
               <select
                 className="input-field"
@@ -167,7 +169,7 @@ const CreateRequestPage: React.FC = () => {
                 disabled={isLoadingCategories}
               >
                 {isLoadingCategories ? (
-                  <option value="">Loading categories...</option>
+                  <option value="">{t('create_request_category_loading')}</option>
                 ) : (
                   categories.map(category => (
                     <option key={category.value} value={category.value}>
@@ -180,14 +182,14 @@ const CreateRequestPage: React.FC = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Description <span className="text-red-500">*</span>
+                {t('create_request_description')} <span className="text-red-500">*</span>
               </label>
               <textarea
                 className={`input-field ${errors.description ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''}`}
                 rows={5}
                 value={formData.description}
                 onChange={(e) => handleInputChange('description', e.target.value)}
-                placeholder="Please provide detailed information about what help you need, when you need it, and any specific requirements..."
+                placeholder={t('create_request_description_placeholder')}
                 required
               />
               {errors.description && (
@@ -199,27 +201,27 @@ const CreateRequestPage: React.FC = () => {
             </div>
 
             <div className="bg-blue-50 p-4 rounded-lg">
-              <h3 className="font-medium text-blue-900 mb-2">Your Location</h3>
+              <h3 className="font-medium text-blue-900 mb-2">{t('create_request_your_location')}</h3>
               <div className="text-sm text-blue-800">
-                <p><span className="font-medium">District:</span> {user?.district || user?.location?.district}</p>
-                <p><span className="font-medium">Province:</span> {user?.province || user?.location?.province}</p>
-                {user?.sector && <p><span className="font-medium">Sector:</span> {user.sector}</p>}
-                {user?.cell && <p><span className="font-medium">Cell:</span> {user.cell}</p>}
-                {user?.village && <p><span className="font-medium">Village:</span> {user.village}</p>}
+                <p><span className="font-medium">{t('create_request_location_district')}:</span> {user?.district || user?.location?.district}</p>
+                <p><span className="font-medium">{t('create_request_location_province')}:</span> {user?.province || user?.location?.province}</p>
+                {user?.sector && <p><span className="font-medium">{t('create_request_location_sector')}:</span> {user.sector}</p>}
+                {user?.cell && <p><span className="font-medium">{t('create_request_location_cell')}:</span> {user.cell}</p>}
+                {user?.village && <p><span className="font-medium">{t('create_request_location_village')}:</span> {user.village}</p>}
               </div>
               <p className="text-xs text-blue-700 mt-2">
-                Volunteers in your area will be notified about this request
+                {t('create_request_location_note')}
               </p>
             </div>
 
             <div className="bg-yellow-50 p-4 rounded-lg">
-              <h3 className="font-medium text-yellow-900 mb-2">Tips for a Good Request</h3>
+              <h3 className="font-medium text-yellow-900 mb-2">{t('create_request_tips_title')}</h3>
               <ul className="text-sm text-yellow-800 space-y-1">
-                <li>• Be specific about what help you need</li>
-                <li>• Include when you need the help (date/time)</li>
-                <li>• Mention any special requirements or preferences</li>
-                <li>• Provide your contact information if comfortable</li>
-                <li>• Be respectful and appreciative of volunteers' time</li>
+                <li>• {t('create_request_tip1')}</li>
+                <li>• {t('create_request_tip2')}</li>
+                <li>• {t('create_request_tip3')}</li>
+                <li>• {t('create_request_tip4')}</li>
+                <li>• {t('create_request_tip5')}</li>
               </ul>
             </div>
 
@@ -229,14 +231,14 @@ const CreateRequestPage: React.FC = () => {
                 variant="secondary"
                 onClick={() => navigate('/requests')}
               >
-                Cancel
+                {t('create_request_cancel')}
               </Button>
               <Button
                 type="submit"
                 loading={isSubmitting}
                 disabled={isSubmitting || !formData.title.trim() || !formData.description.trim()}
               >
-                Create Request
+                {t('create_request_submit')}
               </Button>
             </div>
           </form>

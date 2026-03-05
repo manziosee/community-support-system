@@ -107,7 +107,7 @@ const SettingsPage: React.FC = () => {
     <div className="max-w-4xl mx-auto p-6 space-y-8">
       {/* Header */}
       <div className="flex items-center space-x-3">
-        <div className="w-10 h-10 bg-gradient-to-br from-sky-400 to-sky-600 rounded-xl flex items-center justify-center">
+        <div className="w-10 h-10 bg-gradient-to-br from-gray-700 to-gray-900 rounded-xl flex items-center justify-center">
           <Settings className="w-5 h-5 text-white" />
         </div>
         <div>
@@ -118,9 +118,9 @@ const SettingsPage: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Profile Settings */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white dark:bg-neutral-900 rounded-xl shadow-sm border border-gray-200 dark:border-neutral-700 p-6">
           <div className="flex items-center space-x-2 mb-6">
-            <User className="w-5 h-5 text-sky-600" />
+            <User className="w-5 h-5 text-gray-500 dark:text-gray-400" />
             <h2 className="text-lg font-semibold text-gray-900">Profile Information</h2>
           </div>
           
@@ -193,9 +193,9 @@ const SettingsPage: React.FC = () => {
         </div>
 
         {/* Password Settings */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white dark:bg-neutral-900 rounded-xl shadow-sm border border-gray-200 dark:border-neutral-700 p-6">
           <div className="flex items-center space-x-2 mb-6">
-            <Lock className="w-5 h-5 text-sky-600" />
+            <Lock className="w-5 h-5 text-gray-500 dark:text-gray-400" />
             <h2 className="text-lg font-semibold text-gray-900">Change Password</h2>
           </div>
           
@@ -249,10 +249,10 @@ const SettingsPage: React.FC = () => {
         </div>
 
         {/* Notification Settings */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:col-span-2">
+        <div className="bg-white dark:bg-neutral-900 rounded-xl shadow-sm border border-gray-200 dark:border-neutral-700 p-6 lg:col-span-2">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-2">
-              <Bell className="w-5 h-5 text-sky-600" />
+              <Bell className="w-5 h-5 text-gray-500 dark:text-gray-400" />
               <h2 className="text-lg font-semibold text-gray-900">Notification Preferences</h2>
             </div>
             <Button onClick={handleNotificationUpdate} loading={isLoading}>
@@ -275,7 +275,7 @@ const SettingsPage: React.FC = () => {
                     onChange={(e) => setSettings({ ...settings, emailNotifications: e.target.checked })}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-sky-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"></div>
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gray-400 dark:peer-focus:ring-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gray-900 dark:peer-checked:bg-gray-100"></div>
                 </label>
               </div>
               
@@ -291,7 +291,7 @@ const SettingsPage: React.FC = () => {
                     onChange={(e) => setSettings({ ...settings, requestUpdates: e.target.checked })}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-sky-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"></div>
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gray-400 dark:peer-focus:ring-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gray-900 dark:peer-checked:bg-gray-100"></div>
                 </label>
               </div>
             </div>
@@ -309,7 +309,7 @@ const SettingsPage: React.FC = () => {
                     onChange={(e) => setSettings({ ...settings, pushNotifications: e.target.checked })}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-sky-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"></div>
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gray-400 dark:peer-focus:ring-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gray-900 dark:peer-checked:bg-gray-100"></div>
                 </label>
               </div>
               
@@ -325,7 +325,7 @@ const SettingsPage: React.FC = () => {
                     onChange={(e) => setSettings({ ...settings, assignmentUpdates: e.target.checked })}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-sky-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"></div>
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gray-400 dark:peer-focus:ring-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gray-900 dark:peer-checked:bg-gray-100"></div>
                 </label>
               </div>
             </div>
@@ -333,9 +333,9 @@ const SettingsPage: React.FC = () => {
         </div>
 
         {/* Language Settings */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:col-span-2">
+        <div className="bg-white dark:bg-neutral-900 rounded-xl shadow-sm border border-gray-200 dark:border-neutral-700 p-6 lg:col-span-2">
           <div className="flex items-center space-x-2 mb-6">
-            <Globe className="w-5 h-5 text-sky-600" />
+            <Globe className="w-5 h-5 text-gray-500 dark:text-gray-400" />
             <h2 className="text-lg font-semibold text-gray-900">Language Preferences</h2>
           </div>
           <p className="text-sm text-gray-600 mb-4">

@@ -53,24 +53,24 @@ const EmailVerificationPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
-        <div className="bg-white rounded-2xl shadow-xl p-8 space-y-8 text-center">
+        <div className="bg-white dark:bg-neutral-900 rounded-2xl shadow-xl border border-gray-100 dark:border-neutral-800 p-8 space-y-8 text-center">
           {/* Status Icon */}
           <div className="flex justify-center">
             {status === 'loading' && (
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-                <Loader className="w-8 h-8 text-blue-600 animate-spin" />
+              <div className="w-16 h-16 bg-gray-100 dark:bg-neutral-800 rounded-full flex items-center justify-center">
+                <Loader className="w-8 h-8 text-gray-600 dark:text-gray-300 animate-spin" />
               </div>
             )}
             {status === 'success' && (
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                <CheckCircle className="w-8 h-8 text-green-600" />
+              <div className="w-16 h-16 bg-gray-900 dark:bg-white rounded-full flex items-center justify-center">
+                <CheckCircle className="w-8 h-8 text-white dark:text-gray-900" />
               </div>
             )}
             {status === 'error' && (
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
-                <XCircle className="w-8 h-8 text-red-600" />
+              <div className="w-16 h-16 bg-gray-200 dark:bg-neutral-700 rounded-full flex items-center justify-center">
+                <XCircle className="w-8 h-8 text-gray-900 dark:text-gray-100" />
               </div>
             )}
           </div>

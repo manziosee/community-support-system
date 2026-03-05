@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Heart, Users, MapPin, CheckCircle, ArrowRight, Shield,
   Award, Globe, Sparkles, TrendingUp, HandHeart,
   FileText, Star, Clock,
 } from 'lucide-react';
 import Logo from '../components/common/Logo';
+import { AVAILABLE_LANGUAGES } from '../contexts/LanguageContext';
 
 // ─── Mock Data ───────────────────────────────────────────────────────────────
 const testimonials = [
@@ -15,7 +17,7 @@ const testimonials = [
     name: 'Amara Mutesi',
     role: 'Citizen, Kigali',
     initials: 'AM',
-    gradient: 'from-primary-500 to-primary-700',
+    gradient: 'from-[#0d9488] to-[#0f766e]',
   },
   {
     quote:
@@ -23,7 +25,7 @@ const testimonials = [
     name: 'Jean-Paul Nkurunziza',
     role: 'Volunteer, Huye',
     initials: 'JN',
-    gradient: 'from-secondary-500 to-secondary-700',
+    gradient: 'from-[#6366f1] to-[#4f46e5]',
   },
   {
     quote:
@@ -31,7 +33,7 @@ const testimonials = [
     name: 'Christine Uwase',
     role: 'Community Admin, Musanze',
     initials: 'CU',
-    gradient: 'from-primary-600 to-secondary-600',
+    gradient: 'from-[#f59e0b] to-[#6366f1]',
   },
 ];
 
@@ -39,26 +41,23 @@ const steps = [
   {
     step: '01',
     icon: Users,
-    title: 'Create an Account',
-    description:
-      'Register as a citizen who needs help or a volunteer ready to assist. Choose your district and set up your profile in minutes.',
-    gradient: 'from-primary-500 to-primary-700',
+    titleKey: 'landing_step1_title',
+    descKey: 'landing_step1_desc',
+    gradient: 'from-[#0d9488] to-[#0f766e]',
   },
   {
     step: '02',
     icon: FileText,
-    title: 'Post or Browse',
-    description:
-      'Citizens post requests describing what they need. Volunteers browse available requests filtered by location and skill set.',
-    gradient: 'from-secondary-500 to-secondary-700',
+    titleKey: 'landing_step2_title',
+    descKey: 'landing_step2_desc',
+    gradient: 'from-[#6366f1] to-[#4f46e5]',
   },
   {
     step: '03',
     icon: Heart,
-    title: 'Connect & Help',
-    description:
-      'Volunteers accept requests, complete tasks, and both parties confirm completion—building community one act of kindness at a time.',
-    gradient: 'from-primary-500 to-secondary-600',
+    titleKey: 'landing_step3_title',
+    descKey: 'landing_step3_desc',
+    gradient: 'from-[#f59e0b] to-[#d97706]',
   },
 ];
 
@@ -66,12 +65,12 @@ const roles = [
   {
     badge: 'For Citizens',
     icon: Users,
-    gradient: 'from-primary-500 to-primary-700',
-    bg: 'bg-primary-50',
-    border: 'border-primary-100',
-    iconBg: 'bg-primary-100',
-    iconColor: 'text-primary-600',
-    badgeColor: 'bg-primary-100 text-primary-700',
+    gradient: 'from-[#0d9488] to-[#0f766e]',
+    bg: 'bg-gray-50 dark:bg-neutral-900',
+    border: 'border-gray-200 dark:border-neutral-700',
+    iconBg: 'bg-[#eff6ff] dark:bg-neutral-800',
+    iconColor: 'text-[#2563eb] dark:text-[#93c5fd]',
+    badgeColor: 'bg-[#eff6ff] dark:bg-neutral-800 text-[#1d4ed8] dark:text-[#93c5fd]',
     title: 'Get the Help You Need',
     description:
       'Post requests for any kind of assistance and get matched with skilled volunteers in your local area.',
@@ -81,12 +80,12 @@ const roles = [
   {
     badge: 'For Volunteers',
     icon: Heart,
-    gradient: 'from-secondary-500 to-secondary-700',
-    bg: 'bg-secondary-50',
-    border: 'border-secondary-100',
-    iconBg: 'bg-secondary-100',
-    iconColor: 'text-secondary-600',
-    badgeColor: 'bg-secondary-100 text-secondary-700',
+    gradient: 'from-[#6366f1] to-[#4f46e5]',
+    bg: 'bg-gray-50 dark:bg-neutral-900',
+    border: 'border-gray-200 dark:border-neutral-700',
+    iconBg: 'bg-[#faf5ff] dark:bg-neutral-800',
+    iconColor: 'text-[#7c3aed] dark:text-[#c4b5fd]',
+    badgeColor: 'bg-[#faf5ff] dark:bg-neutral-800 text-[#7c3aed] dark:text-[#c4b5fd]',
     title: 'Make a Real Impact',
     description:
       'Browse requests that match your skills and schedule. Help your neighbors and build a stronger, more connected community.',
@@ -97,11 +96,11 @@ const roles = [
     badge: 'For Admins',
     icon: Award,
     gradient: 'from-gray-700 to-gray-900',
-    bg: 'bg-gray-50',
-    border: 'border-gray-200',
-    iconBg: 'bg-gray-100',
-    iconColor: 'text-gray-600',
-    badgeColor: 'bg-gray-100 text-gray-700',
+    bg: 'bg-gray-50 dark:bg-neutral-900',
+    border: 'border-gray-200 dark:border-neutral-700',
+    iconBg: 'bg-gray-100 dark:bg-neutral-800',
+    iconColor: 'text-gray-600 dark:text-gray-300',
+    badgeColor: 'bg-gray-100 dark:bg-neutral-800 text-gray-700 dark:text-gray-300',
     title: 'Manage with Clarity',
     description:
       'Full visibility into your community\'s support network. Manage users, monitor requests, and view analytics from one dashboard.',
@@ -123,8 +122,10 @@ const services = [
 
 // ─── Component ────────────────────────────────────────────────────────────────
 const LandingPage: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const statsRef = useRef<HTMLDivElement>(null);
   const [statsVisible, setStatsVisible] = useState(false);
+  const [showLangMenu, setShowLangMenu] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -141,30 +142,54 @@ const LandingPage: React.FC = () => {
       {/* ═══════════════════════════════════════════
           HEADER
       ═══════════════════════════════════════════ */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-neutral-100 shadow-sm">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-black/90 backdrop-blur-xl border-b border-neutral-100 dark:border-neutral-800 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Logo size="sm" />
             <nav className="hidden md:flex items-center gap-8">
-              <a href="#how-it-works" className="text-sm font-medium text-neutral-600 hover:text-primary-600 transition-colors">
-                How It Works
+              <a href="#how-it-works" className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-black dark:hover:text-white transition-colors">
+                {t('landing_how_it_works')}
               </a>
-              <a href="#services" className="text-sm font-medium text-neutral-600 hover:text-primary-600 transition-colors">
-                Services
+              <a href="#services" className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-black dark:hover:text-white transition-colors">
+                {t('landing_features')}
               </a>
-              <a href="#community" className="text-sm font-medium text-neutral-600 hover:text-primary-600 transition-colors">
-                Community
+              <a href="#community" className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-black dark:hover:text-white transition-colors">
+                {t('section_community')}
               </a>
             </nav>
             <div className="flex items-center gap-3">
+              {/* Language Switcher */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowLangMenu(!showLangMenu)}
+                  className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors"
+                  title={t('common_language')}
+                >
+                  <Globe className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+                </button>
+                {showLangMenu && (
+                  <div className="absolute right-0 mt-2 w-44 bg-white dark:bg-neutral-800 rounded-xl shadow-lg border border-gray-200 dark:border-neutral-700 py-2 z-50">
+                    {AVAILABLE_LANGUAGES.map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => { i18n.changeLanguage(lang.code); setShowLangMenu(false); }}
+                        className={`flex items-center gap-3 w-full px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 dark:hover:bg-neutral-700 ${lang.code === i18n.language ? 'text-gray-900 dark:text-white font-bold' : 'text-gray-600 dark:text-gray-300'}`}
+                      >
+                        <span className="text-lg">{lang.flag}</span>
+                        <span>{lang.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
               <Link to="/login">
-                <button className="text-sm font-semibold text-neutral-700 hover:text-primary-600 transition-colors px-4 py-2 rounded-lg hover:bg-primary-50">
-                  Sign In
+                <button className="text-sm font-semibold text-gray-800 dark:text-gray-100 hover:text-black dark:hover:text-white transition-colors px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-800">
+                  {t('action_login')}
                 </button>
               </Link>
               <Link to="/register">
-                <button className="text-sm font-bold bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-xl transition-all duration-200 shadow-sm hover:shadow-soft">
-                  Get Started
+                <button className="text-sm font-bold bg-gray-900 dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-gray-900 px-5 py-2.5 rounded-xl transition-all duration-200 shadow-sm hover:shadow-soft">
+                  {t('action_get_started')}
                 </button>
               </Link>
             </div>
@@ -176,17 +201,16 @@ const LandingPage: React.FC = () => {
           HERO
       ═══════════════════════════════════════════ */}
       <section className="relative min-h-screen flex items-center overflow-hidden pt-16">
-        {/* Aurora background */}
+        {/* Clean monochrome background */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-white via-primary-50/60 to-secondary-50/40" />
-          <div className="absolute -top-20 left-1/4 w-[700px] h-[700px] bg-primary-300/20 rounded-full filter blur-[140px] animate-pulse-slow" />
-          <div className="absolute top-40 right-0 w-[500px] h-[500px] bg-secondary-300/20 rounded-full filter blur-[120px] animate-pulse-slow" style={{ animationDelay: '1.5s' }} />
-          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-accent-300/10 rounded-full filter blur-[100px] animate-pulse-slow" style={{ animationDelay: '3s' }} />
+          <div className="absolute inset-0 bg-white dark:bg-black" />
+          <div className="absolute -top-20 left-1/4 w-[700px] h-[700px] bg-gray-100 dark:bg-gray-900 rounded-full filter blur-[140px] animate-pulse-slow opacity-60" />
+          <div className="absolute top-40 right-0 w-[500px] h-[500px] bg-gray-100 dark:bg-gray-900 rounded-full filter blur-[120px] animate-pulse-slow opacity-40" style={{ animationDelay: '1.5s' }} />
           {/* Dot grid overlay */}
           <div
             className="absolute inset-0"
             style={{
-              backgroundImage: 'radial-gradient(circle, #00968818 1px, transparent 1px)',
+              backgroundImage: 'radial-gradient(circle, rgba(0,0,0,0.08) 1px, transparent 1px)',
               backgroundSize: '36px 36px',
             }}
           />
@@ -198,39 +222,32 @@ const LandingPage: React.FC = () => {
             {/* ── Left: Content ── */}
             <div className="animate-fade-in">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-primary-50 border border-primary-200 text-primary-700 px-4 py-2 rounded-full text-sm font-semibold mb-8 animate-slide-down">
+              <div className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-full text-sm font-semibold mb-8 animate-slide-down">
                 <Sparkles className="w-4 h-4" />
                 Rwanda's #1 Community Support Platform
               </div>
 
               {/* Heading */}
-              <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.1] mb-6 animate-slide-up">
-                <span className="bg-gradient-to-r from-primary-600 via-primary-500 to-secondary-500 bg-clip-text text-transparent">
-                  Build Stronger
-                </span>
-                <br />
-                <span className="text-gray-900">Communities</span>
-                <br />
-                <span className="text-gray-900">Together</span>
+              <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.1] mb-6 animate-slide-up text-gray-900 dark:text-white">
+                {t('landing_hero_title')}
               </h1>
 
               {/* Subtitle */}
               <p className="text-xl text-neutral-600 mb-10 leading-relaxed max-w-xl animate-slide-up" style={{ animationDelay: '0.1s' }}>
-                Connect volunteers and citizens across Rwanda. Request help, offer support,
-                and make a real difference in your community—one act at a time.
+                {t('landing_hero_subtitle')}
               </p>
 
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row gap-4 mb-12 animate-slide-up" style={{ animationDelay: '0.2s' }}>
                 <Link to="/register">
-                  <button className="inline-flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-xl text-lg font-bold shadow-soft hover:shadow-glow transition-all duration-300 w-full sm:w-auto">
-                    Join as Volunteer
+                  <button className="inline-flex items-center justify-center gap-2 bg-gray-900 dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-gray-900 px-8 py-4 rounded-xl text-lg font-bold shadow-soft transition-all duration-300 w-full sm:w-auto hover:-translate-y-0.5">
+                    {t('landing_for_volunteers')}
                     <ArrowRight className="w-5 h-5" />
                   </button>
                 </Link>
                 <Link to="/register">
-                  <button className="inline-flex items-center justify-center gap-2 bg-white hover:bg-neutral-50 text-primary-700 border-2 border-primary-200 hover:border-primary-400 px-8 py-4 rounded-xl text-lg font-bold shadow-sm transition-all duration-300 w-full sm:w-auto">
-                    Request Help
+                  <button className="inline-flex items-center justify-center gap-2 bg-white dark:bg-transparent text-gray-900 dark:text-white border-2 border-gray-900 dark:border-white hover:bg-gray-900 dark:hover:bg-white hover:text-white dark:hover:text-gray-900 px-8 py-4 rounded-xl text-lg font-bold shadow-sm transition-all duration-300 w-full sm:w-auto hover:-translate-y-0.5">
+                    {t('landing_for_citizens')}
                   </button>
                 </Link>
               </div>
@@ -238,12 +255,12 @@ const LandingPage: React.FC = () => {
               {/* Trust indicators */}
               <div className="flex flex-wrap gap-6 text-sm text-neutral-600 animate-fade-in" style={{ animationDelay: '0.4s' }}>
                 {[
-                  { icon: CheckCircle, label: 'Verified Volunteers', color: 'text-primary-500' },
-                  { icon: Shield, label: 'Secure Platform', color: 'text-secondary-500' },
-                  { icon: Globe, label: 'All 30 Districts', color: 'text-primary-400' },
+                  { icon: CheckCircle, label: 'Verified Volunteers' },
+                  { icon: Shield, label: 'Secure Platform' },
+                  { icon: Globe, label: 'All 30 Districts' },
                 ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <item.icon className={`w-5 h-5 ${item.color}`} />
+                  <div key={i} className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                    <item.icon className="w-5 h-5" />
                     <span className="font-medium">{item.label}</span>
                   </div>
                 ))}
@@ -254,49 +271,49 @@ const LandingPage: React.FC = () => {
             <div className="relative hidden lg:flex items-center justify-center min-h-[540px]">
               {/* Central brand illustration */}
               <div className="relative w-64 h-64 z-10">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary-300/40 to-secondary-400/30 rounded-3xl -rotate-6 scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-secondary-600 rounded-3xl flex items-center justify-center shadow-glow rotate-3 hover:rotate-0 transition-transform duration-700 group">
+                <div className="absolute inset-0 bg-gray-100 rounded-3xl -rotate-6 scale-105" />
+                <div className="absolute inset-0 bg-gray-900 rounded-3xl flex items-center justify-center shadow-glow rotate-3 hover:rotate-0 transition-transform duration-700 group">
                   <HandHeart className="w-28 h-28 text-white opacity-90 group-hover:scale-110 transition-transform duration-500" />
                 </div>
               </div>
 
               {/* Floating Card: Active Volunteers */}
-              <div className="absolute top-6 right-0 bg-white/95 backdrop-blur-md rounded-2xl shadow-soft-lg border border-neutral-100 p-4 flex items-center gap-3 animate-float z-20">
-                <div className="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Users className="w-5 h-5 text-primary-600" />
+              <div className="absolute top-6 right-0 bg-white dark:bg-neutral-900 rounded-2xl shadow-soft-lg border border-gray-100 dark:border-neutral-700 p-4 flex items-center gap-3 animate-float z-20">
+                <div className="w-10 h-10 bg-[#eff6ff] rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Users className="w-5 h-5 text-[#2563eb]" />
                 </div>
                 <div>
                   <p className="text-xl font-display font-bold text-gray-900 leading-tight">500+</p>
-                  <p className="text-xs text-neutral-500">Active Volunteers</p>
+                  <p className="text-xs text-gray-500">Active Volunteers</p>
                 </div>
               </div>
 
               {/* Floating Card: Requests Completed */}
-              <div className="absolute bottom-8 right-0 bg-white/95 backdrop-blur-md rounded-2xl shadow-soft-lg border border-neutral-100 p-4 flex items-center gap-3 z-20" style={{ animation: 'float 6s ease-in-out 2s infinite' }}>
-                <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <CheckCircle className="w-5 h-5 text-green-600" />
+              <div className="absolute bottom-8 right-0 bg-white dark:bg-neutral-900 rounded-2xl shadow-soft-lg border border-gray-100 dark:border-neutral-700 p-4 flex items-center gap-3 z-20" style={{ animation: 'float 6s ease-in-out 2s infinite' }}>
+                <div className="w-10 h-10 bg-[#0d9488] rounded-xl flex items-center justify-center flex-shrink-0">
+                  <CheckCircle className="w-5 h-5 text-white" />
                 </div>
                 <div>
                   <p className="text-xl font-display font-bold text-gray-900 leading-tight">2,000+</p>
-                  <p className="text-xs text-neutral-500">Requests Completed</p>
+                  <p className="text-xs text-gray-500">Requests Completed</p>
                 </div>
               </div>
 
               {/* Floating Card: Districts */}
-              <div className="absolute top-1/2 -translate-y-1/2 left-0 bg-white/95 backdrop-blur-md rounded-2xl shadow-soft-lg border border-neutral-100 p-4 flex items-center gap-3 z-20" style={{ animation: 'float 6s ease-in-out 1s infinite' }}>
-                <div className="w-10 h-10 bg-secondary-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-5 h-5 text-secondary-600" />
+              <div className="absolute top-1/2 -translate-y-1/2 left-0 bg-white dark:bg-neutral-900 rounded-2xl shadow-soft-lg border border-gray-100 dark:border-neutral-700 p-4 flex items-center gap-3 z-20" style={{ animation: 'float 6s ease-in-out 1s infinite' }}>
+                <div className="w-10 h-10 bg-[#f0fdf4] rounded-xl flex items-center justify-center flex-shrink-0">
+                  <MapPin className="w-5 h-5 text-[#16a34a]" />
                 </div>
                 <div>
                   <p className="text-xl font-display font-bold text-gray-900 leading-tight">30</p>
-                  <p className="text-xs text-neutral-500">Districts Covered</p>
+                  <p className="text-xs text-gray-500">Districts Covered</p>
                 </div>
               </div>
 
               {/* Floating Card: Active Users */}
-              <div className="absolute top-4 left-0 bg-white/95 backdrop-blur-md rounded-2xl shadow-soft-lg border border-neutral-100 p-4 flex items-center gap-3 z-20" style={{ animation: 'float 6s ease-in-out 3s infinite' }}>
-                <div className="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <TrendingUp className="w-5 h-5 text-yellow-600" />
+              <div className="absolute top-4 left-0 bg-white dark:bg-neutral-900 rounded-2xl shadow-soft-lg border border-gray-100 dark:border-neutral-700 p-4 flex items-center gap-3 z-20" style={{ animation: 'float 6s ease-in-out 3s infinite' }}>
+                <div className="w-10 h-10 bg-[#8b5cf6] rounded-xl flex items-center justify-center flex-shrink-0">
+                  <TrendingUp className="w-5 h-5 text-white" />
                 </div>
                 <div>
                   <p className="text-xl font-display font-bold text-gray-900 leading-tight">1,000+</p>
@@ -326,10 +343,10 @@ const LandingPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x-0 md:divide-x divide-neutral-800">
             {[
-              { value: '1,000+', label: 'Active Users', color: 'text-primary-400', icon: Users },
-              { value: '500+', label: 'Volunteers', color: 'text-secondary-400', icon: Award },
-              { value: '2,000+', label: 'Requests Completed', color: 'text-green-400', icon: CheckCircle },
-              { value: '30', label: 'Districts Covered', color: 'text-yellow-400', icon: MapPin },
+              { value: '1,000+', label: t('landing_stats_users'), color: 'text-gray-200', icon: Users },
+              { value: '500+', label: t('landing_stats_volunteers'), color: 'text-gray-300', icon: Award },
+              { value: '2,000+', label: t('landing_stats_requests'), color: 'text-white', icon: CheckCircle },
+              { value: '30', label: t('nav_locations'), color: 'text-gray-200', icon: MapPin },
             ].map((stat, i) => (
               <div
                 key={i}
@@ -348,14 +365,14 @@ const LandingPage: React.FC = () => {
       {/* ═══════════════════════════════════════════
           HOW IT WORKS
       ═══════════════════════════════════════════ */}
-      <section id="how-it-works" className="py-24 bg-neutral-50">
+      <section id="how-it-works" className="py-24 bg-neutral-50 dark:bg-neutral-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <span className="inline-block bg-primary-50 border border-primary-200 text-primary-700 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
+            <span className="inline-block bg-gray-100 dark:bg-neutral-800 border border-gray-300 dark:border-neutral-600 text-gray-800 dark:text-gray-100 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
               Simple Process
             </span>
             <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              How It Works
+              {t('landing_how_it_works')}
             </h2>
             <p className="text-xl text-neutral-600 max-w-2xl mx-auto">
               Get started in minutes. Connect with your community effortlessly.
@@ -364,19 +381,19 @@ const LandingPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
             {/* Connector line desktop */}
-            <div className="hidden md:block absolute top-[3.5rem] left-[calc(33%+1rem)] right-[calc(33%+1rem)] h-px bg-gradient-to-r from-primary-200 via-secondary-200 to-primary-200" />
+            <div className="hidden md:block absolute top-[3.5rem] left-[calc(33%+1rem)] right-[calc(33%+1rem)] h-px bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200" />
 
             {steps.map((step, i) => (
               <div key={i} className="relative group">
-                <div className="bg-white rounded-2xl p-8 shadow-sm border border-neutral-200 hover:shadow-soft hover:-translate-y-2 transition-all duration-300 h-full">
+                <div className="bg-white dark:bg-neutral-900 rounded-2xl p-8 shadow-sm border border-neutral-200 dark:border-neutral-700 hover:shadow-soft hover:-translate-y-2 transition-all duration-300 h-full">
                   <div className="flex items-start justify-between mb-6">
                     <div className={`w-14 h-14 bg-gradient-to-br ${step.gradient} rounded-2xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300`}>
                       <step.icon className="w-7 h-7 text-white" />
                     </div>
-                    <span className="font-display text-6xl font-black text-neutral-100 leading-none select-none">{step.step}</span>
+                    <span className="font-display text-6xl font-black text-neutral-100 dark:text-neutral-700 leading-none select-none">{step.step}</span>
                   </div>
-                  <h3 className="font-display text-xl font-bold text-gray-900 mb-3">{step.title}</h3>
-                  <p className="text-neutral-600 leading-relaxed">{step.description}</p>
+                  <h3 className="font-display text-xl font-bold text-gray-900 mb-3">{t(step.titleKey)}</h3>
+                  <p className="text-neutral-600 leading-relaxed">{t(step.descKey)}</p>
                 </div>
               </div>
             ))}
@@ -387,10 +404,10 @@ const LandingPage: React.FC = () => {
       {/* ═══════════════════════════════════════════
           FOR EVERYONE (Role Cards)
       ═══════════════════════════════════════════ */}
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-white dark:bg-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <span className="inline-block bg-secondary-50 border border-secondary-200 text-secondary-700 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
+            <span className="inline-block bg-gray-100 dark:bg-neutral-800 border border-gray-300 dark:border-neutral-600 text-gray-800 dark:text-gray-100 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
               For Everyone
             </span>
             <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -435,14 +452,14 @@ const LandingPage: React.FC = () => {
       {/* ═══════════════════════════════════════════
           SERVICES
       ═══════════════════════════════════════════ */}
-      <section id="services" className="py-24 bg-neutral-50">
+      <section id="services" className="py-24 bg-neutral-50 dark:bg-neutral-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <span className="inline-block bg-primary-50 border border-primary-200 text-primary-700 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
+            <span className="inline-block bg-gray-100 dark:bg-neutral-800 border border-gray-300 dark:border-neutral-600 text-gray-800 dark:text-gray-100 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
               What We Support
             </span>
             <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Services We Cover
+              {t('landing_features')}
             </h2>
             <p className="text-xl text-neutral-600">
               Wide range of community assistance available across Rwanda
@@ -453,7 +470,7 @@ const LandingPage: React.FC = () => {
             {services.map((service, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl p-6 text-center shadow-sm border border-neutral-200 hover:shadow-soft hover:-translate-y-1 hover:border-primary-200 transition-all duration-300 group cursor-pointer"
+                className="bg-white dark:bg-neutral-900 rounded-2xl p-6 text-center shadow-sm border border-neutral-200 dark:border-neutral-700 hover:shadow-soft hover:-translate-y-1 hover:border-gray-300 dark:hover:border-neutral-500 transition-all duration-300 group cursor-pointer"
               >
                 <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">{service.emoji}</div>
                 <p className="font-semibold text-gray-800 text-sm">{service.name}</p>
@@ -466,10 +483,10 @@ const LandingPage: React.FC = () => {
       {/* ═══════════════════════════════════════════
           TESTIMONIALS
       ═══════════════════════════════════════════ */}
-      <section id="community" className="py-24 bg-white">
+      <section id="community" className="py-24 bg-white dark:bg-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <span className="inline-block bg-green-50 border border-green-200 text-green-700 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
+            <span className="inline-block bg-gray-100 dark:bg-neutral-800 border border-gray-300 dark:border-neutral-600 text-gray-800 dark:text-gray-100 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
               Community Voices
             </span>
             <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -482,7 +499,7 @@ const LandingPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((t, i) => (
-              <div key={i} className="bg-neutral-50 border border-neutral-200 rounded-2xl p-8 hover:shadow-soft hover:-translate-y-1 transition-all duration-300 flex flex-col">
+              <div key={i} className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-2xl p-8 hover:shadow-soft hover:-translate-y-1 transition-all duration-300 flex flex-col">
                 {/* Stars */}
                 <div className="flex mb-5">
                   {[...Array(5)].map((_, j) => (
@@ -510,8 +527,8 @@ const LandingPage: React.FC = () => {
       ═══════════════════════════════════════════ */}
       <section className="py-28 bg-gray-900 relative overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute -top-20 left-1/4 w-[600px] h-[600px] bg-primary-500/20 rounded-full filter blur-[120px]" />
-          <div className="absolute top-10 right-0 w-[400px] h-[400px] bg-secondary-500/15 rounded-full filter blur-[100px]" />
+          <div className="absolute -top-20 left-1/4 w-[600px] h-[600px] bg-white/5 rounded-full filter blur-[120px]" />
+          <div className="absolute top-10 right-0 w-[400px] h-[400px] bg-white/5 rounded-full filter blur-[100px]" />
           <div
             className="absolute inset-0"
             style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '32px 32px', opacity: 0.04 }}
@@ -519,23 +536,19 @@ const LandingPage: React.FC = () => {
         </div>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white text-sm font-semibold px-4 py-2 rounded-full mb-6 border border-white/20">
-            <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+            <Star className="w-4 h-4 text-gray-300 fill-gray-300" />
             Join 1,000+ Rwandans Making a Difference
           </div>
           <h2 className="font-display text-4xl md:text-6xl font-black text-white mb-6 leading-tight">
-            Ready to Make a<br />
-            <span className="bg-gradient-to-r from-primary-400 to-secondary-400 bg-clip-text text-transparent">
-              Difference?
-            </span>
+            {t('landing_cta_title')}
           </h2>
           <p className="text-xl text-neutral-300 mb-10 leading-relaxed">
-            Whether you need help or want to volunteer, join our growing community
-            and make a real impact across Rwanda's 30 districts.
+            {t('landing_cta_subtitle')}
           </p>
           <Link to="/register">
-            <button className="inline-flex items-center gap-3 bg-white hover:bg-neutral-100 text-gray-900 px-10 py-5 rounded-xl text-lg font-black shadow-lg hover:shadow-xl transition-all duration-300">
-              Get Started Now
-              <ArrowRight className="w-6 h-6" />
+            <button className="inline-flex items-center gap-3 bg-white hover:bg-neutral-100 text-[#111827] px-10 py-5 rounded-xl text-lg font-black shadow-lg hover:shadow-xl transition-all duration-300">
+              {t('action_get_started')}
+              <ArrowRight className="w-6 h-6 text-[#111827]" />
             </button>
           </Link>
         </div>
@@ -554,7 +567,7 @@ const LandingPage: React.FC = () => {
                 to request help and volunteers to provide assistance across all 30 districts.
               </p>
               <div className="flex items-center gap-2 text-sm text-neutral-500">
-                <MapPin className="w-4 h-4 text-primary-400" />
+                <MapPin className="w-4 h-4 text-gray-400" />
                 <span>Serving all of Rwanda</span>
               </div>
             </div>
@@ -580,8 +593,8 @@ const LandingPage: React.FC = () => {
 
           <div className="border-t border-neutral-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-neutral-500 text-sm">
-              © 2025 Community Support System. Built for Rwanda with{' '}
-              <Heart className="inline w-4 h-4 text-primary-400 fill-current" />
+              © {new Date().getFullYear()} Community Support System. Built for Rwanda with{' '}
+              <Heart className="inline w-4 h-4 text-gray-400 fill-current" />
             </p>
             <p className="text-neutral-600 text-xs">Powered by community, driven by purpose</p>
           </div>

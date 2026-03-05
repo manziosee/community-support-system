@@ -4,6 +4,7 @@ import {
   Download, Filter, Award, Calendar,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { assignmentsApi } from '../../services/api';
 import type { Assignment } from '../../types';
@@ -14,6 +15,7 @@ import EmptyState from '../../components/common/EmptyState';
 import { exportToCSV } from '../../utils/exportUtils';
 
 const AssignmentsPage: React.FC = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [filteredAssignments, setFilteredAssignments] = useState<Assignment[]>([]);
@@ -83,44 +85,44 @@ const AssignmentsPage: React.FC = () => {
     return h < 24 ? `${h}h` : `${Math.floor(h / 24)}d`;
   };
 
-  if (isLoading) return <LoadingSpinner size="lg" text="Loading your assignments…" />;
+  if (isLoading) return <LoadingSpinner size="lg" text={t('common_loading')} />;
 
   const filterBtns = [
-    { key: 'ALL', label: 'All', count: stats.total, active: 'bg-primary-100 dark:bg-primary-900/40 text-primary-800 dark:text-primary-200' },
-    { key: 'ACTIVE', label: 'Active', count: stats.active, active: 'bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-200' },
-    { key: 'COMPLETED', label: 'Completed', count: stats.completed, active: 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-200' },
+    { key: 'ALL', label: t('assignments_all'), count: stats.total, active: 'bg-primary-100 dark:bg-primary-900/40 text-primary-800 dark:text-primary-200' },
+    { key: 'ACTIVE', label: t('assignments_active'), count: stats.active, active: 'bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-200' },
+    { key: 'COMPLETED', label: t('assignments_completed'), count: stats.completed, active: 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-200' },
   ];
 
   const statItems = [
-    { label: 'Total Assignments', value: stats.total,     icon: CheckSquare, bg: 'bg-primary-50 dark:bg-primary-900/20',  iconColor: 'text-primary-600 dark:text-primary-400' },
-    { label: 'Active',            value: stats.active,    icon: Clock,       bg: 'bg-orange-50 dark:bg-orange-900/20',    iconColor: 'text-orange-600 dark:text-orange-400' },
-    { label: 'Completed',         value: stats.completed, icon: CheckCircle, bg: 'bg-green-50 dark:bg-green-900/20',      iconColor: 'text-green-600 dark:text-green-400' },
+    { label: t('assignments_total'), value: stats.total,     icon: CheckSquare, bg: 'bg-primary-50 dark:bg-primary-900/20',  iconColor: 'text-primary-600 dark:text-primary-400' },
+    { label: t('assignments_active'), value: stats.active,    icon: Clock,       bg: 'bg-orange-50 dark:bg-orange-900/20',    iconColor: 'text-orange-600 dark:text-orange-400' },
+    { label: t('assignments_completed'), value: stats.completed, icon: CheckCircle, bg: 'bg-green-50 dark:bg-green-900/20',      iconColor: 'text-green-600 dark:text-green-400' },
   ];
 
   return (
     <div className="space-y-6 animate-fade-in">
 
       {/* ── Header ─────────────────────────────────────────── */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">My Assignments</h1>
+          <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">{t('assignments_title')}</h1>
           <p className="text-sm text-neutral-500 dark:text-slate-400 mt-0.5">
-            Track your volunteer work and help requests
+            {t('assignments_subtitle')}
           </p>
         </div>
         <Button
           type="button"
-          variant="secondary"
+          variant="export"
           icon={Download}
           onClick={handleExport}
           disabled={filteredAssignments.length === 0}
         >
-          Export CSV
+          {t('assignments_export')}
         </Button>
       </div>
 
       {/* ── Stat Cards ─────────────────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {statItems.map((s) => (
           <div
             key={s.label}
@@ -162,7 +164,7 @@ const AssignmentsPage: React.FC = () => {
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-neutral-200 dark:border-slate-700/60 shadow-sm">
             <EmptyState
               icon={CheckSquare}
-              title="No assignments found"
+              title={t('assignments_no_assignments')}
               description={`No ${statusFilter.toLowerCase() === 'all' ? '' : statusFilter.toLowerCase() + ' '}assignments yet.`}
             />
           </div>
@@ -215,7 +217,7 @@ const AssignmentsPage: React.FC = () => {
                   {/* Citizen contact */}
                   <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-100 dark:border-primary-800/30 rounded-xl p-4">
                     <h4 className="text-xs font-bold text-primary-700 dark:text-primary-300 uppercase tracking-wide mb-3">
-                      Citizen Contact
+                      {t('assignments_citizen_contact')}
                     </h4>
                     <div className="space-y-2 text-sm text-gray-700 dark:text-slate-200">
                       <div className="flex items-center gap-2">
@@ -239,23 +241,23 @@ const AssignmentsPage: React.FC = () => {
                   {/* Timeline */}
                   <div className="bg-secondary-50 dark:bg-secondary-900/20 border border-secondary-100 dark:border-secondary-800/30 rounded-xl p-4">
                     <h4 className="text-xs font-bold text-secondary-700 dark:text-secondary-300 uppercase tracking-wide mb-3">
-                      Timeline
+                      {t('assignments_timeline')}
                     </h4>
                     <div className="space-y-2 text-sm text-gray-700 dark:text-slate-200">
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-secondary-400 flex-shrink-0" />
-                        <span><span className="font-medium">Accepted:</span> {new Date(assignment.acceptedAt).toLocaleDateString()}</span>
+                        <span><span className="font-medium">{t('assignments_accepted')}:</span> {new Date(assignment.acceptedAt).toLocaleDateString()}</span>
                       </div>
                       {assignment.completedAt ? (
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full bg-green-400 flex-shrink-0" />
-                          <span><span className="font-medium">Completed:</span> {new Date(assignment.completedAt).toLocaleDateString()}</span>
+                          <span><span className="font-medium">{t('assignments_completed')}:</span> {new Date(assignment.completedAt).toLocaleDateString()}</span>
                         </div>
                       ) : (
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full bg-orange-400 animate-pulse flex-shrink-0" />
                           <span className="text-orange-600 dark:text-orange-400">
-                            <span className="font-medium">In progress:</span> {duration(assignment.acceptedAt)}
+                            <span className="font-medium">{t('assignments_in_progress')}:</span> {duration(assignment.acceptedAt)}
                           </span>
                         </div>
                       )}
@@ -266,8 +268,8 @@ const AssignmentsPage: React.FC = () => {
                 {/* Actions */}
                 <div className="flex items-center justify-end gap-2 pt-3 border-t border-neutral-100 dark:border-slate-700">
                   <Link to={`/assignments/${assignment.assignmentId}`}>
-                    <Button type="button" variant="secondary" icon={Eye} size="sm">
-                      View Details
+                    <Button type="button" variant="view" icon={Eye} size="sm">
+                      {t('assignments_view_details')}
                     </Button>
                   </Link>
                   {!assignment.completedAt && (
@@ -278,7 +280,7 @@ const AssignmentsPage: React.FC = () => {
                       size="sm"
                       onClick={() => handleCompleteAssignment(assignment.assignmentId)}
                     >
-                      Mark Complete
+                      {t('assignments_mark_complete')}
                     </Button>
                   )}
                 </div>

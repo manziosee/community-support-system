@@ -274,14 +274,14 @@ const AdminRequestsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
         <div>
           <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">Request Management</h1>
           <p className="text-sm text-neutral-500 dark:text-slate-400 mt-0.5">Monitor and manage all community requests</p>
         </div>
         <Button
           type="button"
-          variant="secondary"
+          variant="create"
           icon={Download}
           onClick={() => {
             const rows = filteredRequests.map((r) => ({
@@ -302,11 +302,11 @@ const AdminRequestsPage: React.FC = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         <Card>
           <div className="flex items-center">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <FileText className="w-5 h-5 text-blue-600" />
+            <div className="w-10 h-10 bg-[#eff6ff] rounded-lg flex items-center justify-center">
+              <FileText className="w-5 h-5 text-[#2563eb]" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Total</p>
@@ -316,8 +316,8 @@ const AdminRequestsPage: React.FC = () => {
         </Card>
         <Card>
           <div className="flex items-center">
-            <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-              <Clock className="w-5 h-5 text-yellow-600" />
+            <div className="w-10 h-10 bg-[#fffbeb] rounded-lg flex items-center justify-center">
+              <Clock className="w-5 h-5 text-[#d97706]" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Pending</p>
@@ -327,8 +327,8 @@ const AdminRequestsPage: React.FC = () => {
         </Card>
         <Card>
           <div className="flex items-center">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <FileText className="w-5 h-5 text-blue-600" />
+            <div className="w-10 h-10 bg-[#eef2ff] rounded-lg flex items-center justify-center">
+              <FileText className="w-5 h-5 text-[#4f46e5]" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Accepted</p>
@@ -338,8 +338,8 @@ const AdminRequestsPage: React.FC = () => {
         </Card>
         <Card>
           <div className="flex items-center">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <CheckCircle className="w-5 h-5 text-green-600" />
+            <div className="w-10 h-10 bg-[#f0fdf4] rounded-lg flex items-center justify-center">
+              <CheckCircle className="w-5 h-5 text-[#059669]" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Completed</p>
@@ -349,8 +349,8 @@ const AdminRequestsPage: React.FC = () => {
         </Card>
         <Card>
           <div className="flex items-center">
-            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-              <XCircle className="w-5 h-5 text-red-600" />
+            <div className="w-10 h-10 bg-[#fef2f2] rounded-lg flex items-center justify-center">
+              <XCircle className="w-5 h-5 text-[#dc2626]" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Cancelled</p>
@@ -414,17 +414,17 @@ const AdminRequestsPage: React.FC = () => {
                     key={request.requestId}
                     className="border border-gray-200 rounded-lg p-6 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                   >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-2">
-                          <StatusIcon className="w-5 h-5 text-gray-400" />
-                          <h3 className="font-semibold text-gray-900">{request.title}</h3>
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 mb-2">
+                          <StatusIcon className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                          <h3 className="font-semibold text-gray-900 dark:text-slate-100">{request.title}</h3>
                           <Badge variant={getStatusBadgeVariant(request.status)}>
                             {request.status}
                           </Badge>
                         </div>
-                        <p className="text-gray-600 mb-3">{request.description}</p>
-                        <div className="flex items-center space-x-4 text-sm text-gray-500">
+                        <p className="text-gray-600 dark:text-slate-400 mb-3">{request.description}</p>
+                        <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 dark:text-slate-400">
                           <div className="flex items-center">
                             <User className="w-4 h-4 mr-1" />
                             {request.citizen.name}
@@ -438,27 +438,27 @@ const AdminRequestsPage: React.FC = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-2 ml-4">
-                        <Button 
-                          size="sm" 
-                          variant="secondary" 
-                          icon={Eye} 
+                      <div className="flex flex-wrap items-center gap-1.5 flex-shrink-0">
+                        <Button
+                          size="sm"
+                          variant="view"
+                          icon={Eye}
                           onClick={() => handleViewRequest(request)}
                         >
                           View
                         </Button>
-                        <Button 
-                          size="sm" 
-                          variant="secondary" 
-                          icon={Edit} 
+                        <Button
+                          size="sm"
+                          variant="edit"
+                          icon={Edit}
                           onClick={() => handleEditRequest(request)}
                         >
                           Edit
                         </Button>
-                        <Button 
-                          size="sm" 
-                          variant="danger" 
-                          icon={Trash2} 
+                        <Button
+                          size="sm"
+                          variant="delete"
+                          icon={Trash2}
                           onClick={() => handleDeleteRequest(request.requestId)}
                           loading={isDeleting === request.requestId}
                           disabled={isDeleting === request.requestId}
@@ -497,26 +497,26 @@ const AdminRequestsPage: React.FC = () => {
             </div>
             
             <div>
-              <h4 className="font-medium text-gray-900 mb-2">Description</h4>
-              <p className="text-gray-600">{selectedRequest.description}</p>
+              <h4 className="font-medium text-[#111827] dark:text-slate-100 mb-2">Description</h4>
+              <p className="text-[#4b5563] dark:text-slate-300">{selectedRequest.description}</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <h4 className="font-medium text-gray-900 mb-2">Citizen Information</h4>
-                <div className="bg-gray-50 p-3 rounded-lg">
-                  <p className="font-medium">{selectedRequest.citizen.name}</p>
-                  <p className="text-sm text-gray-600">{selectedRequest.citizen.email}</p>
-                  <p className="text-sm text-gray-600">{selectedRequest.citizen.phoneNumber}</p>
+                <h4 className="font-medium text-gray-900 dark:text-slate-100 mb-2">Citizen Information</h4>
+                <div className="bg-white dark:bg-slate-700 border border-gray-100 dark:border-slate-600 p-3 rounded-lg">
+                  <p className="font-semibold text-[#111827] dark:text-white">{selectedRequest.citizen.name}</p>
+                  <p className="text-sm text-[#374151] dark:text-slate-300">{selectedRequest.citizen.email}</p>
+                  <p className="text-sm text-[#374151] dark:text-slate-300">{selectedRequest.citizen.phoneNumber}</p>
                 </div>
               </div>
-              
+
               <div>
-                <h4 className="font-medium text-gray-900 mb-2">Location</h4>
-                <div className="bg-gray-50 p-3 rounded-lg">
-                  <p className="font-medium">{selectedRequest.citizen.location.district}</p>
-                  <p className="text-sm text-gray-600">{selectedRequest.citizen.location.province}</p>
-                  <p className="text-sm text-gray-600">Code: {selectedRequest.citizen.location.provinceCode}</p>
+                <h4 className="font-medium text-gray-900 dark:text-slate-100 mb-2">Location</h4>
+                <div className="bg-white dark:bg-slate-700 border border-gray-100 dark:border-slate-600 p-3 rounded-lg">
+                  <p className="font-semibold text-[#111827] dark:text-white">{selectedRequest.citizen.location.district}</p>
+                  <p className="text-sm text-[#374151] dark:text-slate-300">{selectedRequest.citizen.location.province}</p>
+                  <p className="text-sm text-[#374151] dark:text-slate-300">Code: {selectedRequest.citizen.location.provinceCode}</p>
                 </div>
               </div>
             </div>
@@ -590,12 +590,12 @@ const AdminRequestsPage: React.FC = () => {
               </select>
             </div>
             
-            <div className="bg-gray-50 p-3 rounded-lg">
-              <h4 className="font-medium text-gray-900 mb-2">Citizen Information</h4>
-              <p className="text-sm text-gray-600">
+            <div className="bg-gray-50 dark:bg-slate-700/60 border border-gray-100 dark:border-slate-600/40 p-3 rounded-lg">
+              <h4 className="font-medium text-[#111827] dark:text-slate-100 mb-2">Citizen Information</h4>
+              <p className="text-sm text-[#374151] dark:text-slate-300">
                 <span className="font-medium">Name:</span> {editingRequest.citizen.name}
               </p>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-[#374151] dark:text-slate-300">
                 <span className="font-medium">Location:</span> {editingRequest.citizen.location.district}, {editingRequest.citizen.location.province}
               </p>
             </div>

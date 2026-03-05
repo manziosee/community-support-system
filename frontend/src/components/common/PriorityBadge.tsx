@@ -13,16 +13,16 @@ const PriorityBadge: React.FC<PriorityBadgeProps> = ({
   size = 'sm',
   showLabel = true,
 }) => {
+  const sizeCls = size === 'sm' ? 'px-2 py-0.5 text-[10px]' : 'px-2.5 py-1 text-xs';
+  const iconCls = size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5';
+
   if (priority === 'URGENT') {
     return (
       <span
-        className={`inline-flex items-center gap-1 rounded-full font-bold animate-pulse-slow border ${
-          size === 'sm'
-            ? 'px-2 py-0.5 text-[10px]'
-            : 'px-2.5 py-1 text-xs'
-        } bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-200 dark:border-red-700/40`}
+        className={`inline-flex items-center gap-1 rounded-full font-bold animate-pulse-slow border ${sizeCls}
+          bg-black text-white border-gray-700 dark:bg-white dark:text-gray-900 dark:border-gray-300`}
       >
-        <Flame className={size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5'} />
+        <Flame className={iconCls} />
         {showLabel && 'Urgent'}
       </span>
     );
@@ -30,13 +30,10 @@ const PriorityBadge: React.FC<PriorityBadgeProps> = ({
 
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full font-medium border ${
-        size === 'sm'
-          ? 'px-2 py-0.5 text-[10px]'
-          : 'px-2.5 py-1 text-xs'
-      } bg-neutral-100 dark:bg-slate-700 text-neutral-500 dark:text-slate-400 border-neutral-200 dark:border-slate-600`}
+      className={`inline-flex items-center gap-1 rounded-full font-medium border ${sizeCls}
+        bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-slate-400 border-gray-200 dark:border-slate-600`}
     >
-      <Minus className={size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5'} />
+      <Minus className={iconCls} />
       {showLabel && 'Normal'}
     </span>
   );

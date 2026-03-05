@@ -36,17 +36,17 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
-          <p className="text-gray-600">Manage your account information</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">My Profile</h1>
+          <p className="text-gray-600 dark:text-slate-400">Manage your account information</p>
         </div>
         {!isEditing ? (
-          <Button icon={Edit} onClick={() => setIsEditing(true)}>
+          <Button icon={Edit} onClick={() => setIsEditing(true)} className="self-start sm:self-auto flex-shrink-0">
             Edit Profile
           </Button>
         ) : (
-          <div className="flex space-x-2">
+          <div className="flex flex-wrap gap-2 self-start sm:self-auto">
             <Button variant="secondary" icon={X} onClick={() => setIsEditing(false)}>
               Cancel
             </Button>

@@ -99,11 +99,11 @@ const RequestDetailsPage: React.FC = () => {
         {isOwner && request.status === RequestStatus.PENDING && (
           <div className="flex space-x-2">
             <Link to={`/requests/${request.requestId}/edit`}>
-              <Button variant="secondary" icon={Edit}>
+              <Button variant="edit" icon={Edit}>
                 Edit
               </Button>
             </Link>
-            <Button variant="danger" icon={Trash2} onClick={handleDelete}>
+            <Button variant="delete" icon={Trash2} onClick={handleDelete}>
               Delete
             </Button>
           </div>

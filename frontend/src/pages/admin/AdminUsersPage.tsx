@@ -394,59 +394,59 @@ const AdminUsersPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
-          <p className="text-gray-600 mt-1">Manage all system users and their roles</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">User Management</h1>
+          <p className="text-gray-600 dark:text-slate-400 mt-1">Manage all system users and their roles</p>
         </div>
-        <Button icon={UserPlus} onClick={handleAddUser}>
+        <Button icon={UserPlus} variant="create" onClick={handleAddUser} className="self-start sm:self-auto flex-shrink-0">
           Add New User
         </Button>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Users className="w-5 h-5 text-blue-600" />
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-[#eff6ff] dark:bg-[#1e3a5f]/40 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Users className="w-5 h-5 text-[#2563eb]" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Users</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.totalUsers}</p>
+            <div>
+              <p className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Total Users</p>
+              <p className="text-2xl font-black text-gray-900 dark:text-slate-100">{stats.totalUsers}</p>
             </div>
           </div>
         </Card>
         <Card>
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <Award className="w-5 h-5 text-green-600" />
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-[#f0fdf4] dark:bg-[#14532d]/40 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Award className="w-5 h-5 text-[#059669]" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Volunteers</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.volunteers}</p>
-            </div>
-          </div>
-        </Card>
-        <Card>
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Users className="w-5 h-5 text-blue-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Citizens</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.citizens}</p>
+            <div>
+              <p className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Volunteers</p>
+              <p className="text-2xl font-black text-gray-900 dark:text-slate-100">{stats.volunteers}</p>
             </div>
           </div>
         </Card>
         <Card>
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-              <Users className="w-5 h-5 text-red-600" />
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-[#faf5ff] dark:bg-[#2e1065]/40 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Users className="w-5 h-5 text-[#7c3aed]" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Admins</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.admins}</p>
+            <div>
+              <p className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Citizens</p>
+              <p className="text-2xl font-black text-gray-900 dark:text-slate-100">{stats.citizens}</p>
+            </div>
+          </div>
+        </Card>
+        <Card>
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-[#fff7ed] dark:bg-[#431407]/40 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Users className="w-5 h-5 text-[#ea580c]" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Admins</p>
+              <p className="text-2xl font-black text-gray-900 dark:text-slate-100">{stats.admins}</p>
             </div>
           </div>
         </Card>
@@ -501,11 +501,11 @@ const AdminUsersPage: React.FC = () => {
               {filteredUsers.map((user) => (
                 <div
                   key={user.userId}
-                  className={`flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:bg-gray-800 transition-colors ${
+                  className={`flex flex-col sm:flex-row sm:items-center gap-3 p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${
                     user.accountLocked ? 'border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950' : 'border-gray-200 dark:border-gray-700'
                   }`}
                 >
-                  <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-4 flex-1 min-w-0">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
                       user.accountLocked ? 'bg-red-100' : 'bg-gray-100'
                     }`}>
@@ -516,8 +516,8 @@ const AdminUsersPage: React.FC = () => {
                       )}
                     </div>
                     <div className="flex-1">
-                      <div className="flex items-center space-x-3">
-                        <h3 className="font-medium text-gray-900">{user.name}</h3>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="font-medium text-gray-900 dark:text-slate-100">{user.name}</h3>
                         <Badge variant={getRoleBadgeVariant(user.role)}>
                           {user.role}
                         </Badge>
@@ -539,10 +539,10 @@ const AdminUsersPage: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex flex-wrap items-center gap-1.5 flex-shrink-0">
                     <Button
                       size="sm"
-                      variant="secondary"
+                      variant="view"
                       icon={Eye}
                       onClick={() => handleViewUser(user)}
                     >
@@ -550,7 +550,7 @@ const AdminUsersPage: React.FC = () => {
                     </Button>
                     <Button
                       size="sm"
-                      variant="secondary"
+                      variant="edit"
                       icon={Edit}
                       onClick={() => handleEditUser(user)}
                     >
@@ -558,7 +558,7 @@ const AdminUsersPage: React.FC = () => {
                     </Button>
                     <Button
                       size="sm"
-                      variant={user.accountLocked ? 'secondary' : 'danger'}
+                      variant={user.accountLocked ? 'secondary' : 'delete'}
                       icon={user.accountLocked ? Unlock : Lock}
                       onClick={() => handleToggleLock(user)}
                       loading={isTogglingLock === user.userId}
@@ -568,7 +568,7 @@ const AdminUsersPage: React.FC = () => {
                     </Button>
                     <Button
                       size="sm"
-                      variant="danger"
+                      variant="delete"
                       icon={Trash2}
                       onClick={() => handleDeleteUser(user.userId)}
                       loading={isDeleting === user.userId}
@@ -862,21 +862,21 @@ const AdminUsersPage: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <h4 className="font-medium text-gray-900 mb-2">Contact Information</h4>
-                <div className="bg-gray-50 p-3 rounded-lg space-y-2">
-                  <p><span className="font-medium">Email:</span> {selectedUser.email}</p>
-                  <p><span className="font-medium">Phone:</span> {selectedUser.phoneNumber}</p>
+                <h4 className="font-medium text-[#111827] dark:text-slate-100 mb-2">Contact Information</h4>
+                <div className="bg-gray-50 dark:bg-slate-700/60 border border-gray-100 dark:border-slate-600/40 p-3 rounded-lg space-y-2 text-[#374151] dark:text-slate-300">
+                  <p><span className="font-medium text-[#111827] dark:text-slate-200">Email:</span> {selectedUser.email}</p>
+                  <p><span className="font-medium text-[#111827] dark:text-slate-200">Phone:</span> {selectedUser.phoneNumber}</p>
                 </div>
               </div>
 
               <div>
-                <h4 className="font-medium text-gray-900 mb-2">Location</h4>
-                <div className="bg-gray-50 p-3 rounded-lg space-y-2">
-                  <p><span className="font-medium">Province:</span> {getUserProvince(selectedUser) || 'N/A'}</p>
-                  <p><span className="font-medium">District:</span> {getUserDistrict(selectedUser) || 'N/A'}</p>
-                  {(selectedUser.sector) && <p><span className="font-medium">Sector:</span> {selectedUser.sector}</p>}
-                  {(selectedUser.cell) && <p><span className="font-medium">Cell:</span> {selectedUser.cell}</p>}
-                  {(selectedUser.village) && <p><span className="font-medium">Village:</span> {selectedUser.village}</p>}
+                <h4 className="font-medium text-[#111827] dark:text-slate-100 mb-2">Location</h4>
+                <div className="bg-gray-50 dark:bg-slate-700/60 border border-gray-100 dark:border-slate-600/40 p-3 rounded-lg space-y-2 text-[#374151] dark:text-slate-300">
+                  <p><span className="font-medium text-[#111827] dark:text-slate-200">Province:</span> {getUserProvince(selectedUser) || 'N/A'}</p>
+                  <p><span className="font-medium text-[#111827] dark:text-slate-200">District:</span> {getUserDistrict(selectedUser) || 'N/A'}</p>
+                  {(selectedUser.sector) && <p><span className="font-medium text-[#111827] dark:text-slate-200">Sector:</span> {selectedUser.sector}</p>}
+                  {(selectedUser.cell) && <p><span className="font-medium text-[#111827] dark:text-slate-200">Cell:</span> {selectedUser.cell}</p>}
+                  {(selectedUser.village) && <p><span className="font-medium text-[#111827] dark:text-slate-200">Village:</span> {selectedUser.village}</p>}
                 </div>
               </div>
             </div>

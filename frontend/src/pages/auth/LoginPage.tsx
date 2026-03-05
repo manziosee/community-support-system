@@ -131,13 +131,13 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
-        <div className="bg-white rounded-2xl shadow-xl p-8 space-y-8">
+        <div className="bg-white dark:bg-neutral-900 rounded-2xl shadow-xl border border-gray-100 dark:border-neutral-800 p-8 space-y-8">
           {/* Header */}
           <div className="text-center">
-            <div className="mx-auto w-16 h-16 bg-gradient-to-br from-sky-400 to-sky-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <HandHeart className="w-8 h-8 text-white" />
+            <div className="mx-auto w-16 h-16 bg-gray-900 dark:bg-white rounded-2xl flex items-center justify-center shadow-lg">
+              <HandHeart className="w-8 h-8 text-white dark:text-gray-900" />
             </div>
             <h2 className="mt-6 text-3xl font-bold text-gray-900">
               Welcome back
@@ -151,16 +151,16 @@ const LoginPage: React.FC = () => {
 
           {/* Verification Message */}
           {verificationMessage && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <div className="bg-gray-50 dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-lg p-4 mb-6">
               <div className="flex items-start">
-                <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
+                <AlertCircle className="w-5 h-5 text-gray-700 dark:text-gray-300 mt-0.5 mr-3 flex-shrink-0" />
                 <div className="flex-1">
-                  <p className="text-sm text-blue-800">{verificationMessage}</p>
+                  <p className="text-sm text-gray-800 dark:text-gray-200">{verificationMessage}</p>
                   <button
                     type="button"
                     onClick={handleResendVerification}
                     disabled={isResendingVerification}
-                    className="mt-2 text-sm text-blue-600 hover:text-blue-500 underline disabled:opacity-50"
+                    className="mt-2 text-sm text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white underline disabled:opacity-50"
                   >
                     {isResendingVerification ? 'Sending...' : 'Resend verification email'}
                   </button>
@@ -251,7 +251,7 @@ const LoginPage: React.FC = () => {
                     type="button"
                     onClick={handleResendOtp}
                     disabled={isResendingOtp}
-                    className="text-xs text-blue-600 hover:text-blue-500 underline disabled:opacity-50"
+                    className="text-xs text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white underline disabled:opacity-50"
                   >
                     {isResendingOtp ? 'Sending...' : 'Resend OTP'}
                   </button>
@@ -267,7 +267,7 @@ const LoginPage: React.FC = () => {
                 id="remember-me"
                 name="remember-me"
                 type="checkbox"
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="h-4 w-4 text-gray-900 focus:ring-gray-900 border-gray-300 rounded"
               />
               <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                 Remember me
@@ -277,7 +277,7 @@ const LoginPage: React.FC = () => {
             <div className="text-sm">
               <Link
                 to="/forgot-password"
-                className="font-medium text-blue-600 hover:text-blue-500"
+                className="font-medium text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
               >
                 Forgot your password?
               </Link>
@@ -316,7 +316,7 @@ const LoginPage: React.FC = () => {
               Don't have an account?{' '}
               <Link
                 to="/register"
-                className="font-medium text-blue-600 hover:text-blue-500"
+                className="font-medium text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
               >
                 Sign up here
               </Link>

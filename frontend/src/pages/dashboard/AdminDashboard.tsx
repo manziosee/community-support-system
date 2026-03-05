@@ -30,8 +30,8 @@ const ProgressBar: React.FC<{ pct: number; colorClass: string }> = ({ pct, color
 
 interface ExtendedStats extends DashboardStats { completedAssignments?: number; }
 
-const PIE_COLORS_USERS = ['#009688', '#3F51B5', '#607d8b'];
-const PIE_COLORS_REQUESTS = ['#f59e0b', '#6366f1', '#22c55e', '#ef4444'];
+const PIE_COLORS_USERS = ['#0d9488', '#6366f1', '#8b5cf6'];
+const PIE_COLORS_REQUESTS = ['#f59e0b', '#3b82f6', '#10b981', '#ef4444'];
 const RADIAN = Math.PI / 180;
 
 const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
@@ -104,21 +104,21 @@ const AdminDashboard: React.FC = () => {
     ? Math.round((stats.completedRequests / stats.totalRequests) * 100) : 0;
 
   const tooltipStyle = {
-    borderRadius: '10px',
-    border: isDark ? '1px solid #475569' : '1px solid #cbd5e1',
-    backgroundColor: isDark ? '#1e293b' : '#ffffff',
-    color: '#ffffff',
+    borderRadius: '8px',
+    border: isDark ? '1px solid #444444' : '1px solid #dddddd',
+    backgroundColor: isDark ? '#000000' : '#ffffff',
+    color: isDark ? '#f5f5f5' : '#111111',
     fontSize: '12px',
     fontWeight: '600',
     padding: '8px 12px',
-    boxShadow: isDark ? '0 4px 20px rgba(0,0,0,0.5)' : '0 4px 20px rgba(0,0,0,0.12)',
+    boxShadow: isDark ? '0 4px 20px rgba(0,0,0,0.8)' : '0 4px 16px rgba(0,0,0,0.1)',
   };
-  const tooltipCursor = { fill: isDark ? 'rgba(148,163,184,0.08)' : 'rgba(0,0,0,0.04)' };
-  const gridColor  = isDark ? '#1e293b' : '#f0f4f8';
-  const axisColor  = isDark ? '#94a3b8' : '#9ca3af';
+  const tooltipCursor = { fill: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)' };
+  const gridColor  = isDark ? '#2a2a2a' : '#f0f0f0';
+  const axisColor  = isDark ? '#888888' : '#999999';
   const legendStyle = { fontSize: '12px' };
   const legendFormatter = (value: string) => (
-    <span style={{ color: isDark ? '#cbd5e1' : '#6b7280' }}>{value}</span>
+    <span style={{ color: isDark ? '#cccccc' : '#555555' }}>{value}</span>
   );
 
   const healthItems = [
@@ -126,37 +126,37 @@ const AdminDashboard: React.FC = () => {
       label: t('admin.requestCompletion'),
       value: completionRate,
       icon: CircleCheck,
-      color: 'text-green-700 dark:text-green-400',
-      bar: 'bg-green-400',
-      bg: 'bg-green-50 dark:bg-green-900/20',
-      border: 'border-green-100 dark:border-green-800/30',
+      color: 'text-[#059669]',
+      bar: 'bg-[#10b981]',
+      bg: 'bg-[#f0fdf4] dark:bg-[#14532d]/20',
+      border: 'border-[#bbf7d0] dark:border-[#059669]/30',
     },
     {
       label: t('admin.volunteerRatio'),
       value: stats.totalUsers > 0 ? Math.round((stats.totalVolunteers / stats.totalUsers) * 100) : 0,
       icon: UserCheck,
-      color: 'text-primary-700 dark:text-primary-400',
-      bar: 'bg-primary-400',
-      bg: 'bg-primary-50 dark:bg-primary-900/20',
-      border: 'border-primary-100 dark:border-primary-800/30',
+      color: 'text-[#2563eb]',
+      bar: 'bg-[#3b82f6]',
+      bg: 'bg-[#eff6ff] dark:bg-[#1e3a5f]/20',
+      border: 'border-[#bfdbfe] dark:border-[#2563eb]/30',
     },
     {
       label: t('admin.activeAssignments'),
       value: stats.totalAssignments > 0 ? Math.round((activeAssignments / stats.totalAssignments) * 100) : 0,
       icon: Activity,
-      color: 'text-orange-700 dark:text-orange-400',
-      bar: 'bg-orange-400',
-      bg: 'bg-orange-50 dark:bg-orange-900/20',
-      border: 'border-orange-100 dark:border-orange-800/30',
+      color: 'text-[#7c3aed]',
+      bar: 'bg-[#8b5cf6]',
+      bg: 'bg-[#faf5ff] dark:bg-[#2e1065]/20',
+      border: 'border-[#e9d5ff] dark:border-[#7c3aed]/30',
     },
     {
       label: t('admin.pendingRate'),
       value: stats.totalRequests > 0 ? Math.round((stats.pendingRequests / stats.totalRequests) * 100) : 0,
       icon: AlertCircle,
-      color: 'text-yellow-700 dark:text-yellow-400',
-      bar: 'bg-yellow-400',
-      bg: 'bg-yellow-50 dark:bg-yellow-900/20',
-      border: 'border-yellow-100 dark:border-yellow-800/30',
+      color: 'text-[#d97706]',
+      bar: 'bg-[#f59e0b]',
+      bg: 'bg-[#fffbeb] dark:bg-[#451a03]/20',
+      border: 'border-[#fde68a] dark:border-[#d97706]/30',
     },
   ];
 
@@ -204,9 +204,8 @@ const AdminDashboard: React.FC = () => {
           <div className="flex gap-3 flex-shrink-0 flex-wrap">
             <Button
               type="button"
-              variant="outline"
+              variant="export"
               icon={Download}
-              className="border-white/20 text-white hover:bg-white dark:hover:bg-gray-800/10 hover:text-white hover:border-white/40"
               onClick={() => exportToCSV([{
                 'Total Users': stats.totalUsers,
                 Volunteers: stats.totalVolunteers,
@@ -221,7 +220,7 @@ const AdminDashboard: React.FC = () => {
               Export
             </Button>
             <Link to="/admin/analytics">
-              <Button variant="outline" icon={TrendingUp} className="border-white/20 text-white hover:bg-white dark:hover:bg-gray-800/10 hover:text-white hover:border-white/40">
+              <Button variant="analytics" icon={TrendingUp}>
                 Analytics
               </Button>
             </Link>
@@ -256,7 +255,7 @@ const AdminDashboard: React.FC = () => {
             <p className="text-xs font-bold text-neutral-500 dark:text-slate-400 uppercase tracking-widest">{t('admin.systemHealth')}</p>
             <p className="text-sm font-semibold text-gray-900 dark:text-slate-100 mt-0.5">{t('admin.platformPerformance')}</p>
           </div>
-          <Activity className="w-5 h-5 text-neutral-300 dark:text-slate-600" />
+          <Activity className="w-5 h-5 text-[#10b981]" />
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {healthItems.map((item) => (
@@ -275,7 +274,7 @@ const AdminDashboard: React.FC = () => {
       </div>
 
       {/* ── Charts Row ───────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* User Distribution */}
         <Card padding="md">
           <div className="flex items-center justify-between mb-4">
@@ -350,7 +349,7 @@ const AdminDashboard: React.FC = () => {
               <YAxis tick={{ fontSize: 11, fill: axisColor }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={tooltipStyle} cursor={tooltipCursor} />
               <Legend iconType="circle" iconSize={8} wrapperStyle={legendStyle} formatter={legendFormatter} />
-              <Bar dataKey="Total" fill="#009688" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="Total" fill="#0d9488" radius={[4, 4, 0, 0]} />
               <Bar dataKey="Active" fill="#6366f1" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
@@ -372,8 +371,8 @@ const AdminDashboard: React.FC = () => {
           <AreaChart data={trendData}>
             <defs>
               <linearGradient id="reqGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#009688" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#009688" stopOpacity={0} />
+                <stop offset="5%" stopColor="#0d9488" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#0d9488" stopOpacity={0} />
               </linearGradient>
               <linearGradient id="asgGrad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
@@ -385,7 +384,7 @@ const AdminDashboard: React.FC = () => {
             <YAxis tick={{ fontSize: 11, fill: axisColor }} axisLine={false} tickLine={false} />
             <Tooltip contentStyle={tooltipStyle} cursor={tooltipCursor} />
             <Legend iconType="circle" iconSize={8} wrapperStyle={legendStyle} formatter={legendFormatter} />
-            <Area type="monotone" dataKey="Requests" stroke="#009688" strokeWidth={2} fill="url(#reqGrad)" />
+            <Area type="monotone" dataKey="Requests" stroke="#0d9488" strokeWidth={2} fill="url(#reqGrad)" />
             <Area type="monotone" dataKey="Assignments" stroke="#6366f1" strokeWidth={2} fill="url(#asgGrad)" />
           </AreaChart>
         </ResponsiveContainer>
@@ -397,32 +396,32 @@ const AdminDashboard: React.FC = () => {
           {stats.pendingRequests > 5 && (
             <Link
               to="/admin/requests?status=PENDING"
-              className="flex items-center gap-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-xl p-4 hover:border-amber-400 dark:hover:border-amber-500 transition-all group"
+              className="flex items-center gap-4 bg-gray-50 dark:bg-white/5 border border-gray-300 dark:border-white/15 rounded-xl p-4 hover:border-gray-500 dark:hover:border-white/30 hover:shadow-sm transition-all group"
             >
-              <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900/40 rounded-xl flex items-center justify-center flex-shrink-0">
-                <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+              <div className="w-10 h-10 bg-gray-900 dark:bg-white rounded-xl flex items-center justify-center flex-shrink-0">
+                <AlertCircle className="w-5 h-5 text-white dark:text-gray-900" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-amber-800 dark:text-amber-300 group-hover:translate-x-0.5 transition-transform">
+                <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:translate-x-0.5 transition-transform">
                   {stats.pendingRequests} Requests Awaiting Volunteers
                 </p>
-                <p className="text-xs text-amber-600 dark:text-amber-400 mt-0.5">Review and assign volunteers →</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Review and assign volunteers →</p>
               </div>
             </Link>
           )}
           {activeAssignments < stats.pendingRequests && (
             <Link
               to="/admin/users?role=VOLUNTEER"
-              className="flex items-center gap-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/50 rounded-xl p-4 hover:border-blue-400 dark:hover:border-blue-500 transition-all group"
+              className="flex items-center gap-4 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-4 hover:border-gray-400 dark:hover:border-white/25 hover:shadow-sm transition-all group"
             >
-              <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/40 rounded-xl flex items-center justify-center flex-shrink-0">
-                <UserCheck className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              <div className="w-10 h-10 bg-gray-700 dark:bg-gray-200 rounded-xl flex items-center justify-center flex-shrink-0">
+                <UserCheck className="w-5 h-5 text-white dark:text-gray-800" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-blue-800 dark:text-blue-300 group-hover:translate-x-0.5 transition-transform">
+                <p className="text-sm font-bold text-gray-800 dark:text-gray-100 group-hover:translate-x-0.5 transition-transform">
                   More Volunteers Needed
                 </p>
-                <p className="text-xs text-blue-600 dark:text-blue-400 mt-0.5">Pending requests exceed active assignments →</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Pending requests exceed active assignments →</p>
               </div>
             </Link>
           )}

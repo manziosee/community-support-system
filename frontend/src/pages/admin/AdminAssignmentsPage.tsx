@@ -279,14 +279,14 @@ const AdminAssignmentsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
         <div>
           <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">Assignment Management</h1>
           <p className="text-sm text-neutral-500 dark:text-slate-400 mt-0.5">Monitor volunteer assignments and their progress</p>
         </div>
         <Button
           type="button"
-          variant="secondary"
+          variant="export"
           icon={Download}
           onClick={() => {
             const rows = filteredAssignments.map((a) => ({
@@ -307,37 +307,37 @@ const AdminAssignmentsPage: React.FC = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card>
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <CheckSquare className="w-5 h-5 text-blue-600" />
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-[#eff6ff] dark:bg-[#1e3a5f]/40 rounded-xl flex items-center justify-center flex-shrink-0">
+              <CheckSquare className="w-5 h-5 text-[#2563eb]" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Assignments</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+            <div>
+              <p className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Total Assignments</p>
+              <p className="text-2xl font-black text-gray-900 dark:text-slate-100">{stats.total}</p>
             </div>
           </div>
         </Card>
         <Card>
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-              <Clock className="w-5 h-5 text-orange-600" />
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-[#fffbeb] dark:bg-[#451a03]/40 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Clock className="w-5 h-5 text-[#d97706]" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Active</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.active}</p>
+            <div>
+              <p className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Active</p>
+              <p className="text-2xl font-black text-gray-900 dark:text-slate-100">{stats.active}</p>
             </div>
           </div>
         </Card>
         <Card>
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <CheckCircle className="w-5 h-5 text-green-600" />
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-[#f0fdf4] dark:bg-[#14532d]/40 rounded-xl flex items-center justify-center flex-shrink-0">
+              <CheckCircle className="w-5 h-5 text-[#059669]" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Completed</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.completed}</p>
+            <div>
+              <p className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Completed</p>
+              <p className="text-2xl font-black text-gray-900 dark:text-slate-100">{stats.completed}</p>
             </div>
           </div>
         </Card>
@@ -393,11 +393,11 @@ const AdminAssignmentsPage: React.FC = () => {
                   key={assignment.assignmentId}
                   className="border border-gray-200 rounded-lg p-6 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <FileText className="w-5 h-5 text-gray-400" />
-                        <h3 className="font-semibold text-gray-900">
+                  <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <FileText className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                        <h3 className="font-semibold text-gray-900 dark:text-slate-100">
                           {assignment.request?.title || 'Assignment'}
                         </h3>
                         <Badge variant={assignment.completedAt ? 'success' : 'warning'}>
@@ -429,7 +429,7 @@ const AdminAssignmentsPage: React.FC = () => {
                         </div>
                       </div>
                       
-                      <div className="flex items-center space-x-4 text-sm text-gray-500">
+                      <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 dark:text-slate-400">
                         <div>
                           Accepted: {new Date(assignment.acceptedAt).toLocaleDateString()}
                         </div>
@@ -443,15 +443,15 @@ const AdminAssignmentsPage: React.FC = () => {
                         </div>
                       </div>
                     </div>
-                    
-                    <div className="flex items-center space-x-2 ml-4">
-                      <Button size="sm" variant="secondary" icon={Eye} onClick={() => handleViewAssignment(assignment)}>
+
+                    <div className="flex flex-wrap items-center gap-1.5 flex-shrink-0">
+                      <Button size="sm" variant="view" icon={Eye} onClick={() => handleViewAssignment(assignment)}>
                         View
                       </Button>
-                      <Button size="sm" variant="secondary" icon={Edit} onClick={() => handleEditAssignment(assignment)}>
+                      <Button size="sm" variant="edit" icon={Edit} onClick={() => handleEditAssignment(assignment)}>
                         Edit
                       </Button>
-                      <Button size="sm" variant="danger" icon={Trash2} onClick={() => handleDeleteAssignment(assignment.assignmentId)}>
+                      <Button size="sm" variant="delete" icon={Trash2} onClick={() => handleDeleteAssignment(assignment.assignmentId)}>
                         Delete
                       </Button>
                     </div>
@@ -513,8 +513,8 @@ const AdminAssignmentsPage: React.FC = () => {
             </div>
             
             <div>
-              <h4 className="font-medium text-gray-900 mb-2">Request Description</h4>
-              <p className="text-gray-600 bg-gray-50 p-3 rounded-lg">
+              <h4 className="font-medium text-[#111827] dark:text-slate-100 mb-2">Request Description</h4>
+              <p className="text-[#374151] dark:text-slate-300 bg-gray-50 dark:bg-slate-700/60 border border-gray-100 dark:border-slate-600/40 p-3 rounded-lg">
                 {selectedAssignment.request?.description || 'No description available'}
               </p>
             </div>
@@ -578,15 +578,15 @@ const AdminAssignmentsPage: React.FC = () => {
           size="lg"
         >
           <div className="space-y-4">
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-900 mb-2">Assignment Details</h4>
-              <p className="text-sm text-gray-600 mb-1">
+            <div className="bg-gray-50 dark:bg-slate-700/60 border border-gray-100 dark:border-slate-600/40 p-4 rounded-lg">
+              <h4 className="font-medium text-[#111827] dark:text-slate-100 mb-2">Assignment Details</h4>
+              <p className="text-sm text-[#374151] dark:text-slate-300 mb-1">
                 <span className="font-medium">Request:</span> {editingAssignment.request?.title || 'Unknown Request'}
               </p>
-              <p className="text-sm text-gray-600 mb-1">
+              <p className="text-sm text-[#374151] dark:text-slate-300 mb-1">
                 <span className="font-medium">Volunteer:</span> {editingAssignment.volunteer?.name || 'Unknown Volunteer'}
               </p>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-[#374151] dark:text-slate-300">
                 <span className="font-medium">Accepted:</span> {new Date(editingAssignment.acceptedAt).toLocaleString()}
               </p>
             </div>

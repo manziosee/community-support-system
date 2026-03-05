@@ -138,10 +138,10 @@ const NotificationsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{t('notifications.title')}</h1>
-          <p className="text-gray-600 mt-1">{t('notifications.subtitle')}</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('notifications.title')}</h1>
+          <p className="text-gray-600 dark:text-slate-400 mt-1">{t('notifications.subtitle')}</p>
         </div>
         {stats.unread > 0 && (
           <Button onClick={markAllAsRead} icon={CheckCheck}>
@@ -151,37 +151,37 @@ const NotificationsPage: React.FC = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card>
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Bell className="w-5 h-5 text-blue-600" />
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-[#eff6ff] dark:bg-[#1e3a5f]/40 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Bell className="w-5 h-5 text-[#2563eb]" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">{t('notifications.total')}</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+            <div>
+              <p className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">{t('notifications.total')}</p>
+              <p className="text-2xl font-black text-gray-900 dark:text-slate-100">{stats.total}</p>
             </div>
           </div>
         </Card>
         <Card>
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-              <Bell className="w-5 h-5 text-red-600" />
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-[#fffbeb] dark:bg-[#451a03]/40 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Bell className="w-5 h-5 text-[#d97706]" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">{t('notifications.unread')}</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.unread}</p>
+            <div>
+              <p className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">{t('notifications.unread')}</p>
+              <p className="text-2xl font-black text-gray-900 dark:text-slate-100">{stats.unread}</p>
             </div>
           </div>
         </Card>
         <Card>
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <Check className="w-5 h-5 text-green-600" />
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-[#f0fdf4] dark:bg-[#14532d]/40 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Check className="w-5 h-5 text-[#059669]" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">{t('notifications.read')}</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.read}</p>
+            <div>
+              <p className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">{t('notifications.read')}</p>
+              <p className="text-2xl font-black text-gray-900 dark:text-slate-100">{stats.read}</p>
             </div>
           </div>
         </Card>
@@ -205,15 +205,15 @@ const NotificationsPage: React.FC = () => {
           </div>
           
           {/* Filter Buttons */}
-          <div className="flex items-center space-x-4">
-            <Filter className="w-4 h-4 text-gray-400" />
-            <div className="flex space-x-2">
+          <div className="flex flex-wrap items-center gap-3">
+            <Filter className="w-4 h-4 text-gray-400 flex-shrink-0" />
+            <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setFilter('all')}
                 className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
                   filter === 'all'
-                    ? 'bg-blue-100 text-blue-800'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900'
+                    : 'bg-gray-100 dark:bg-neutral-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'
                 }`}
               >
                 {t('notifications.all')} ({stats.total})
@@ -222,8 +222,8 @@ const NotificationsPage: React.FC = () => {
                 onClick={() => setFilter('unread')}
                 className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
                   filter === 'unread'
-                    ? 'bg-red-100 text-red-800'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900'
+                    : 'bg-gray-100 dark:bg-neutral-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'
                 }`}
               >
                 {t('notifications.unread')} ({stats.unread})
@@ -232,8 +232,8 @@ const NotificationsPage: React.FC = () => {
                 onClick={() => setFilter('read')}
                 className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
                   filter === 'read'
-                    ? 'bg-green-100 text-green-800'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900'
+                    : 'bg-gray-100 dark:bg-neutral-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'
                 }`}
               >
                 {t('notifications.read')} ({stats.read})
@@ -256,14 +256,14 @@ const NotificationsPage: React.FC = () => {
 
       {/* Notifications List */}
       <Card padding="none">
-        <div className="p-6 border-b border-gray-200">
+        <div className="p-6 border-b border-gray-200 dark:border-neutral-700">
           <h2 className="text-lg font-semibold text-gray-900">
             {filter === 'all' ? t('notifications.allNotifications') : 
              filter === 'unread' ? t('notifications.unreadNotifications') : t('notifications.readNotifications')}
             ({filteredNotifications.length})
           </h2>
         </div>
-        <div className="divide-y divide-gray-200">
+        <div className="divide-y divide-gray-200 dark:divide-neutral-700">
           {filteredNotifications.length === 0 ? (
             <div className="p-6">
               <EmptyState
@@ -281,13 +281,13 @@ const NotificationsPage: React.FC = () => {
               <div
                 key={notification.notificationId}
                 className={`p-6 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${
-                  !notification.isRead ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                  !notification.isRead ? 'bg-gray-50 dark:bg-neutral-800 border-l-4 border-l-gray-900 dark:border-l-gray-200' : ''
                 }`}
               >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-3">
-                      <p className="text-sm text-gray-900 flex-1">
+                <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-start gap-2">
+                      <p className="text-sm text-gray-900 dark:text-slate-100 flex-1">
                         {notification.message}
                       </p>
                       {!notification.isRead && (
@@ -296,14 +296,14 @@ const NotificationsPage: React.FC = () => {
                         </Badge>
                       )}
                     </div>
-                    <p className="text-xs text-gray-500 mt-2">
+                    <p className="text-xs text-gray-500 dark:text-slate-400 mt-2">
                       {formatDate(notification.createdAt)}
                     </p>
                   </div>
-                  <div className="flex items-center space-x-2 ml-4">
+                  <div className="flex flex-wrap items-center gap-1.5 flex-shrink-0">
                     <Button
                       size="sm"
-                      variant="secondary"
+                      variant="view"
                       icon={Eye}
                       onClick={() => setSelectedNotification(notification)}
                     >
@@ -321,7 +321,7 @@ const NotificationsPage: React.FC = () => {
                     )}
                     <Button
                       size="sm"
-                      variant="danger"
+                      variant="delete"
                       icon={Trash2}
                       onClick={() => deleteNotification(notification.notificationId)}
                     >
@@ -338,12 +338,12 @@ const NotificationsPage: React.FC = () => {
       {/* Notification Details Modal */}
       {selectedNotification && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+          <div className="bg-white dark:bg-neutral-900 rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto border border-gray-200 dark:border-neutral-700">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <Bell className="w-5 h-5 text-blue-600" />
+                  <div className="w-10 h-10 bg-gray-100 dark:bg-neutral-700 rounded-lg flex items-center justify-center">
+                    <Bell className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                   </div>
                   <div>
                     <h2 className="text-xl font-semibold text-gray-900">{t('notifications.notificationDetails')}</h2>
@@ -369,7 +369,7 @@ const NotificationsPage: React.FC = () => {
                 </div>
               </div>
               
-              <div className="bg-gray-50 p-4 rounded-lg mb-4">
+              <div className="bg-gray-50 dark:bg-neutral-800 p-4 rounded-lg mb-4">
                 <h3 className="font-medium text-gray-900 mb-2">{t('notifications.message')}</h3>
                 <p className="text-gray-700 leading-relaxed">
                   {selectedNotification.message}
@@ -419,7 +419,7 @@ const NotificationsPage: React.FC = () => {
                   </Button>
                 )}
                 <Button
-                  variant="danger"
+                  variant="delete"
                   icon={Trash2}
                   onClick={() => {
                     deleteNotification(selectedNotification.notificationId);

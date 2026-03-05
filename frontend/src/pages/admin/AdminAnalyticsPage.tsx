@@ -49,8 +49,8 @@ interface AnalyticsData {
   };
 }
 
-const COLORS = ['#0d9488', '#6366f1', '#f59e0b', '#ef4444', '#22c55e', '#8b5cf6'];
-const PROVINCE_COLORS = ['#0d9488', '#6366f1', '#f59e0b', '#ef4444', '#22c55e'];
+const COLORS = ['#0d9488', '#6366f1', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6'];
+const PROVINCE_COLORS = ['#0d9488', '#6366f1', '#f59e0b', '#10b981', '#ef4444'];
 
 const AdminAnalyticsPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -160,7 +160,7 @@ const AdminAnalyticsPage: React.FC = () => {
           </select>
           <Button
             type="button"
-            variant="secondary"
+            variant="create"
             icon={Download}
             onClick={() => exportToCSV([{
               'Total Users': analytics.totalUsers,
@@ -183,14 +183,14 @@ const AdminAnalyticsPage: React.FC = () => {
       </div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
         {[
-          { label: 'Total Users', value: analytics.totalUsers, icon: Users, color: 'bg-blue-100 text-blue-600', growth: analytics.growthMetrics?.userGrowth },
-          { label: 'Total Requests', value: analytics.totalRequests, icon: FileText, color: 'bg-yellow-100 text-yellow-600', growth: analytics.growthMetrics?.requestGrowth },
-          { label: 'Assignments', value: analytics.totalAssignments, icon: CheckSquare, color: 'bg-green-100 text-green-600', growth: analytics.growthMetrics?.assignmentGrowth },
-          { label: 'Completion Rate', value: `${analytics.completionRate}%`, icon: TrendingUp, color: 'bg-purple-100 text-purple-600' },
-          { label: 'Avg Response', value: analytics.averageResponseTime, icon: Calendar, color: 'bg-orange-100 text-orange-600' },
-          { label: 'Active Volunteers', value: analytics.activeVolunteers, icon: Award, color: 'bg-red-100 text-red-600' },
+          { label: 'Total Users', value: analytics.totalUsers, icon: Users, color: 'bg-[#eff6ff] text-[#2563eb]', growth: analytics.growthMetrics?.userGrowth },
+          { label: 'Total Requests', value: analytics.totalRequests, icon: FileText, color: 'bg-[#fffbeb] text-[#d97706]', growth: analytics.growthMetrics?.requestGrowth },
+          { label: 'Assignments', value: analytics.totalAssignments, icon: CheckSquare, color: 'bg-[#f0fdf4] text-[#059669]', growth: analytics.growthMetrics?.assignmentGrowth },
+          { label: 'Completion Rate', value: `${analytics.completionRate}%`, icon: TrendingUp, color: 'bg-[#faf5ff] text-[#7c3aed]' },
+          { label: 'Avg Response', value: analytics.averageResponseTime, icon: Calendar, color: 'bg-[#fff7ed] text-[#ea580c]' },
+          { label: 'Active Volunteers', value: analytics.activeVolunteers, icon: Award, color: 'bg-[#fef2f2] text-[#dc2626]' },
         ].map((metric, i) => (
           <Card key={i}>
             <div className="flex items-center">
@@ -198,10 +198,10 @@ const AdminAnalyticsPage: React.FC = () => {
                 <metric.icon className="w-5 h-5" />
               </div>
               <div className="ml-3 min-w-0">
-                <p className="text-xs font-medium text-gray-500 truncate">{metric.label}</p>
-                <p className="text-xl font-bold text-gray-900">{metric.value}</p>
+                <p className="text-xs font-medium text-[#6b7280] dark:text-slate-400 truncate">{metric.label}</p>
+                <p className="text-xl font-bold text-[#111827] dark:text-slate-100">{metric.value}</p>
                 {metric.growth !== undefined && (
-                  <p className={`text-xs ${metric.growth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  <p className={`text-xs ${metric.growth >= 0 ? 'text-[#059669]' : 'text-[#dc2626]'}`}>
                     {metric.growth >= 0 ? '+' : ''}{metric.growth}%
                   </p>
                 )}
@@ -214,7 +214,7 @@ const AdminAnalyticsPage: React.FC = () => {
       {/* Charts Row 1: User Distribution + Request Status */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">User Distribution</h3>
+          <h3 className="text-lg font-semibold text-[#111827] dark:text-slate-100 mb-4">User Distribution</h3>
           {userDistributionData.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
@@ -229,19 +229,19 @@ const AdminAnalyticsPage: React.FC = () => {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[300px] flex items-center justify-center text-gray-400">No user data yet</div>
+            <div className="h-[300px] flex items-center justify-center text-[#9ca3af] dark:text-slate-500">No user data yet</div>
           )}
         </Card>
 
         <Card>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Request Status Breakdown</h3>
+          <h3 className="text-lg font-semibold text-[#111827] dark:text-slate-100 mb-4">Request Status Breakdown</h3>
           {requestStatusData.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie data={requestStatusData} cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={4} dataKey="value"
                   label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
                   {requestStatusData.map((_entry, index) => (
-                    <Cell key={index} fill={['#f59e0b', '#6366f1', '#22c55e', '#ef4444'][index]} />
+                    <Cell key={index} fill={['#f59e0b', '#3b82f6', '#10b981', '#ef4444'][index]} />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -249,7 +249,7 @@ const AdminAnalyticsPage: React.FC = () => {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[300px] flex items-center justify-center text-gray-400">No request data yet</div>
+            <div className="h-[300px] flex items-center justify-center text-[#9ca3af] dark:text-slate-500">No request data yet</div>
           )}
         </Card>
       </div>
@@ -257,7 +257,7 @@ const AdminAnalyticsPage: React.FC = () => {
       {/* Charts Row 2: Province Performance + Skills Radar */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Performance by Province</h3>
+          <h3 className="text-lg font-semibold text-[#111827] dark:text-slate-100 mb-4">Performance by Province</h3>
           {provinceBarData.length > 0 ? (
             <ResponsiveContainer width="100%" height={320}>
               <BarChart data={provinceBarData} margin={{ bottom: 20 }}>
@@ -271,33 +271,33 @@ const AdminAnalyticsPage: React.FC = () => {
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[320px] flex items-center justify-center text-gray-400">No province data available</div>
+            <div className="h-[320px] flex items-center justify-center text-[#9ca3af] dark:text-slate-500">No province data available</div>
           )}
         </Card>
 
         <Card>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Skills Demand Overview</h3>
+          <h3 className="text-lg font-semibold text-[#111827] dark:text-slate-100 mb-4">Skills Demand Overview</h3>
           {skillsRadarData.length > 0 ? (
             <ResponsiveContainer width="100%" height={320}>
               <RadarChart data={skillsRadarData}>
                 <PolarGrid stroke="#e5e7eb" />
                 <PolarAngleAxis dataKey="skill" tick={{ fontSize: 10 }} />
                 <PolarRadiusAxis tick={{ fontSize: 10 }} />
-                <Radar name="Volunteers" dataKey="volunteers" stroke="#0d9488" fill="#0d9488" fillOpacity={0.3} />
-                <Radar name="Requests" dataKey="requests" stroke="#6366f1" fill="#6366f1" fillOpacity={0.3} />
+                <Radar name="Volunteers" dataKey="volunteers" stroke="#0d9488" fill="#0d9488" fillOpacity={0.2} />
+                <Radar name="Requests" dataKey="requests" stroke="#6366f1" fill="#6366f1" fillOpacity={0.25} />
                 <Legend />
                 <Tooltip />
               </RadarChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[320px] flex items-center justify-center text-gray-400">No skills data available</div>
+            <div className="h-[320px] flex items-center justify-center text-[#9ca3af] dark:text-slate-500">No skills data available</div>
           )}
         </Card>
       </div>
 
       {/* Growth Metrics Bar Chart */}
       <Card>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Growth Metrics (30-Day Trend)</h3>
+        <h3 className="text-lg font-semibold text-[#111827] dark:text-slate-100 mb-4">Growth Metrics (30-Day Trend)</h3>
         <ResponsiveContainer width="100%" height={250}>
           <BarChart data={growthData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -306,7 +306,7 @@ const AdminAnalyticsPage: React.FC = () => {
             <Tooltip formatter={(value: number) => [`${value}%`, 'Growth']} />
             <Bar dataKey="growth" radius={[6, 6, 0, 0]}>
               {growthData.map((entry, index) => (
-                <Cell key={index} fill={entry.growth >= 0 ? '#22c55e' : '#ef4444'} />
+                <Cell key={index} fill={entry.growth >= 0 ? '#10b981' : '#ef4444'} />
               ))}
             </Bar>
           </BarChart>
@@ -316,12 +316,12 @@ const AdminAnalyticsPage: React.FC = () => {
       {/* Province Completion Rates */}
       {analytics.performanceByProvince && analytics.performanceByProvince.length > 0 && (
         <Card>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Province Completion Rates</h3>
+          <h3 className="text-lg font-semibold text-[#111827] dark:text-slate-100 mb-4">Province Completion Rates</h3>
           <div className="space-y-3">
             {analytics.performanceByProvince.map((province, index) => (
               <div key={province.province} className="flex items-center gap-4">
-                <div className="w-36 text-sm font-medium text-gray-700 truncate">{province.province}</div>
-                <div className="flex-1 bg-gray-100 rounded-full h-6 overflow-hidden">
+                <div className="w-36 text-sm font-medium text-[#374151] dark:text-slate-300 truncate">{province.province}</div>
+                <div className="flex-1 bg-gray-100 dark:bg-slate-700 rounded-full h-6 overflow-hidden">
                   <div
                     className="h-full rounded-full flex items-center justify-end pr-2 text-xs font-medium text-white transition-all duration-500"
                     style={{ width: `${Math.max(province.completionRate, 2)}%`, backgroundColor: PROVINCE_COLORS[index % PROVINCE_COLORS.length] }}
@@ -329,7 +329,7 @@ const AdminAnalyticsPage: React.FC = () => {
                     {province.completionRate > 10 ? `${province.completionRate}%` : ''}
                   </div>
                 </div>
-                <div className="w-14 text-right text-sm font-semibold text-gray-900">{province.completionRate}%</div>
+                <div className="w-14 text-right text-sm font-semibold text-[#111827] dark:text-slate-100">{province.completionRate}%</div>
               </div>
             ))}
           </div>
@@ -339,89 +339,91 @@ const AdminAnalyticsPage: React.FC = () => {
       {/* Skills Table + Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card padding="none">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">Most Requested Skills</h2>
+          <div className="p-6 border-b border-gray-200 dark:border-slate-700">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-slate-100">Most Requested Skills</h2>
           </div>
           <div className="p-6 space-y-3">
             {analytics.mostRequestedSkills?.length > 0 ? analytics.mostRequestedSkills.map((skill) => (
-              <div key={skill.skillName} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div key={skill.skillName} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-700/60 rounded-lg border border-transparent dark:border-slate-600/40">
                 <div className="flex items-center min-w-0">
-                  <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
-                    <Award className="w-4 h-4 text-green-600" />
+                  <div className="w-8 h-8 bg-[#d1fae5] dark:bg-[#064e3b]/60 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+                    <Award className="w-4 h-4 text-[#059669]" />
                   </div>
                   <div className="min-w-0">
-                    <p className="font-medium text-gray-900 truncate">{skill.skillName}</p>
-                    <p className="text-xs text-gray-500">{skill.volunteerCount} volunteers</p>
+                    <p className="font-medium text-[#111827] dark:text-slate-100 truncate">{skill.skillName}</p>
+                    <p className="text-xs text-[#6b7280] dark:text-slate-400">{skill.volunteerCount} volunteers</p>
                   </div>
                 </div>
                 <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ml-2 ${
-                  skill.demandLevel === 'High' ? 'bg-red-100 text-red-700' :
-                  skill.demandLevel === 'Medium' ? 'bg-yellow-100 text-yellow-700' :
-                  'bg-green-100 text-green-700'
+                  skill.demandLevel === 'High'
+                    ? 'bg-[#fee2e2] text-[#b91c1c] dark:bg-[#7f1d1d]/60 dark:text-[#fca5a5]'
+                    : skill.demandLevel === 'Medium'
+                    ? 'bg-[#fef9c3] text-[#854d0e] dark:bg-[#713f12]/60 dark:text-[#fde047]'
+                    : 'bg-[#dcfce7] text-[#15803d] dark:bg-[#14532d]/60 dark:text-[#86efac]'
                 }`}>
                   {skill.demandLevel || 'Low'}
                 </span>
               </div>
-            )) : <p className="text-gray-500">No skills data available</p>}
+            )) : <p className="text-[#6b7280] dark:text-slate-400">No skills data available</p>}
           </div>
         </Card>
 
         <Card padding="none">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">Recent System Activity</h2>
+          <div className="p-6 border-b border-gray-200 dark:border-slate-700">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-slate-100">Recent System Activity</h2>
           </div>
           <div className="p-6 space-y-3">
             {analytics.recentActivity?.length > 0 ? analytics.recentActivity.map((activity, index) => {
               const Icon = getActivityIcon(activity.type);
               const timeAgo = new Date(activity.timestamp).toLocaleString();
               return (
-                <div key={index} className="flex items-center p-3 bg-gray-50 rounded-lg">
+                <div key={index} className="flex items-center p-3 bg-gray-50 dark:bg-slate-700/60 rounded-lg border border-transparent dark:border-slate-600/40">
                   <div className={`w-9 h-9 rounded-lg flex items-center justify-center mr-3 flex-shrink-0 ${getActivityColor(activity.type)}`}>
                     <Icon className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">{activity.description}</p>
-                    <p className="text-xs text-gray-500">{timeAgo}</p>
+                    <p className="text-sm font-medium text-[#111827] dark:text-slate-100 truncate">{activity.description}</p>
+                    <p className="text-xs text-[#6b7280] dark:text-slate-400">{timeAgo}</p>
                   </div>
                 </div>
               );
-            }) : <p className="text-gray-500">No recent activity</p>}
+            }) : <p className="text-[#6b7280] dark:text-slate-400">No recent activity</p>}
           </div>
         </Card>
       </div>
 
       {/* System Health */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card>
           <div className="text-center">
-            <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Activity className="w-7 h-7 text-green-600" />
+            <div className="w-14 h-14 bg-[#d1fae5] dark:bg-[#064e3b]/50 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Activity className="w-7 h-7 text-[#059669]" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900">System Status</h3>
-            <p className="text-green-600 font-medium mt-1">All Systems Operational</p>
-            <p className="text-sm text-gray-500 mt-1">99.9% uptime</p>
+            <h3 className="text-lg font-semibold text-[#111827] dark:text-slate-100">System Status</h3>
+            <p className="text-[#059669] font-medium mt-1">All Systems Operational</p>
+            <p className="text-sm text-[#6b7280] dark:text-slate-400 mt-1">99.9% uptime</p>
           </div>
         </Card>
         <Card>
           <div className="text-center">
-            <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <TrendingUp className="w-7 h-7 text-blue-600" />
+            <div className="w-14 h-14 bg-[#dbeafe] dark:bg-[#1e3a5f]/50 rounded-full flex items-center justify-center mx-auto mb-3">
+              <TrendingUp className="w-7 h-7 text-[#2563eb]" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900">Growth Trend</h3>
-            <p className="text-blue-600 font-medium mt-1">
+            <h3 className="text-lg font-semibold text-[#111827] dark:text-slate-100">Growth Trend</h3>
+            <p className="text-[#2563eb] font-medium mt-1">
               {(analytics.growthMetrics?.userGrowth || 0) > 0 ? 'Positive Growth' : 'Stable'}
             </p>
-            <p className="text-sm text-gray-500 mt-1">{analytics.growthMetrics?.userGrowth || 0}% user growth</p>
+            <p className="text-sm text-[#6b7280] dark:text-slate-400 mt-1">{analytics.growthMetrics?.userGrowth || 0}% user growth</p>
           </div>
         </Card>
         <Card>
           <div className="text-center">
-            <div className="w-14 h-14 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Award className="w-7 h-7 text-purple-600" />
+            <div className="w-14 h-14 bg-[#ede9fe] dark:bg-[#2e1065]/50 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Award className="w-7 h-7 text-[#7c3aed]" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900">Completion Rate</h3>
-            <p className="text-purple-600 font-medium mt-1">{analytics.completionRate}%</p>
-            <p className="text-sm text-gray-500 mt-1">Assignment completion rate</p>
+            <h3 className="text-lg font-semibold text-[#111827] dark:text-slate-100">Completion Rate</h3>
+            <p className="text-[#7c3aed] font-medium mt-1">{analytics.completionRate}%</p>
+            <p className="text-sm text-[#6b7280] dark:text-slate-400 mt-1">Assignment completion rate</p>
           </div>
         </Card>
       </div>

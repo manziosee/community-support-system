@@ -32,7 +32,7 @@ const GamificationWidget: React.FC<GamificationWidgetProps> = ({ compact = false
       <Link to="/achievements">
         <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20 border border-primary-100 dark:border-primary-700/30 rounded-xl hover:shadow-soft transition-all duration-200 group">
           <div className="flex-shrink-0">
-            <ProgressRing value={progress} size={44} strokeWidth={4} color="#009688" trackColor="rgba(0,150,136,0.15)" />
+            <ProgressRing value={progress} size={44} strokeWidth={4} color="#000000" trackColor="rgba(0,0,0,0.1)" />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
