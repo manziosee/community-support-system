@@ -106,14 +106,14 @@ const CitizenDashboard: React.FC = () => {
     <div className="space-y-6 animate-fade-in">
 
       {/* ── Welcome Banner ───────────────────────────────────────────── */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-600 via-primary-500 to-secondary-600 text-white shadow-soft-lg">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white shadow-soft-lg">
         <div className="dot-grid absolute inset-0 opacity-[0.07]" />
-        <div className="absolute -top-10 -right-10 w-52 h-52 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-12 -left-12 w-40 h-40 bg-secondary-400/20 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -top-10 -right-10 w-52 h-52 bg-white/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-12 -left-12 w-40 h-40 bg-white/5 rounded-full blur-2xl pointer-events-none" />
 
         <div className="relative p-6 lg:p-8 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5">
           <div className="flex-1">
-            <p className="text-primary-200 text-sm font-medium mb-1">{t('greeting_morning')} 👋</p>
+            <p className="text-gray-300 text-sm font-medium mb-1">{t('greeting_morning')} 👋</p>
             <h1 className="font-display text-2xl lg:text-3xl font-extrabold mb-2 leading-tight">{user?.name}</h1>
             {locationStr && (
               <p className="flex items-center gap-1.5 text-white/75 text-sm mb-4">
@@ -235,7 +235,7 @@ const CitizenDashboard: React.FC = () => {
         <SectionCard
           title={t('dashboard_recent_requests')}
           viewAllLink="/requests"
-          headerClassName="bg-gradient-to-r from-primary-50 to-white dark:from-primary-900/20 dark:to-slate-800"
+          headerClassName="bg-gradient-to-r from-gray-50 to-transparent dark:from-slate-800/80 dark:to-transparent"
         >
           {requests.length === 0 ? (
             <EmptyState
@@ -324,9 +324,9 @@ const CitizenDashboard: React.FC = () => {
             Quick Actions
           </h3>
           {[
-            { to: '/requests/create', icon: Plus,     label: 'New Request',   desc: 'Post a new help request',     gradient: 'from-primary-500 to-primary-700' },
-            { to: '/requests',        icon: FileText,  label: 'My Requests',   desc: 'Track all your requests',     gradient: 'from-secondary-500 to-secondary-700' },
-            { to: '/notifications',   icon: Bell,      label: 'Notifications', desc: `${stats.unreadNotifications} unread`, gradient: 'from-orange-400 to-orange-600' },
+            { to: '/requests/create', icon: Plus,     label: 'New Request',   desc: 'Post a new help request',     gradient: 'from-gray-900 to-black' },
+            { to: '/requests',        icon: FileText,  label: 'My Requests',   desc: 'Track all your requests',     gradient: 'from-gray-700 to-gray-900' },
+            { to: '/notifications',   icon: Bell,      label: 'Notifications', desc: `${stats.unreadNotifications} unread`, gradient: 'from-gray-500 to-gray-700' },
           ].map((action) => (
             <Link key={action.to} to={action.to}>
               <div className="group flex items-center gap-4 p-4 bg-white dark:bg-slate-800 border border-neutral-200 dark:border-slate-700 rounded-xl hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-soft hover:-translate-y-0.5 transition-all duration-200">
@@ -343,11 +343,11 @@ const CitizenDashboard: React.FC = () => {
           ))}
 
           {/* Pro tip */}
-          <div className="bg-gradient-to-br from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20 border border-primary-100 dark:border-primary-800/30 rounded-xl p-4 transition-colors duration-200">
+          <div className="bg-gray-50 dark:bg-slate-800/70 border border-gray-200 dark:border-slate-700 rounded-xl p-4 transition-colors duration-200">
             <div className="flex items-start gap-2">
-              <Sparkles className="w-4 h-4 text-primary-500 dark:text-primary-400 mt-0.5 flex-shrink-0" />
+              <Sparkles className="w-4 h-4 text-gray-600 dark:text-slate-400 mt-0.5 flex-shrink-0" />
               <div>
-                <p className="text-xs font-semibold text-primary-700 dark:text-primary-300 mb-1">Pro tip</p>
+                <p className="text-xs font-semibold text-gray-800 dark:text-slate-200 mb-1">Pro tip</p>
                 <p className="text-xs text-neutral-600 dark:text-slate-400 leading-relaxed">
                   Add detailed descriptions to your requests to get matched with the right volunteers faster.
                 </p>

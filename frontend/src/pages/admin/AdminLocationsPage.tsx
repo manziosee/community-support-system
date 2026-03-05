@@ -13,19 +13,19 @@ interface BreadcrumbItem {
 }
 
 const PROVINCE_COLORS: Record<string, string> = {
-  'Kigali': 'bg-blue-100 text-blue-800 border-blue-200',
-  'East': 'bg-green-100 text-green-800 border-green-200',
-  'West': 'bg-purple-100 text-purple-800 border-purple-200',
-  'South': 'bg-orange-100 text-orange-800 border-orange-200',
-  'North': 'bg-red-100 text-red-800 border-red-200',
+  'Kigali': 'bg-[#eff6ff] text-[#1d4ed8] border-[#bfdbfe] dark:bg-[#1e3a5f] dark:text-[#93c5fd] dark:border-[#1d4ed8]',
+  'East':   'bg-[#f0fdf4] text-[#15803d] border-[#bbf7d0] dark:bg-[#14352a] dark:text-[#86efac] dark:border-[#15803d]',
+  'West':   'bg-[#faf5ff] text-[#7c3aed] border-[#e9d5ff] dark:bg-[#2e1a4a] dark:text-[#c4b5fd] dark:border-[#7c3aed]',
+  'South':  'bg-[#fff7ed] text-[#c2410c] border-[#fed7aa] dark:bg-[#431a07] dark:text-[#fdba74] dark:border-[#c2410c]',
+  'North':  'bg-[#fef2f2] text-[#b91c1c] border-[#fecaca] dark:bg-[#450a0a] dark:text-[#fca5a5] dark:border-[#b91c1c]',
 };
 
 const PROVINCE_BG: Record<string, string> = {
-  'Kigali': 'from-blue-500 to-blue-600',
-  'East': 'from-green-500 to-green-600',
-  'West': 'from-purple-500 to-purple-600',
-  'South': 'from-orange-500 to-orange-600',
-  'North': 'from-red-500 to-red-600',
+  'Kigali': 'from-[#3b82f6] to-[#2563eb]',
+  'East':   'from-[#22c55e] to-[#16a34a]',
+  'West':   'from-[#a855f7] to-[#7c3aed]',
+  'South':  'from-[#f97316] to-[#ea580c]',
+  'North':  'from-[#ef4444] to-[#dc2626]',
 };
 
 const LEVEL_ICONS: Record<Level, React.FC<{ className?: string }>> = {
@@ -224,14 +224,14 @@ const AdminLocationsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Location Management</h1>
-          <p className="text-gray-600 mt-1">Manage Rwanda's administrative hierarchy</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Location Management</h1>
+          <p className="text-gray-600 dark:text-slate-400 mt-1">Manage Rwanda's administrative hierarchy</p>
         </div>
         <button
           onClick={() => navigateTo('province', '')}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-600 rounded-lg hover:bg-gray-50 dark:hover:bg-neutral-700"
         >
           <RefreshCw className="w-4 h-4" />
           Refresh
@@ -239,11 +239,11 @@ const AdminLocationsPage: React.FC = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
           <div className="flex items-center">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Globe className="w-5 h-5 text-blue-600" />
+            <div className="w-10 h-10 bg-[#eff6ff] rounded-lg flex items-center justify-center">
+              <Globe className="w-5 h-5 text-[#2563eb]" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Provinces</p>
@@ -253,8 +253,8 @@ const AdminLocationsPage: React.FC = () => {
         </Card>
         <Card>
           <div className="flex items-center">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <Building2 className="w-5 h-5 text-green-600" />
+            <div className="w-10 h-10 bg-[#f0fdf4] rounded-lg flex items-center justify-center">
+              <Building2 className="w-5 h-5 text-[#16a34a]" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Districts</p>
@@ -264,8 +264,8 @@ const AdminLocationsPage: React.FC = () => {
         </Card>
         <Card>
           <div className="flex items-center">
-            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-              <MapPin className="w-5 h-5 text-purple-600" />
+            <div className="w-10 h-10 bg-[#faf5ff] rounded-lg flex items-center justify-center">
+              <MapPin className="w-5 h-5 text-[#7c3aed]" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Current Level</p>
@@ -275,8 +275,8 @@ const AdminLocationsPage: React.FC = () => {
         </Card>
         <Card>
           <div className="flex items-center">
-            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-              <Landmark className="w-5 h-5 text-orange-600" />
+            <div className="w-10 h-10 bg-[#fff7ed] rounded-lg flex items-center justify-center">
+              <Landmark className="w-5 h-5 text-[#ea580c]" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Showing</p>
@@ -300,7 +300,7 @@ const AdminLocationsPage: React.FC = () => {
                     onClick={() => handleBreadcrumbClick(crumb, index)}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                       isLast
-                        ? 'bg-blue-100 text-blue-800 cursor-default'
+                        ? 'bg-[#eff6ff] text-[#1d4ed8] cursor-default'
                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                     }`}
                   >
@@ -339,7 +339,7 @@ const AdminLocationsPage: React.FC = () => {
       {/* Loading state for sub-items */}
       {isLoadingItems && (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="w-6 h-6 animate-spin text-blue-600 mr-3" />
+          <Loader2 className="w-6 h-6 animate-spin text-[#0d9488] mr-3" />
           <span className="text-gray-600">Loading {getChildLabel().toLowerCase()}...</span>
         </div>
       )}
@@ -385,8 +385,8 @@ const AdminLocationsPage: React.FC = () => {
                     key={item}
                     onClick={() => isClickable && handleItemClick(item)}
                     disabled={!isClickable}
-                    className={`flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg text-left transition-all ${
-                      isClickable ? 'hover:border-blue-300 hover:bg-blue-50 hover:shadow-sm cursor-pointer group' : 'cursor-default'
+                    className={`flex items-center justify-between p-4 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-lg text-left transition-all ${
+                      isClickable ? 'hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-neutral-700 hover:shadow-sm cursor-pointer group' : 'cursor-default'
                     }`}
                   >
                     <div className="flex items-center min-w-0">
@@ -406,7 +406,7 @@ const AdminLocationsPage: React.FC = () => {
                       </div>
                     </div>
                     {isClickable && (
-                      <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
+                      <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0 group-hover:text-gray-700 dark:group-hover:text-gray-300 group-hover:translate-x-0.5 transition-all" />
                     )}
                   </button>
                 );
@@ -437,7 +437,7 @@ const AdminLocationsPage: React.FC = () => {
                 <button
                   key={province}
                   onClick={() => navigateTo('district', province)}
-                  className="text-center p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-all"
+                  className="text-center p-4 border border-gray-200 dark:border-neutral-700 rounded-lg hover:border-gray-400 dark:hover:border-neutral-500 hover:bg-gray-50 dark:hover:bg-neutral-800 transition-all"
                 >
                   <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium mb-2 border ${PROVINCE_COLORS[province] || 'bg-gray-100 text-gray-800 border-gray-200'}`}>
                     {province}

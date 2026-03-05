@@ -14,20 +14,21 @@ const SectionCard: React.FC<SectionCardProps> = ({
   title,
   viewAllLink,
   viewAllLabel = 'View all →',
-  headerClassName = 'bg-gradient-to-r from-neutral-50 to-white dark:from-slate-800 dark:to-slate-800',
+  headerClassName = 'bg-gray-50 dark:bg-slate-800',
   children,
   headerRight,
 }) => {
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-neutral-200 dark:border-slate-700/60 overflow-hidden transition-all duration-200 hover:shadow-card">
-      <div className={`px-5 py-4 border-b border-neutral-100 dark:border-slate-700/60 ${headerClassName}`}>
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-crisp border border-gray-100 dark:border-slate-700/60 overflow-hidden transition-all duration-200 hover:shadow-soft">
+      <div className={`px-5 py-4 border-b border-gray-100 dark:border-slate-700/60 ${headerClassName}`}>
         <div className="flex items-center justify-between">
           <h2 className="text-base font-bold text-gray-900 dark:text-white tracking-tight">{title}</h2>
           {headerRight ?? (
             viewAllLink ? (
               <Link
                 to={viewAllLink}
-                className="inline-flex items-center gap-1 text-xs font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 hover:underline transition-colors"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-gray-500 dark:text-slate-400
+                  hover:text-gray-900 dark:hover:text-white hover:underline transition-colors"
               >
                 {viewAllLabel}
               </Link>

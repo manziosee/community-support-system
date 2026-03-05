@@ -155,12 +155,12 @@ const MySkillsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">My Skills</h1>
-          <p className="text-gray-600">Manage your volunteer skills and expertise</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">My Skills</h1>
+          <p className="text-gray-600 dark:text-slate-400">Manage your volunteer skills and expertise</p>
         </div>
-        <Button icon={Plus} onClick={() => setShowAddModal(true)}>
+        <Button icon={Plus} onClick={() => setShowAddModal(true)} className="self-start sm:self-auto flex-shrink-0">
           Add Skill
         </Button>
       </div>
@@ -204,12 +204,12 @@ const MySkillsPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {userSkills.map((skill) => (
               <div key={skill.skillId} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                <div className="flex items-start justify-between mb-2">
-                  <h3 className="font-semibold text-gray-900">{skill.skillName}</h3>
-                  <div className="flex space-x-1">
+                <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
+                  <h3 className="font-semibold text-gray-900 dark:text-slate-100">{skill.skillName}</h3>
+                  <div className="flex flex-wrap gap-1">
                     <Button
                       size="sm"
-                      variant="secondary"
+                      variant="view"
                       icon={Eye}
                       onClick={() => setSelectedSkill(skill)}
                     >
@@ -217,7 +217,7 @@ const MySkillsPage: React.FC = () => {
                     </Button>
                     <Button
                       size="sm"
-                      variant="secondary"
+                      variant="edit"
                       icon={Edit}
                       onClick={() => editSkill(skill)}
                     >
@@ -225,7 +225,7 @@ const MySkillsPage: React.FC = () => {
                     </Button>
                     <Button
                       size="sm"
-                      variant="danger"
+                      variant="delete"
                       icon={Trash2}
                       onClick={() => removeSkill(skill.skillId)}
                     >
@@ -245,7 +245,7 @@ const MySkillsPage: React.FC = () => {
 
       {showAddModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+          <div className="bg-white dark:bg-neutral-900 rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto border border-gray-200 dark:border-neutral-700">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold text-gray-900">Add New Skill</h2>
@@ -278,7 +278,7 @@ const MySkillsPage: React.FC = () => {
                   </p>
                 ) : (
                   availableSkills.map((skill) => (
-                    <div key={skill.skillId} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-800">
+                    <div key={skill.skillId} className="border border-gray-200 dark:border-neutral-700 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-neutral-800">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <h3 className="font-semibold text-gray-900">{skill.skillName}</h3>
@@ -303,7 +303,7 @@ const MySkillsPage: React.FC = () => {
       {/* View Skill Modal */}
       {selectedSkill && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-lg w-full">
+          <div className="bg-white dark:bg-neutral-900 rounded-lg max-w-lg w-full border border-gray-200 dark:border-neutral-700">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold text-gray-900">Skill Details</h2>
@@ -340,7 +340,7 @@ const MySkillsPage: React.FC = () => {
       {/* Edit Skill Modal */}
       {editingSkill && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-lg w-full">
+          <div className="bg-white dark:bg-neutral-900 rounded-lg max-w-lg w-full border border-gray-200 dark:border-neutral-700">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold text-gray-900">Edit Skill</h2>

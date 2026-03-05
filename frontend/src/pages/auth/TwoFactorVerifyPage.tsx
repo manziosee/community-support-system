@@ -55,12 +55,12 @@ const TwoFactorVerifyPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50 py-12 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black py-12 px-4">
       <div className="max-w-md w-full">
         <Card>
           <div className="text-center mb-6">
-            <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <Shield className="w-8 h-8 text-white" />
+            <div className="mx-auto w-16 h-16 bg-gray-900 dark:bg-white rounded-2xl flex items-center justify-center shadow-lg">
+              <Shield className="w-8 h-8 text-white dark:text-gray-900" />
             </div>
             <h2 className="mt-4 text-2xl font-bold text-gray-900">
               Two-Factor Authentication
@@ -82,7 +82,7 @@ const TwoFactorVerifyPage: React.FC = () => {
                 type="text"
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center text-lg font-mono"
+                className="input-field text-center text-lg font-mono"
                 placeholder={useBackupCode ? "Enter backup code" : "000000"}
                 maxLength={useBackupCode ? 10 : 6}
               />
@@ -116,7 +116,7 @@ const TwoFactorVerifyPage: React.FC = () => {
                   setUseBackupCode(!useBackupCode);
                   setVerificationCode('');
                 }}
-                className="text-sm text-blue-600 hover:text-blue-500 underline"
+                className="text-sm text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white underline"
               >
                 {useBackupCode 
                   ? 'Use verification code instead'

@@ -245,12 +245,12 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl w-full space-y-6 sm:space-y-8">
         {/* Header */}
         <div className="text-center">
-          <div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-sky-400 to-sky-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
-            <HandHeart className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+          <div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 bg-gray-900 dark:bg-white rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
+            <HandHeart className="w-6 h-6 sm:w-8 sm:h-8 text-white dark:text-gray-900" />
           </div>
           <h2 className="mt-4 sm:mt-6 text-2xl sm:text-3xl font-bold text-gray-900">
             Join our community
@@ -374,7 +374,7 @@ const RegisterPage: React.FC = () => {
                     {...register('role')}
                     type="radio"
                     value={UserRole.CITIZEN}
-                    className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
+                    className="h-4 w-4 text-gray-900 focus:ring-gray-900 border-gray-300"
                   />
                   <span className="ml-2 text-sm text-gray-700">Get help from volunteers</span>
                 </label>
@@ -383,7 +383,7 @@ const RegisterPage: React.FC = () => {
                     {...register('role')}
                     type="radio"
                     value={UserRole.VOLUNTEER}
-                    className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
+                    className="h-4 w-4 text-gray-900 focus:ring-gray-900 border-gray-300"
                   />
                   <span className="ml-2 text-sm text-gray-700">Help others as a volunteer</span>
                 </label>
@@ -409,7 +409,7 @@ const RegisterPage: React.FC = () => {
                   <select
                     {...register('province')}
                     id="province"
-                    className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white text-black"
+                    className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-gray-900 bg-white text-black"
                   >
                     <option value="">Select province</option>
                     {provinces.map((province) => (
@@ -434,7 +434,7 @@ const RegisterPage: React.FC = () => {
                   <select
                     {...register('district')}
                     id="district"
-                    className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white"
+                    className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-gray-900 bg-white"
                     disabled={!watchedProvince || districts.length === 0}
                   >
                     <option value="">
@@ -467,7 +467,7 @@ const RegisterPage: React.FC = () => {
                   <select
                     {...register('sector')}
                     id="sector"
-                    className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white"
+                    className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-gray-900 bg-white"
                     disabled={!watchedDistrict || sectors.length === 0}
                   >
                     <option value="">
@@ -500,7 +500,7 @@ const RegisterPage: React.FC = () => {
                   <select
                     {...register('cell')}
                     id="cell"
-                    className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white"
+                    className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-gray-900 bg-white"
                     disabled={!watchedSector || cells.length === 0}
                   >
                     <option value="">
@@ -533,7 +533,7 @@ const RegisterPage: React.FC = () => {
                   <select
                     {...register('village')}
                     id="village"
-                    className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white"
+                    className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-gray-900 bg-white"
                     disabled={!watchedCell || villages.length === 0}
                   >
                     <option value="">
@@ -577,7 +577,7 @@ const RegisterPage: React.FC = () => {
                       type="checkbox"
                       checked={(watch('skills') || []).includes(skill.skillId)}
                       onChange={() => handleSkillToggle(skill.skillId)}
-                      className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                      className="h-4 w-4 text-gray-900 focus:ring-gray-900 border-gray-300 rounded"
                     />
                     <div className="ml-3">
                       <p className="text-sm font-medium text-gray-900">{skill.skillName}</p>
@@ -605,7 +605,7 @@ const RegisterPage: React.FC = () => {
               Already have an account?{' '}
               <Link
                 to="/login"
-                className="font-medium text-primary-600 hover:text-primary-500"
+                className="font-medium text-gray-700 hover:text-black"
               >
                 Sign in here
               </Link>

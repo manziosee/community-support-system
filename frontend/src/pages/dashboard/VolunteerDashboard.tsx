@@ -131,10 +131,10 @@ const VolunteerDashboard: React.FC = () => {
     <div className="space-y-6 animate-fade-in">
 
       {/* ── Welcome Banner ───────────────────────────────────────────── */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-secondary-600 via-secondary-500 to-primary-600 text-white shadow-soft-lg">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white shadow-soft-lg">
         <div className="dot-grid absolute inset-0 opacity-[0.07]" />
-        <div className="absolute -top-12 -right-12 w-56 h-56 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-10 -left-10 w-44 h-44 bg-primary-400/20 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -top-12 -right-12 w-56 h-56 bg-white/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 w-44 h-44 bg-white/5 rounded-full blur-2xl pointer-events-none" />
 
         <div className="relative p-6 lg:p-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
@@ -262,7 +262,7 @@ const VolunteerDashboard: React.FC = () => {
         <SectionCard
           title="My Active Assignments"
           viewAllLink="/assignments"
-          headerClassName="bg-gradient-to-r from-secondary-50 to-white dark:from-secondary-900/20 dark:to-slate-800"
+          headerClassName="bg-gradient-to-r from-gray-50 to-transparent dark:from-slate-800/80 dark:to-transparent"
         >
           {assignments.length === 0 ? (
             <EmptyState
@@ -391,9 +391,9 @@ const VolunteerDashboard: React.FC = () => {
       {/* ── Quick Action Cards ───────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
-          { to: '/requests/available', icon: FileText,    gradient: 'from-secondary-500 to-secondary-700', label: 'Browse Requests',  desc: 'Find requests matching your skills' },
-          { to: '/assignments',        icon: CheckSquare, gradient: 'from-primary-500 to-primary-700',     label: 'My Assignments',   desc: 'Track your ongoing & completed work' },
-          { to: '/profile',            icon: Award,       gradient: 'from-purple-500 to-purple-700',       label: 'Manage Skills',    desc: 'Update your expertise & profile' },
+          { to: '/requests/available', icon: FileText,    gradient: 'from-gray-900 to-black',      label: 'Browse Requests',  desc: 'Find requests matching your skills' },
+          { to: '/assignments',        icon: CheckSquare, gradient: 'from-gray-700 to-gray-900',   label: 'My Assignments',   desc: 'Track your ongoing & completed work' },
+          { to: '/profile',            icon: Award,       gradient: 'from-gray-500 to-gray-700',   label: 'Manage Skills',    desc: 'Update your expertise & profile' },
         ].map((action) => (
           <Link key={action.to} to={action.to}>
             <div className="group bg-white dark:bg-slate-800 border border-neutral-200 dark:border-slate-700 rounded-xl p-5 hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-soft hover:-translate-y-1 transition-all duration-300 text-center h-full flex flex-col items-center">

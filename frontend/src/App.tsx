@@ -7,6 +7,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { WebSocketProvider } from './contexts/WebSocketContext';
 import { GamificationProvider } from './contexts/GamificationContext';
+import { TranslationSync } from './components/TranslationSync';
 import Layout from './components/layout/Layout';
 import { UserRole } from './types';
 import ConfettiEffect from './components/common/ConfettiEffect';
@@ -190,35 +191,37 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <LanguageProvider>
-          <AuthProvider>
-            <GamificationProvider>
-              <Router>
-                <WebSocketProvider>
-                  <div className="App">
-                    <AnimatedRoutes />
-                    <GlobalConfetti />
-                    <Toaster
-                      position="top-right"
-                      toastOptions={{
-                        duration: 4000,
-                        style: {
-                          borderRadius: '12px',
-                          background: 'var(--toast-bg, #fff)',
-                          color: 'var(--toast-text, #111827)',
-                          boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
-                          fontSize: '14px',
-                          fontWeight: 500,
-                          padding: '12px 16px',
-                        },
-                        success: { iconTheme: { primary: '#009688', secondary: '#fff' } },
-                        error:   { iconTheme: { primary: '#ef4444', secondary: '#fff' } },
-                      }}
-                    />
-                  </div>
-                </WebSocketProvider>
-              </Router>
-            </GamificationProvider>
-          </AuthProvider>
+          <TranslationSync>
+            <AuthProvider>
+              <GamificationProvider>
+                <Router>
+                  <WebSocketProvider>
+                    <div className="App">
+                      <AnimatedRoutes />
+                      <GlobalConfetti />
+                      <Toaster
+                        position="top-right"
+                        toastOptions={{
+                          duration: 4000,
+                          style: {
+                            borderRadius: '12px',
+                            background: 'var(--toast-bg, #fff)',
+                            color: 'var(--toast-text, #111827)',
+                            boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+                            fontSize: '14px',
+                            fontWeight: 500,
+                            padding: '12px 16px',
+                          },
+                          success: { iconTheme: { primary: '#000000', secondary: '#fff' } },
+                          error:   { iconTheme: { primary: '#333333', secondary: '#fff' } },
+                        }}
+                      />
+                    </div>
+                  </WebSocketProvider>
+                </Router>
+              </GamificationProvider>
+            </AuthProvider>
+          </TranslationSync>
         </LanguageProvider>
       </ThemeProvider>
     </QueryClientProvider>

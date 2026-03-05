@@ -29,11 +29,11 @@ const ForgotPasswordPage: React.FC = () => {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50 py-12 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black py-12 px-4">
         <div className="max-w-md w-full">
           <Card>
             <div className="text-center">
-              <div className="mx-auto w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center shadow-lg mb-6">
+              <div className="mx-auto w-16 h-16 bg-gray-900 dark:bg-white rounded-2xl flex items-center justify-center shadow-lg mb-6">
                 <CheckCircle className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
@@ -41,7 +41,7 @@ const ForgotPasswordPage: React.FC = () => {
               </h2>
               <p className="text-gray-600 mb-6">
                 We've sent a password reset link to{' '}
-                <span className="font-medium text-blue-600">{email}</span>
+                <span className="font-medium text-gray-900 dark:text-white">{email}</span>
               </p>
               <div className="bg-blue-50 p-4 rounded-lg mb-6">
                 <p className="text-sm text-blue-700">
@@ -61,12 +61,12 @@ const ForgotPasswordPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50 py-12 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black py-12 px-4">
       <div className="max-w-md w-full">
         <Card>
           <div className="text-center mb-6">
-            <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <Mail className="w-8 h-8 text-white" />
+            <div className="mx-auto w-16 h-16 bg-gray-900 dark:bg-white rounded-2xl flex items-center justify-center shadow-lg">
+              <Mail className="w-8 h-8 text-white dark:text-gray-900" />
             </div>
             <h2 className="mt-4 text-2xl font-bold text-gray-900">
               Forgot your password?
@@ -103,7 +103,7 @@ const ForgotPasswordPage: React.FC = () => {
             <div className="text-center">
               <Link
                 to="/login"
-                className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-500"
+                className="inline-flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
               >
                 <ArrowLeft className="h-4 w-4 mr-1" />
                 Back to Login

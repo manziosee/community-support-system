@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FileText, Search, Filter, MapPin, User, Clock, CheckSquare, Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { requestsApi, assignmentsApi } from '../../services/api';
 import type { Request } from '../../types';
@@ -13,6 +14,7 @@ import EmptyState from '../../components/common/EmptyState';
 import toast from 'react-hot-toast';
 
 const AvailableRequestsPage: React.FC = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [requests, setRequests] = useState<Request[]>([]);
   const [filteredRequests, setFilteredRequests] = useState<Request[]>([]);
@@ -103,36 +105,34 @@ const AvailableRequestsPage: React.FC = () => {
     const now = new Date();
     const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
     
-    if (diffInHours < 1) return 'Just now';
-    if (diffInHours < 24) return `${diffInHours}h ago`;
-    return `${Math.floor(diffInHours / 24)}d ago`;
+    if (diffInHours < 1) return t('available_requests_just_now');
+    if (diffInHours < 24) return `${diffInHours}${t('available_requests_hours_ago')}`;
+    return `${Math.floor(diffInHours / 24)}${t('available_requests_days_ago')}`;
   };
 
   const provinces = [...new Set(requests.map(r => r.citizen.province || r.citizen.location?.province).filter(Boolean))];
 
   if (isLoading) {
-    return <LoadingSpinner size="lg" text="Loading available requests..." />;
+    return <LoadingSpinner size="lg" text={t('common_loading')} />;
   }
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Available Requests</h1>
-          <p className="text-gray-600 mt-1">Help your community by accepting requests that match your skills</p>
-        </div>
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('available_requests_title')}</h1>
+        <p className="text-gray-600 dark:text-slate-400 mt-1">{t('available_requests_subtitle')}</p>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card>
           <div className="flex items-center">
             <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
               <FileText className="w-5 h-5 text-blue-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Available Requests</p>
+              <p className="text-sm font-medium text-gray-600">{t('available_requests_available')}</p>
               <p className="text-2xl font-bold text-gray-900">{requests.length}</p>
             </div>
           </div>
@@ -143,7 +143,7 @@ const AvailableRequestsPage: React.FC = () => {
               <MapPin className="w-5 h-5 text-green-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Your Area</p>
+              <p className="text-sm font-medium text-gray-600">{t('available_requests_your_area')}</p>
               <p className="text-lg font-bold text-gray-900">{user?.district || user?.location?.district}</p>
               <p className="text-xs text-gray-500">{user?.province || user?.location?.province}</p>
             </div>
@@ -155,9 +155,9 @@ const AvailableRequestsPage: React.FC = () => {
               <CheckSquare className="w-5 h-5 text-purple-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Your Skills</p>
+              <p className="text-sm font-medium text-gray-600">{t('available_requests_your_skills')}</p>
               <p className="text-lg font-bold text-gray-900">{user?.skills?.length || 0}</p>
-              <p className="text-xs text-gray-500">Available skills</p>
+              <p className="text-xs text-gray-500">{t('available_requests_skills_count')}</p>
             </div>
           </div>
         </Card>
@@ -171,7 +171,7 @@ const AvailableRequestsPage: React.FC = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
-                placeholder="Search requests by title or description..."
+                placeholder={t('available_requests_search_placeholder')}
                 className="input-field pl-10"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -184,8 +184,8 @@ const AvailableRequestsPage: React.FC = () => {
               value={locationFilter}
               onChange={(e) => setLocationFilter(e.target.value)}
             >
-              <option value="MY_PROVINCE">My Province ({user?.province || user?.location?.province || 'Not set'})</option>
-              <option value="ALL">All Locations</option>
+              <option value="MY_PROVINCE">{t('available_requests_my_province')} ({user?.province || user?.location?.province || 'Not set'})</option>
+              <option value="ALL">{t('available_requests_all_locations')}</option>
               {provinces.map(province => (
                 <option key={province} value={province}>{province}</option>
               ))}
@@ -199,49 +199,49 @@ const AvailableRequestsPage: React.FC = () => {
         {filteredRequests.length === 0 ? (
           <EmptyState
             icon={FileText}
-            title="No available requests"
-            description="There are no requests available at the moment. Check back later!"
+            title={t('available_requests_no_requests')}
+            description={t('available_requests_no_requests_desc')}
           />
         ) : (
           filteredRequests.map((request) => (
             <Card key={request.requestId} hover>
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-3 mb-2">
-                    <FileText className="w-5 h-5 text-gray-400" />
-                    <h3 className="font-semibold text-gray-900">{request.title}</h3>
-                    <Badge variant="warning">New</Badge>
+              <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <FileText className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                    <h3 className="font-semibold text-gray-900 dark:text-slate-100">{request.title}</h3>
+                    <Badge variant="warning">{t('available_requests_new')}</Badge>
                   </div>
-                  
-                  <p className="text-gray-600 mb-4">{request.description}</p>
-                  
-                  <div className="flex items-center space-x-6 text-sm text-gray-500">
+
+                  <p className="text-gray-600 dark:text-slate-400 mb-4">{request.description}</p>
+
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-slate-400">
                     <div className="flex items-center">
-                      <User className="w-4 h-4 mr-1" />
+                      <User className="w-4 h-4 mr-1 flex-shrink-0" />
                       {request.citizen.name}
                     </div>
                     <div className="flex items-center">
-                      <MapPin className="w-4 h-4 mr-1" />
+                      <MapPin className="w-4 h-4 mr-1 flex-shrink-0" />
                       {(request.citizen.district || request.citizen.location?.district)}, {(request.citizen.province || request.citizen.location?.province)}
                     </div>
                     <div className="flex items-center">
-                      <Clock className="w-4 h-4 mr-1" />
+                      <Clock className="w-4 h-4 mr-1 flex-shrink-0" />
                       {getTimeAgo(request.createdAt)}
                     </div>
                   </div>
                 </div>
-                
-                <div className="ml-6 flex space-x-2">
+
+                <div className="flex flex-wrap gap-2 flex-shrink-0">
                   <Link to={`/requests/${request.requestId}`}>
-                    <Button variant="secondary" icon={Eye}>
-                      View
+                    <Button variant="view" icon={Eye}>
+                      {t('requests_view')}
                     </Button>
                   </Link>
                   <Button
                     onClick={() => handleAcceptRequest(request.requestId)}
                     icon={CheckSquare}
                   >
-                    Accept
+                    {t('available_requests_accept')}
                   </Button>
                 </div>
               </div>

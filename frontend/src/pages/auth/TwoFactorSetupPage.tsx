@@ -54,12 +54,12 @@ const TwoFactorSetupPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50 py-12 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black py-12 px-4">
       <div className="max-w-md w-full">
         <Card>
           <div className="text-center mb-6">
-            <div className="mx-auto w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <Shield className="w-8 h-8 text-white" />
+            <div className="mx-auto w-16 h-16 bg-gray-900 dark:bg-white rounded-2xl flex items-center justify-center shadow-lg">
+              <Shield className="w-8 h-8 text-white dark:text-gray-900" />
             </div>
             <h2 className="mt-4 text-2xl font-bold text-gray-900">
               Enable Two-Factor Authentication
@@ -71,12 +71,12 @@ const TwoFactorSetupPage: React.FC = () => {
 
           {step === 1 && (
             <div className="space-y-6">
-              <div className="bg-blue-50 p-4 rounded-lg">
+              <div className="bg-gray-50 dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 p-4 rounded-lg">
                 <div className="flex items-start">
-                  <Mail className="w-5 h-5 text-blue-600 mt-0.5 mr-3" />
+                  <Mail className="w-5 h-5 text-gray-600 dark:text-gray-400 mt-0.5 mr-3" />
                   <div>
-                    <h3 className="text-sm font-medium text-blue-900">Email Verification</h3>
-                    <p className="text-sm text-blue-700 mt-1">
+                    <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">Email Verification</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                       We'll send a verification code to your registered email address.
                     </p>
                   </div>
@@ -103,7 +103,7 @@ const TwoFactorSetupPage: React.FC = () => {
                   type="text"
                   value={verificationCode}
                   onChange={(e) => setVerificationCode(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center text-lg font-mono"
+                  className="input-field text-center text-lg font-mono"
                   placeholder="000000"
                   maxLength={6}
                 />
@@ -126,23 +126,23 @@ const TwoFactorSetupPage: React.FC = () => {
           {step === 3 && (
             <div className="space-y-6">
               <div className="text-center">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Check className="w-6 h-6 text-green-600" />
+                <div className="w-12 h-12 bg-gray-900 dark:bg-white rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Check className="w-6 h-6 text-white dark:text-gray-900" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
                   2FA Enabled Successfully!
                 </h3>
               </div>
 
-              <div className="bg-yellow-50 p-4 rounded-lg">
-                <h4 className="text-sm font-medium text-yellow-900 mb-2">
+              <div className="bg-gray-50 dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 p-4 rounded-lg">
+                <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
                   Save Your Backup Codes
                 </h4>
-                <p className="text-sm text-yellow-700 mb-3">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
                   Store these codes safely. You can use them to access your account if you lose access to your email.
                 </p>
-                
-                <div className="bg-white p-3 rounded border font-mono text-sm">
+
+                <div className="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 p-3 rounded font-mono text-sm text-gray-900 dark:text-gray-100">
                   {backupCodes.map((code, index) => (
                     <div key={index} className="py-1">{code}</div>
                   ))}
