@@ -5,6 +5,7 @@ import Button from '../../components/common/Button';
 import Card from '../../components/common/Card';
 import { authApi } from '../../services/api';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 const TwoFactorSetupPage: React.FC = () => {
   const [step, setStep] = useState(1);
@@ -42,6 +43,7 @@ const TwoFactorSetupPage: React.FC = () => {
   };
 
   const handleCopyBackupCodes = () => {
+  const { t } = useTranslation();
     const codesText = backupCodes.join('\n');
     navigator.clipboard.writeText(codesText);
     setCopied(true);

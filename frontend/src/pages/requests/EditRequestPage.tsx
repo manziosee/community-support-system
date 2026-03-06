@@ -9,11 +9,13 @@ import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import { useTranslation } from 'react-i18next';
 
 const EditRequestPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [request, setRequest] = useState<Request | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -93,11 +95,11 @@ const EditRequestPage: React.FC = () => {
       
       await requestsApi.update(request.requestId, updateData);
       
-      alert('Request updated successfully!');
+      alert(t('edit_request_saved') + '!');
       navigate(`/requests/${request.requestId}`);
     } catch (error) {
-      console.error('Failed to update request:', error);
-      alert('Failed to update request. Please try again.');
+      console.error(t('edit_request_error') + ':', error);
+      alert(t('edit_request_error') + '. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -167,7 +169,7 @@ const EditRequestPage: React.FC = () => {
           Back to Request
         </Button>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Edit Request</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{t('edit_request_title')}</h1>
           <p className="text-gray-600 mt-1">Update your request information</p>
         </div>
       </div>

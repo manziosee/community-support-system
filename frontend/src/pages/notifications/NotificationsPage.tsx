@@ -123,16 +123,16 @@ const NotificationsPage: React.FC = () => {
     const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
 
     if (diffInHours < 1) {
-      return t('notifications.justNow');
+      return t('notifications_justNow');
     } else if (diffInHours < 24) {
-      return `${Math.floor(diffInHours)} ${t('notifications.hoursAgo')}`;
+      return `${Math.floor(diffInHours)} ${t('notifications_hoursAgo')}`;
     } else {
       return date.toLocaleDateString();
     }
   };
 
   if (isLoading) {
-    return <LoadingSpinner size="lg" text={t('common.loading')} />;
+    return <LoadingSpinner size="lg" text={t('common_loading')} />;
   }
 
   return (
@@ -140,12 +140,12 @@ const NotificationsPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('notifications.title')}</h1>
-          <p className="text-gray-600 dark:text-slate-400 mt-1">{t('notifications.subtitle')}</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('notifications_title')}</h1>
+          <p className="text-gray-600 dark:text-slate-400 mt-1">{t('notifications_subtitle')}</p>
         </div>
         {stats.unread > 0 && (
           <Button onClick={markAllAsRead} icon={CheckCheck}>
-            {t('notifications.markAllRead')}
+            {t('notifications_markAllRead')}
           </Button>
         )}
       </div>
@@ -158,7 +158,7 @@ const NotificationsPage: React.FC = () => {
               <Bell className="w-5 h-5 text-[#2563eb]" />
             </div>
             <div>
-              <p className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">{t('notifications.total')}</p>
+              <p className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">{t('notifications_total')}</p>
               <p className="text-2xl font-black text-gray-900 dark:text-slate-100">{stats.total}</p>
             </div>
           </div>
@@ -169,7 +169,7 @@ const NotificationsPage: React.FC = () => {
               <Bell className="w-5 h-5 text-[#d97706]" />
             </div>
             <div>
-              <p className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">{t('notifications.unread')}</p>
+              <p className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">{t('notifications_unread')}</p>
               <p className="text-2xl font-black text-gray-900 dark:text-slate-100">{stats.unread}</p>
             </div>
           </div>
@@ -180,7 +180,7 @@ const NotificationsPage: React.FC = () => {
               <Check className="w-5 h-5 text-[#059669]" />
             </div>
             <div>
-              <p className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">{t('notifications.read')}</p>
+              <p className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">{t('notifications_read')}</p>
               <p className="text-2xl font-black text-gray-900 dark:text-slate-100">{stats.read}</p>
             </div>
           </div>
@@ -197,7 +197,7 @@ const NotificationsPage: React.FC = () => {
             </div>
             <input
               type="text"
-              placeholder={t('notifications.searchPlaceholder')}
+              placeholder={t('notifications_searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="input-field pl-10"
@@ -216,7 +216,7 @@ const NotificationsPage: React.FC = () => {
                     : 'bg-gray-100 dark:bg-neutral-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'
                 }`}
               >
-                {t('notifications.all')} ({stats.total})
+                {t('notifications_all')} ({stats.total})
               </button>
               <button
                 onClick={() => setFilter('unread')}
@@ -226,7 +226,7 @@ const NotificationsPage: React.FC = () => {
                     : 'bg-gray-100 dark:bg-neutral-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'
                 }`}
               >
-                {t('notifications.unread')} ({stats.unread})
+                {t('notifications_unread')} ({stats.unread})
               </button>
               <button
                 onClick={() => setFilter('read')}
@@ -236,7 +236,7 @@ const NotificationsPage: React.FC = () => {
                     : 'bg-gray-100 dark:bg-neutral-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'
                 }`}
               >
-                {t('notifications.read')} ({stats.read})
+                {t('notifications_read')} ({stats.read})
               </button>
             </div>
             {(searchTerm || filter !== 'all') && (
@@ -247,7 +247,7 @@ const NotificationsPage: React.FC = () => {
                 }}
                 className="text-sm text-gray-500 hover:text-gray-700 underline"
               >
-                {t('notifications.clearFilters')}
+                {t('notifications_clearFilters')}
               </button>
             )}
           </div>
@@ -258,8 +258,8 @@ const NotificationsPage: React.FC = () => {
       <Card padding="none">
         <div className="p-6 border-b border-gray-200 dark:border-neutral-700">
           <h2 className="text-lg font-semibold text-gray-900">
-            {filter === 'all' ? t('notifications.allNotifications') : 
-             filter === 'unread' ? t('notifications.unreadNotifications') : t('notifications.readNotifications')}
+            {filter === 'all' ? t('notifications_allNotifications') : 
+             filter === 'unread' ? t('notifications_unreadNotifications') : t('notifications_readNotifications')}
             ({filteredNotifications.length})
           </h2>
         </div>
@@ -268,10 +268,10 @@ const NotificationsPage: React.FC = () => {
             <div className="p-6">
               <EmptyState
                 icon={Bell}
-                title={t('notifications.noNotifications')}
+                title={t('notifications_noNotifications')}
                 description={
                   searchTerm 
-                    ? `${t('notifications.noMatch')} "${searchTerm}"${filter !== 'all' ? ` in ${filter} notifications` : ''}`
+                    ? `${t('notifications_noMatch')} "${searchTerm}"${filter !== 'all' ? ` in ${filter} notifications` : ''}`
                     : `No ${filter === 'all' ? '' : filter} notifications found`
                 }
               />
@@ -292,7 +292,7 @@ const NotificationsPage: React.FC = () => {
                       </p>
                       {!notification.isRead && (
                         <Badge variant="info" size="sm">
-                          {t('notifications.new')}
+                          {t('notifications_new')}
                         </Badge>
                       )}
                     </div>
@@ -307,7 +307,7 @@ const NotificationsPage: React.FC = () => {
                       icon={Eye}
                       onClick={() => setSelectedNotification(notification)}
                     >
-                      {t('notifications.view')}
+                      {t('notifications_view')}
                     </Button>
                     {!notification.isRead && (
                       <Button
@@ -316,7 +316,7 @@ const NotificationsPage: React.FC = () => {
                         icon={Check}
                         onClick={() => markAsRead(notification.notificationId)}
                       >
-                        {t('notifications.markRead')}
+                        {t('notifications_markRead')}
                       </Button>
                     )}
                     <Button
@@ -325,7 +325,7 @@ const NotificationsPage: React.FC = () => {
                       icon={Trash2}
                       onClick={() => deleteNotification(notification.notificationId)}
                     >
-                      {t('common.delete')}
+                      {t('common_delete')}
                     </Button>
                   </div>
                 </div>
@@ -346,7 +346,7 @@ const NotificationsPage: React.FC = () => {
                     <Bell className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold text-gray-900">{t('notifications.notificationDetails')}</h2>
+                    <h2 className="text-xl font-semibold text-gray-900">{t('notifications_notificationDetails')}</h2>
                     <p className="text-sm text-gray-600">
                       {formatDate(selectedNotification.createdAt)}
                     </p>
@@ -355,7 +355,7 @@ const NotificationsPage: React.FC = () => {
                 <div className="flex items-center space-x-2">
                   {!selectedNotification.isRead && (
                     <Badge variant="info" size="sm">
-                      {t('notifications.unread')}
+                      {t('notifications_unread')}
                     </Badge>
                   )}
                   <Button
@@ -364,13 +364,13 @@ const NotificationsPage: React.FC = () => {
                     icon={X}
                     onClick={() => setSelectedNotification(null)}
                   >
-                    {t('common.close')}
+                    {t('common_close')}
                   </Button>
                 </div>
               </div>
               
               <div className="bg-gray-50 dark:bg-neutral-800 p-4 rounded-lg mb-4">
-                <h3 className="font-medium text-gray-900 mb-2">{t('notifications.message')}</h3>
+                <h3 className="font-medium text-gray-900 mb-2">{t('notifications_message')}</h3>
                 <p className="text-gray-700 leading-relaxed">
                   {selectedNotification.message}
                 </p>
@@ -378,27 +378,27 @@ const NotificationsPage: React.FC = () => {
               
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="font-medium text-gray-600">{t('notifications.status')}:</span>
+                  <span className="font-medium text-gray-600">{t('notifications_status')}:</span>
                   <span className="ml-2">
                     {selectedNotification.isRead ? (
-                      <Badge variant="success" size="sm">{t('notifications.read')}</Badge>
+                      <Badge variant="success" size="sm">{t('notifications_read')}</Badge>
                     ) : (
-                      <Badge variant="warning" size="sm">{t('notifications.unread')}</Badge>
+                      <Badge variant="warning" size="sm">{t('notifications_unread')}</Badge>
                     )}
                   </span>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-600">{t('notifications.notificationId')}:</span>
+                  <span className="font-medium text-gray-600">{t('notifications_notificationId')}:</span>
                   <span className="ml-2 text-gray-900">#{selectedNotification.notificationId}</span>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-600">{t('notifications.received')}:</span>
+                  <span className="font-medium text-gray-600">{t('notifications_received')}:</span>
                   <span className="ml-2 text-gray-900">
                     {new Date(selectedNotification.createdAt).toLocaleString()}
                   </span>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-600">{t('notifications.recipient')}:</span>
+                  <span className="font-medium text-gray-600">{t('notifications_recipient')}:</span>
                   <span className="ml-2 text-gray-900">
                     {selectedNotification.user.name}
                   </span>
@@ -415,7 +415,7 @@ const NotificationsPage: React.FC = () => {
                       setSelectedNotification(null);
                     }}
                   >
-                    {t('notifications.markRead')}
+                    {t('notifications_markRead')}
                   </Button>
                 )}
                 <Button
@@ -426,13 +426,13 @@ const NotificationsPage: React.FC = () => {
                     setSelectedNotification(null);
                   }}
                 >
-                  {t('common.delete')}
+                  {t('common_delete')}
                 </Button>
                 <Button
                   variant="secondary"
                   onClick={() => setSelectedNotification(null)}
                 >
-                  {t('common.close')}
+                  {t('common_close')}
                 </Button>
               </div>
             </div>

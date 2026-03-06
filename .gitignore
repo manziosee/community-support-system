@@ -81,3 +81,11 @@ logs/
 build/
 dist/
 out/
+
+# Build artifacts
+build/
+dist/
+out/
+
+# Claude
+.claude/

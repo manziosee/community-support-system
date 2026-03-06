@@ -8,6 +8,7 @@ import { authApi } from '../../services/api';
 import Button from '../../components/common/Button';
 import Card from '../../components/common/Card';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 const resetPasswordSchema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters'),
@@ -20,6 +21,7 @@ const resetPasswordSchema = z.object({
 type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
 const ResetPasswordPage: React.FC = () => {
+  const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

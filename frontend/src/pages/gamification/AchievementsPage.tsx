@@ -6,6 +6,7 @@ import AchievementBadges from '../../components/gamification/AchievementBadges';
 import Breadcrumb from '../../components/common/Breadcrumb';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import { LevelBadge } from '../../components/common/BadgeDisplay';
+import { useTranslation } from 'react-i18next';
 
 const POINT_ACTIONS = [
   { action: 'Complete an assignment',      pts: '+40 pts', emoji: '✅' },
@@ -17,6 +18,7 @@ const POINT_ACTIONS = [
 ];
 
 const AchievementsPage: React.FC = () => {
+  const { t } = useTranslation();
   const { profile, isLoading } = useGamification();
 
   if (isLoading) return <LoadingSpinner size="lg" text="Loading achievements…" />;

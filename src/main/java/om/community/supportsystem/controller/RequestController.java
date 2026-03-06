@@ -243,4 +243,9 @@ public class RequestController {
         long count = requestService.countRequestsByStatus(status);
         return ResponseEntity.ok(count);
     }
+
+    @GetMapping("/citizen/{citizenId}/stats")
+    public ResponseEntity<java.util.Map<String, Long>> getCitizenStats(@PathVariable Long citizenId) {
+        return ResponseEntity.ok(requestService.getCitizenRequestStats(citizenId));
+    }
 }

@@ -410,7 +410,7 @@ export const adminApi = {
     api.patch(`/admin/requests/${id}/moderate`, { action }),
   
   getAnalytics: () => 
-    api.get('/admin/analytics/reports'),
+    api.get('/admin/analytics'),
   
   broadcastNotification: (message: string) =>
     api.post('/admin/notifications/broadcast', { message }),
@@ -469,13 +469,13 @@ export const availabilityApi = {
 // Community API
 export const communityApi = {
   getBulletinPosts: (page = 0, size = 20) =>
-    api.get(`/community/bulletin?page=${page}&size=${size}`),
+    api.get(`/community/posts?page=${page}&size=${size}`),
   createPost: (data: { title: string; content: string; category: string; authorId: number }) =>
-    api.post('/community/bulletin', data),
+    api.post('/community/posts', data),
   likePost: (postId: string) =>
-    api.post(`/community/bulletin/${postId}/like`),
+    api.post(`/community/posts/${postId}/like`),
   getEvents: () =>
-    api.get('/community/events'),
+    api.get('/community/posts?category=EVENT&page=0&size=20'),
 };
 
 // Appointments API

@@ -284,7 +284,7 @@ const LandingPage: React.FC = () => {
                 </div>
                 <div>
                   <p className="text-xl font-display font-bold text-gray-900 leading-tight">500+</p>
-                  <p className="text-xs text-gray-500">Active Volunteers</p>
+                  <p className="text-xs text-gray-500">{t('landing_active_volunteers')}</p>
                 </div>
               </div>
 
@@ -295,7 +295,7 @@ const LandingPage: React.FC = () => {
                 </div>
                 <div>
                   <p className="text-xl font-display font-bold text-gray-900 leading-tight">2,000+</p>
-                  <p className="text-xs text-gray-500">Requests Completed</p>
+                  <p className="text-xs text-gray-500">{t('landing_requests_completed')}</p>
                 </div>
               </div>
 
@@ -306,7 +306,7 @@ const LandingPage: React.FC = () => {
                 </div>
                 <div>
                   <p className="text-xl font-display font-bold text-gray-900 leading-tight">30</p>
-                  <p className="text-xs text-gray-500">Districts Covered</p>
+                  <p className="text-xs text-gray-500">{t('landing_districts_covered')}</p>
                 </div>
               </div>
 
@@ -317,7 +317,7 @@ const LandingPage: React.FC = () => {
                 </div>
                 <div>
                   <p className="text-xl font-display font-bold text-gray-900 leading-tight">1,000+</p>
-                  <p className="text-xs text-neutral-500">Active Users</p>
+                  <p className="text-xs text-neutral-500">{t('landing_active_users')}</p>
                 </div>
               </div>
             </div>
@@ -563,30 +563,29 @@ const LandingPage: React.FC = () => {
             <div className="col-span-1 sm:col-span-2">
               <Logo size="md" variant="white" />
               <p className="text-neutral-400 leading-relaxed max-w-md mt-6 mb-6">
-                Connecting Rwandan communities through technology. Our platform enables citizens
-                to request help and volunteers to provide assistance across all 30 districts.
+                {t('landing_footer_desc')}
               </p>
               <div className="flex items-center gap-2 text-sm text-neutral-500">
                 <MapPin className="w-4 h-4 text-gray-400" />
-                <span>Serving all of Rwanda</span>
+                <span>{t('landing_footer_serving')}</span>
               </div>
             </div>
 
             <div>
-              <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-5">Platform</h3>
+              <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-5">{t('landing_footer_platform')}</h3>
               <ul className="space-y-3">
-                <li><Link to="/register" className="text-neutral-400 hover:text-white transition-colors text-sm">Join as Volunteer</Link></li>
-                <li><Link to="/register" className="text-neutral-400 hover:text-white transition-colors text-sm">Request Help</Link></li>
-                <li><Link to="/login" className="text-neutral-400 hover:text-white transition-colors text-sm">Sign In</Link></li>
+                <li><Link to="/register" className="text-neutral-400 hover:text-white transition-colors text-sm">{t('landing_footer_join_volunteer')}</Link></li>
+                <li><Link to="/register" className="text-neutral-400 hover:text-white transition-colors text-sm">{t('landing_footer_request_help')}</Link></li>
+                <li><Link to="/login" className="text-neutral-400 hover:text-white transition-colors text-sm">{t('landing_footer_sign_in')}</Link></li>
               </ul>
             </div>
 
             <div>
-              <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-5">Support</h3>
+              <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-5">{t('landing_footer_support')}</h3>
               <ul className="space-y-3">
-                <li><a href="#" className="text-neutral-400 hover:text-white transition-colors text-sm">Help Center</a></li>
-                <li><a href="#" className="text-neutral-400 hover:text-white transition-colors text-sm">Contact Us</a></li>
-                <li><a href="#" className="text-neutral-400 hover:text-white transition-colors text-sm">Privacy Policy</a></li>
+                <li><a href="#" className="text-neutral-400 hover:text-white transition-colors text-sm">{t('landing_footer_help_center')}</a></li>
+                <li><a href="#" className="text-neutral-400 hover:text-white transition-colors text-sm">{t('landing_footer_contact')}</a></li>
+                <li><a href="#" className="text-neutral-400 hover:text-white transition-colors text-sm">{t('landing_footer_privacy')}</a></li>
               </ul>
             </div>
           </div>
@@ -596,7 +595,7 @@ const LandingPage: React.FC = () => {
               © {new Date().getFullYear()} Community Support System. Built for Rwanda with{' '}
               <Heart className="inline w-4 h-4 text-gray-400 fill-current" />
             </p>
-            <p className="text-neutral-600 text-xs">Powered by community, driven by purpose</p>
+            <p className="text-neutral-600 text-xs">{t('landing_footer_tagline')}</p>
           </div>
         </div>
       </footer>

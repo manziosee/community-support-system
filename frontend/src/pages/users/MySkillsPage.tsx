@@ -9,8 +9,10 @@ import Badge from '../../components/common/Badge';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import EmptyState from '../../components/common/EmptyState';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 const MySkillsPage: React.FC = () => {
+  const { t } = useTranslation();
   const { user, refreshUser } = useAuth();
   const [userSkills, setUserSkills] = useState<Skill[]>([]);
   const [allSkills, setAllSkills] = useState<Skill[]>([]);
@@ -157,7 +159,7 @@ const MySkillsPage: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">My Skills</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('skills_title')}</h1>
           <p className="text-gray-600 dark:text-slate-400">Manage your volunteer skills and expertise</p>
         </div>
         <Button icon={Plus} onClick={() => setShowAddModal(true)} className="self-start sm:self-auto flex-shrink-0">
@@ -183,7 +185,7 @@ const MySkillsPage: React.FC = () => {
               <Plus className="w-5 h-5 text-blue-600" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">Available Skills</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{t('skills_available')}</h2>
               <p className="text-2xl font-bold text-blue-600">{availableSkills.length}</p>
             </div>
           </div>
@@ -191,11 +193,11 @@ const MySkillsPage: React.FC = () => {
       </div>
 
       <Card>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Your Skills</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('skills_your_skills')}</h2>
         {userSkills.length === 0 ? (
           <EmptyState
             icon={Star}
-            title="No skills added yet"
+            title={t('skills_no_skills')}
             description="Add skills to showcase your expertise to citizens"
             actionLabel="Add Your First Skill"
             onAction={() => setShowAddModal(true)}
@@ -263,7 +265,7 @@ const MySkillsPage: React.FC = () => {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
                     type="text"
-                    placeholder="Search skills..."
+                    placeholder={t('skills_search')}
                     className="input-field pl-10"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}

@@ -4,6 +4,7 @@ import { settingsApi } from '../../services/api';
 import Button from '../../components/common/Button';
 import LanguageSwitcher from '../../components/common/LanguageSwitcher';
 import { Settings, Lock, Bell, User, Save, Globe } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface UserSettings {
   emailNotifications: boolean;
@@ -13,6 +14,7 @@ interface UserSettings {
 }
 
 const SettingsPage: React.FC = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [settings, setSettings] = useState<UserSettings>({
@@ -111,8 +113,8 @@ const SettingsPage: React.FC = () => {
           <Settings className="w-5 h-5 text-white" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-          <p className="text-gray-600">Manage your account preferences</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('settings_title')}</h1>
+          <p className="text-gray-600">{t('settings_subtitle')}</p>
         </div>
       </div>
 
@@ -196,7 +198,7 @@ const SettingsPage: React.FC = () => {
         <div className="bg-white dark:bg-neutral-900 rounded-xl shadow-sm border border-gray-200 dark:border-neutral-700 p-6">
           <div className="flex items-center space-x-2 mb-6">
             <Lock className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-            <h2 className="text-lg font-semibold text-gray-900">Change Password</h2>
+            <h2 className="text-lg font-semibold text-gray-900">{t('settings_password')}</h2>
           </div>
           
           <form onSubmit={handlePasswordUpdate} className="space-y-4">
@@ -253,7 +255,7 @@ const SettingsPage: React.FC = () => {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-2">
               <Bell className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-              <h2 className="text-lg font-semibold text-gray-900">Notification Preferences</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{t('settings_notifications')}</h2>
             </div>
             <Button onClick={handleNotificationUpdate} loading={isLoading}>
               <Save className="w-4 h-4 mr-2" />
@@ -265,7 +267,7 @@ const SettingsPage: React.FC = () => {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-medium text-gray-900">Email Notifications</h3>
+                  <h3 className="font-medium text-gray-900">{t('settings_email_notifications')}</h3>
                   <p className="text-sm text-gray-500">Receive notifications via email</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">

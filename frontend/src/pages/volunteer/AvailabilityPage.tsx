@@ -6,6 +6,7 @@ import Breadcrumb from '../../components/common/Breadcrumb';
 import { HelpTooltip } from '../../components/common/Tooltip';
 import type { AvailabilitySlot, VolunteerStatus } from '../../types';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 const RECURRING_OPTIONS = [
   { id: 'weekly_groceries', label: 'Weekly Grocery Help', description: 'Every Saturday morning', icon: '🛒', days: 'Every Sat 9–12 AM' },
@@ -15,13 +16,14 @@ const RECURRING_OPTIONS = [
 ];
 
 const AvailabilityPage: React.FC = () => {
+  const { t } = useTranslation();
   const [status, setStatus] = useState<VolunteerStatus>('ONLINE');
   const [savedSlots, setSavedSlots] = useState<AvailabilitySlot[]>([]);
   const [activeRecurring, setActiveRecurring] = useState<Set<string>>(new Set());
 
   const handleSave = (slots: AvailabilitySlot[]) => {
     setSavedSlots(slots);
-    toast.success('Availability saved successfully!');
+    toast.success(t('availability_saved') + ' successfully!');
   };
 
   const toggleRecurring = (id: string) => {
@@ -49,7 +51,7 @@ const AvailabilityPage: React.FC = () => {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Calendar className="w-5 h-5" />
-              <h1 className="font-display text-xl font-extrabold">My Availability</h1>
+              <h1 className="font-display text-xl font-extrabold">{t('availability_title')}</h1>
             </div>
             <p className="text-secondary-200 text-sm">Set your schedule so citizens can find you when they need help.</p>
           </div>

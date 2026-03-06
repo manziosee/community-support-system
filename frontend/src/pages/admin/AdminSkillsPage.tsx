@@ -8,6 +8,7 @@ import LoadingSpinner from '../../components/common/LoadingSpinner';
 import EmptyState from '../../components/common/EmptyState';
 import Modal from '../../components/common/Modal';
 import Input from '../../components/common/Input';
+import { useTranslation } from 'react-i18next';
 
 const AdminSkillsPage: React.FC = () => {
   const [skills, setSkills] = useState<Skill[]>([]);
@@ -19,6 +20,7 @@ const AdminSkillsPage: React.FC = () => {
   const [editingSkill, setEditingSkill] = useState<Skill | null>(null);
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
   const [formData, setFormData] = useState({ skillName: '', description: '' });
+  const { t } = useTranslation();
 
   // Mock skills data
   const mockSkills: Skill[] = [
@@ -146,7 +148,7 @@ const AdminSkillsPage: React.FC = () => {
   };
 
   const handleDeleteSkill = async (skillId: number) => {
-    if (window.confirm('Are you sure you want to delete this skill?')) {
+    if (window.confirm(t('admin_skills_delete_confirm'))) {
       try {
         setSkills(prev => prev.filter(s => s.skillId !== skillId));
       } catch (error) {
@@ -164,7 +166,7 @@ const AdminSkillsPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Skill Management</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('admin_skills_title')}</h1>
           <p className="text-gray-600 dark:text-slate-400 mt-1">Manage volunteer skill categories and descriptions</p>
         </div>
         <Button onClick={handleAddSkill} icon={Plus}>

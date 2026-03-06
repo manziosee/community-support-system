@@ -1,9 +1,9 @@
 {
   "info": {
     "name": "Community Support System - Complete API",
-    "description": "Complete API collection for Community Support System with 135+ endpoints including Analytics Dashboard",
+    "description": "Complete API collection for Community Support System with 160+ endpoints including Analytics, Gamification, Availability, Ratings, Appointments, and Expenses",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "version": "2.0.0"
+    "version": "3.0.0"
   },
   "variable": [
     {
@@ -144,6 +144,84 @@
           "request": {
             "method": "PATCH",
             "url": "{{baseUrl}}/api/admin/users/1/unlock"
+          }
+        },
+        {
+          "name": "Admin Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/admin/dashboard/stats",
+            "description": "Get admin dashboard statistics"
+          }
+        },
+        {
+          "name": "Admin Analytics",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/admin/analytics",
+            "description": "Get system analytics"
+          }
+        },
+        {
+          "name": "Admin Analytics Reports",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/admin/analytics/reports",
+            "description": "Alias for analytics endpoint used by frontend"
+          }
+        },
+        {
+          "name": "Admin - Get All Requests",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/admin/requests/all",
+            "description": "Get all requests (admin view)"
+          }
+        },
+        {
+          "name": "Admin - Moderate Request",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"APPROVE\"\n}"
+            },
+            "url": "{{baseUrl}}/api/admin/requests/1/moderate",
+            "description": "Moderate a request (action: APPROVE, REJECT, COMPLETE)"
+          }
+        },
+        {
+          "name": "Admin - Update User Status",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"LOCKED\"\n}"
+            },
+            "url": "{{baseUrl}}/api/admin/users/1/status",
+            "description": "Lock or unlock a user account (status: LOCKED or UNLOCKED)"
+          }
+        },
+        {
+          "name": "Admin - Broadcast Notification",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"Important system update for all users\"\n}"
+            },
+            "url": "{{baseUrl}}/api/admin/notifications/broadcast",
+            "description": "Send a notification broadcast to all users"
+          }
+        },
+        {
+          "name": "Admin Health Check",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/admin/health"
           }
         }
       ]
@@ -342,6 +420,27 @@
             "method": "PATCH",
             "url": "{{baseUrl}}/api/notifications/1/read"
           }
+        },
+        {
+          "name": "Get Notification Stats",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/notifications/user/1/stats",
+            "description": "Get total and unread notification counts for a user"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Requests",
+      "item": [
+        {
+          "name": "Citizen Request Stats",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/requests/citizen/1/stats",
+            "description": "Get request statistics for a specific citizen"
+          }
         }
       ]
     },
@@ -353,6 +452,218 @@
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/api/categories"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gamification",
+      "item": [
+        {
+          "name": "Get User Gamification Profile",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/gamification/user/1",
+            "description": "Get points, level, rank, and achievements for a user"
+          }
+        },
+        {
+          "name": "Get Leaderboard",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/gamification/leaderboard?period=allTime&limit=10",
+            "description": "Get ranked list of top volunteers"
+          }
+        },
+        {
+          "name": "Add Points to User",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"points\": 50,\n  \"reason\": \"Completed assignment\"\n}"
+            },
+            "url": "{{baseUrl}}/api/gamification/user/1/points",
+            "description": "Award points to a user"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Availability",
+      "item": [
+        {
+          "name": "Get Volunteer Availability",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/availability/volunteer/1",
+            "description": "Get availability slots and status for a volunteer"
+          }
+        },
+        {
+          "name": "Save Volunteer Availability",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ONLINE\",\n  \"slots\": [\n    {\"day\": \"Monday\", \"startTime\": \"09:00\", \"endTime\": \"17:00\"},\n    {\"day\": \"Wednesday\", \"startTime\": \"09:00\", \"endTime\": \"17:00\"}\n  ]\n}"
+            },
+            "url": "{{baseUrl}}/api/availability/volunteer/1",
+            "description": "Save or update availability slots for a volunteer"
+          }
+        },
+        {
+          "name": "Update Volunteer Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ONLINE\"\n}"
+            },
+            "url": "{{baseUrl}}/api/availability/volunteer/1/status",
+            "description": "Update a volunteer's online/offline status"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ratings",
+      "item": [
+        {
+          "name": "Create Rating",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"volunteerId\": 2,\n  \"assignmentId\": 1,\n  \"score\": 5,\n  \"comment\": \"Excellent help!\"\n}"
+            },
+            "url": "{{baseUrl}}/api/ratings",
+            "description": "Submit a rating for a volunteer"
+          }
+        },
+        {
+          "name": "Get Ratings by Volunteer",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/ratings/volunteer/1",
+            "description": "Get all ratings for a specific volunteer"
+          }
+        },
+        {
+          "name": "Get Ratings by Assignment",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/ratings/assignment/1",
+            "description": "Get ratings for a specific assignment"
+          }
+        },
+        {
+          "name": "Get Volunteer Average Rating",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/ratings/volunteer/1/average",
+            "description": "Calculate average rating score for a volunteer"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Appointments",
+      "item": [
+        {
+          "name": "Create Appointment",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1,\n  \"volunteerId\": 2,\n  \"scheduledAt\": \"2026-03-15T10:00:00\",\n  \"notes\": \"Initial consultation\"\n}"
+            },
+            "url": "{{baseUrl}}/api/appointments",
+            "description": "Schedule a new appointment"
+          }
+        },
+        {
+          "name": "Get Appointments by User",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/appointments/user/1",
+            "description": "Get all appointments for a specific user"
+          }
+        },
+        {
+          "name": "Update Appointment",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scheduledAt\": \"2026-03-16T14:00:00\",\n  \"notes\": \"Rescheduled\"\n}"
+            },
+            "url": "{{baseUrl}}/api/appointments/1",
+            "description": "Update appointment details"
+          }
+        },
+        {
+          "name": "Cancel Appointment",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/appointments/1/cancel",
+            "description": "Cancel a scheduled appointment"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Expenses",
+      "item": [
+        {
+          "name": "Submit Expense",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"volunteerId\": 2,\n  \"assignmentId\": 1,\n  \"amount\": 5000,\n  \"currency\": \"RWF\",\n  \"description\": \"Transport to assignment location\"\n}"
+            },
+            "url": "{{baseUrl}}/api/expenses",
+            "description": "Submit an expense claim"
+          }
+        },
+        {
+          "name": "Get Expenses by Assignment",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/expenses/assignment/1",
+            "description": "Get all expenses for a specific assignment"
+          }
+        },
+        {
+          "name": "Get Expenses by Volunteer",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/expenses/volunteer/1",
+            "description": "Get all expenses submitted by a volunteer"
+          }
+        },
+        {
+          "name": "Approve Expense",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/expenses/1/approve",
+            "description": "Approve a pending expense claim"
+          }
+        },
+        {
+          "name": "Reject Expense",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/expenses/1/reject",
+            "description": "Reject a pending expense claim"
           }
         }
       ]

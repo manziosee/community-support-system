@@ -9,8 +9,10 @@ import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 import Badge from '../../components/common/Badge';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import { useTranslation } from 'react-i18next';
 
 const RequestDetailsPage: React.FC = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -92,7 +94,7 @@ const RequestDetailsPage: React.FC = () => {
             Back to Requests
           </Button>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Request Details</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{t('request_details_title')}</h1>
             <p className="text-gray-600">View and manage request information</p>
           </div>
         </div>
@@ -219,7 +221,7 @@ const RequestDetailsPage: React.FC = () => {
 
           {/* Request Stats */}
           <Card>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Request Details</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('request_details_title')}</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">Status</span>

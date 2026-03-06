@@ -5,6 +5,7 @@ import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
 import Badge from '../../components/common/Badge';
+import { useTranslation } from 'react-i18next';
 
 const ProfilePage: React.FC = () => {
   const { user } = useAuth();
@@ -19,6 +20,7 @@ const ProfilePage: React.FC = () => {
   });
 
   const handleSave = () => {
+  const { t } = useTranslation();
     console.log('Saving profile:', formData);
     setIsEditing(false);
   };
@@ -38,7 +40,7 @@ const ProfilePage: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">My Profile</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('profile_title')}</h1>
           <p className="text-gray-600 dark:text-slate-400">Manage your account information</p>
         </div>
         {!isEditing ? (
@@ -91,7 +93,7 @@ const ProfilePage: React.FC = () => {
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Location Details</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Province</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('profile_province')}</label>
                 <input
                   type="text"
                   value={user.province || user.location?.province || ''}
@@ -100,7 +102,7 @@ const ProfilePage: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">District</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('profile_district')}</label>
                 <input
                   type="text"
                   value={user.district || user.location?.district || ''}

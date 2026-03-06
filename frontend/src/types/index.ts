@@ -368,7 +368,7 @@ export interface CommunityEvent {
 }
 
 // ─── i18n Types ───────────────────────────────────────────────────────────────
-export type Language = 'en' | 'rw' | 'fr' | 'sw';
+export type Language = 'en' | 'fr';
 
 export interface TranslationKeys {
   // Navigation

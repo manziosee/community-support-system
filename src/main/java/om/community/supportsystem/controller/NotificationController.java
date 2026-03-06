@@ -147,4 +147,12 @@ public class NotificationController {
         long count = notificationService.countUnreadNotificationsByUser(userId);
         return ResponseEntity.ok(count);
     }
+
+    @GetMapping("/user/{userId}/stats")
+    public ResponseEntity<java.util.Map<String, Long>> getUserStats(@PathVariable Long userId) {
+        java.util.Map<String, Long> stats = new java.util.HashMap<>();
+        stats.put("total", (long) notificationService.getNotificationsByUserId(userId).size());
+        stats.put("unread", (long) notificationService.getUnreadNotificationsByUserId(userId).size());
+        return ResponseEntity.ok(stats);
+    }
 }

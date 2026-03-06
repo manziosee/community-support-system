@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Mail, Lock, Eye, EyeOff, HandHeart, AlertCircle, CheckCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { authApi } from '../../services/api';
 import Button from '../../components/common/Button';
@@ -26,6 +27,7 @@ const LoginPage: React.FC = () => {
   const [isResendingOtp, setIsResendingOtp] = useState(false);
   const [loginCredentials, setLoginCredentials] = useState({ email: '', password: '' });
   const [searchParams] = useSearchParams();
+  const { t } = useTranslation();
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -140,10 +142,10 @@ const LoginPage: React.FC = () => {
               <HandHeart className="w-8 h-8 text-white dark:text-gray-900" />
             </div>
             <h2 className="mt-6 text-3xl font-bold text-gray-900">
-              Welcome back
+              {t('auth_login_title')}
             </h2>
             <p className="mt-2 text-sm text-gray-600">
-              Sign in to your Community Support account
+              {t('auth_login_subtitle')}
             </p>
           </div>
 
@@ -175,7 +177,7 @@ const LoginPage: React.FC = () => {
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
+                {t('auth_email')}
               </label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -196,7 +198,7 @@ const LoginPage: React.FC = () => {
             {/* Password */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
+                {t('auth_password')}
               </label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -229,7 +231,7 @@ const LoginPage: React.FC = () => {
             {showOtpField && (
               <div>
                 <label htmlFor="otp" className="block text-sm font-medium text-gray-700">
-                  Enter 6-digit OTP code
+                  {t('auth_otp_label')}
                 </label>
                 <div className="mt-1">
                   <input
@@ -270,7 +272,7 @@ const LoginPage: React.FC = () => {
                 className="h-4 w-4 text-gray-900 focus:ring-gray-900 border-gray-300 rounded"
               />
               <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                Remember me
+                {t('auth_remember_me')}
               </label>
             </div>
 
@@ -279,7 +281,7 @@ const LoginPage: React.FC = () => {
                 to="/forgot-password"
                 className="font-medium text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
               >
-                Forgot your password?
+                {t('auth_forgot_password')}
               </Link>
             </div>
           </div>
@@ -292,7 +294,7 @@ const LoginPage: React.FC = () => {
               loading={isLoading}
               disabled={isLoading}
             >
-              {showOtpField ? 'Verify OTP & Sign In' : 'Continue'}
+              {showOtpField ? t('auth_verify_otp') : t('auth_continue')}
             </Button>
             
             {showOtpField && (
@@ -305,7 +307,7 @@ const LoginPage: React.FC = () => {
                   setOtpCode('');
                 }}
               >
-                ← Back to Login
+                {t('auth_back_to_login')}
               </Button>
             )}
           </div>
@@ -313,12 +315,12 @@ const LoginPage: React.FC = () => {
           {/* Sign up link */}
           <div className="text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
+              {t('auth_no_account')}{' '}
               <Link
                 to="/register"
                 className="font-medium text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
               >
-                Sign up here
+                {t('auth_sign_up')}
               </Link>
             </p>
             <p className="text-sm text-gray-500 mt-2">
@@ -326,7 +328,7 @@ const LoginPage: React.FC = () => {
                 to="/"
                 className="font-medium text-gray-600 hover:text-gray-500"
               >
-                ← Back to Home
+                {t('auth_back_home')}
               </Link>
             </p>
           </div>
