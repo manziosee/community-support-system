@@ -3,6 +3,7 @@ import { Settings, Save, RefreshCw, Shield, Bell, Mail, Database, Globe, Users, 
 import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
+import { useTranslation } from 'react-i18next';
 
 const AdminSettingsPage: React.FC = () => {
   const [settings, setSettings] = useState({
@@ -38,6 +39,7 @@ const AdminSettingsPage: React.FC = () => {
   });
 
   const [isSaving, setIsSaving] = useState(false);
+  const { t } = useTranslation();
 
   const handleSettingChange = (key: string, value: any) => {
     setSettings(prev => ({ ...prev, [key]: value }));
@@ -48,7 +50,7 @@ const AdminSettingsPage: React.FC = () => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     setIsSaving(false);
-    alert('Settings saved successfully!');
+    alert(t('admin_settings_saved') + ' successfully!');
   };
 
   const handleReset = () => {
@@ -84,7 +86,7 @@ const AdminSettingsPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">System Settings</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('admin_settings_title')}</h1>
           <p className="text-gray-600 dark:text-slate-400 mt-1">Configure system-wide settings and preferences</p>
         </div>
         <div className="flex flex-wrap gap-2 self-start sm:self-auto">
@@ -104,7 +106,7 @@ const AdminSettingsPage: React.FC = () => {
             <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
               <Settings className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-lg font-semibold text-gray-900">General Settings</h2>
+            <h2 className="text-lg font-semibold text-gray-900">{t('admin_settings_general')}</h2>
           </div>
           
           <div className="space-y-4">
@@ -166,7 +168,7 @@ const AdminSettingsPage: React.FC = () => {
             <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center mr-3">
               <Bell className="w-5 h-5 text-yellow-600" />
             </div>
-            <h2 className="text-lg font-semibold text-gray-900">Notification Settings</h2>
+            <h2 className="text-lg font-semibold text-gray-900">{t('admin_settings_notifications')}</h2>
           </div>
           
           <div className="space-y-4">
@@ -242,7 +244,7 @@ const AdminSettingsPage: React.FC = () => {
             <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3">
               <Shield className="w-5 h-5 text-red-600" />
             </div>
-            <h2 className="text-lg font-semibold text-gray-900">Security Settings</h2>
+            <h2 className="text-lg font-semibold text-gray-900">{t('admin_settings_security')}</h2>
           </div>
           
           <div className="space-y-4">

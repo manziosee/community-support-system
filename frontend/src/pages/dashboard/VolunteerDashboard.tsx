@@ -5,6 +5,7 @@ import {
   Plus, ChevronRight, ArrowRight, Target, Zap, TrendingUp,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 import { assignmentsApi, requestsApi, notificationsApi } from '../../services/api';
 import type { Assignment, Request, Notification, VolunteerAnalytics } from '../../types';
 import StatusChart from '../../components/charts/StatusChart';
@@ -28,6 +29,7 @@ const ProgressBar: React.FC<{ pct: number; colorClass: string }> = ({ pct, color
 
 const VolunteerDashboard: React.FC = () => {
   const { user, refreshUser } = useAuth();
+  const { t } = useTranslation();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [availableRequests, setAvailableRequests] = useState<Request[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -67,7 +69,7 @@ const VolunteerDashboard: React.FC = () => {
 
         const statusBreakdown = [
           activeAssignments > 0    ? { status: 'Active',    count: activeAssignments }    : null,
-          completedAssignments > 0 ? { status: 'Completed', count: completedAssignments } : null,
+          completedAssignments > 0 ? { status: t('status_completed'), count: completedAssignments } : null,
         ].filter(Boolean) as { status: string; count: number }[];
 
         setAnalyticsData({ totalAssignments, activeAssignments, completedAssignments, statusBreakdown });
@@ -81,7 +83,7 @@ const VolunteerDashboard: React.FC = () => {
     fetchDashboardData();
   }, [user]);
 
-  if (isLoading) return <LoadingSpinner size="lg" text="Loading your dashboard…" />;
+  if (isLoading) return <LoadingSpinner size="lg" text={t('common_loading')} />;
 
   const completionRate = stats.totalAssignments > 0
     ? Math.round((stats.completedAssignments / stats.totalAssignments) * 100) : 0;
@@ -93,7 +95,7 @@ const VolunteerDashboard: React.FC = () => {
 
   const impactItems = [
     {
-      label: 'Completed',
+      label: t('dashboard_completed'),
       count: stats.completedAssignments,
       pct: completionRate,
       bar: 'bg-green-400',
@@ -101,10 +103,10 @@ const VolunteerDashboard: React.FC = () => {
       color: 'text-green-700 dark:text-green-400',
       bg: 'bg-green-50 dark:bg-green-900/20',
       border: 'border-green-100 dark:border-green-800/30',
-      desc: `${completionRate}% completion rate`,
+      desc: `${completionRate}% ${t('volunteer_completion').toLowerCase()}`,
     },
     {
-      label: 'Active',
+      label: t('volunteer_active'),
       count: stats.activeAssignments,
       pct: stats.totalAssignments > 0 ? Math.round((stats.activeAssignments / stats.totalAssignments) * 100) : 0,
       bar: 'bg-orange-400',
@@ -112,10 +114,10 @@ const VolunteerDashboard: React.FC = () => {
       color: 'text-orange-700 dark:text-orange-400',
       bg: 'bg-orange-50 dark:bg-orange-900/20',
       border: 'border-orange-100 dark:border-orange-800/30',
-      desc: 'In progress now',
+      desc: t('volunteer_in_progress'),
     },
     {
-      label: 'Available',
+      label: t('volunteer_available'),
       count: stats.availableRequests,
       pct: 100,
       bar: 'bg-purple-400',
@@ -123,7 +125,7 @@ const VolunteerDashboard: React.FC = () => {
       color: 'text-purple-700 dark:text-purple-400',
       bg: 'bg-purple-50 dark:bg-purple-900/20',
       border: 'border-purple-100 dark:border-purple-800/30',
-      desc: 'Requests awaiting help',
+      desc: t('volunteer_awaiting_help'),
     },
   ];
 
@@ -167,7 +169,7 @@ const VolunteerDashboard: React.FC = () => {
               ) : (
                 <Link to="/profile">
                   <span className="inline-flex items-center gap-1.5 text-xs bg-white/20 border border-white/30 text-white px-3 py-1.5 rounded-full font-medium hover:bg-white dark:hover:bg-gray-800/30 transition-colors">
-                    <Plus className="w-3 h-3" />Add your skills
+                    <Plus className="w-3 h-3" />{t('volunteer_add_skills')}
                   </span>
                 </Link>
               )}
@@ -178,7 +180,7 @@ const VolunteerDashboard: React.FC = () => {
               <div className="text-center hidden sm:flex flex-col items-center">
                 <ProgressRing value={completionRate} size={88} strokeWidth={8} color="#ffffff" trackColor="rgba(255,255,255,0.2)" />
                 <p className="text-sm font-bold text-white mt-1.5">{completionRate}%</p>
-                <p className="text-xs text-white/60">Completion</p>
+                <p className="text-xs text-white/60">{t('volunteer_completion')}</p>
               </div>
 
               <div className="flex flex-col gap-2.5">
@@ -187,7 +189,7 @@ const VolunteerDashboard: React.FC = () => {
                     type="button"
                     className="inline-flex items-center gap-2 bg-white text-secondary-700 px-5 py-2.5 rounded-xl shadow-md font-bold text-sm hover:bg-secondary-50 hover:scale-105 transition-all duration-200 w-full justify-center"
                   >
-                    <FileText className="w-4 h-4" />Browse Requests
+                    <FileText className="w-4 h-4" />{t('volunteer_browse_requests')}
                   </button>
                 </Link>
                 <Link to="/profile">
@@ -195,7 +197,7 @@ const VolunteerDashboard: React.FC = () => {
                     type="button"
                     className="inline-flex items-center gap-2 bg-white/20 hover:bg-white dark:hover:bg-gray-800/30 text-white border border-white/30 px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 w-full justify-center"
                   >
-                    <Plus className="w-4 h-4" />Update Skills
+                    <Plus className="w-4 h-4" />{t('volunteer_update_skills')}
                   </button>
                 </Link>
               </div>
@@ -206,11 +208,11 @@ const VolunteerDashboard: React.FC = () => {
 
       {/* ── Stat Cards ───────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-4">
-        <StatCard title="Total Assignments" value={stats.totalAssignments}     icon={CheckSquare} color="blue"   link="/assignments" />
-        <StatCard title="Active"            value={stats.activeAssignments}    icon={Clock}       color="orange" />
-        <StatCard title="Completed"         value={stats.completedAssignments} icon={Award}       color="green" />
-        <StatCard title="Available"         value={stats.availableRequests}    icon={FileText}    color="purple" link="/requests/available" />
-        <StatCard title="Notifications"     value={stats.unreadNotifications}  icon={Bell}        color="red"    link="/notifications" />
+        <StatCard title={t('admin_total_assignments')} value={stats.totalAssignments}     icon={CheckSquare} color="blue"   link="/assignments" />
+        <StatCard title={t('volunteer_active')}            value={stats.activeAssignments}    icon={Clock}       color="orange" />
+        <StatCard title={t('dashboard_completed')}         value={stats.completedAssignments} icon={Award}       color="green" />
+        <StatCard title={t('volunteer_available')}         value={stats.availableRequests}    icon={FileText}    color="purple" link="/requests/available" />
+        <StatCard title={t('dashboard_notifications')}     value={stats.unreadNotifications}  icon={Bell}        color="red"    link="/notifications" />
       </div>
 
       {/* ── Impact Section ───────────────────────────────────────────── */}
@@ -218,8 +220,8 @@ const VolunteerDashboard: React.FC = () => {
         <div className="bg-white dark:bg-slate-800 rounded-xl border border-neutral-200 dark:border-slate-700/60 shadow-sm p-5 transition-colors duration-200">
           <div className="flex items-center justify-between mb-5">
             <div>
-              <p className="text-xs font-bold text-neutral-500 dark:text-slate-400 uppercase tracking-widest">Your Impact</p>
-              <p className="text-sm font-semibold text-gray-900 dark:text-slate-100 mt-0.5">How you're helping the community</p>
+              <p className="text-xs font-bold text-neutral-500 dark:text-slate-400 uppercase tracking-widest">{t('volunteer_my_impact')}</p>
+              <p className="text-sm font-semibold text-gray-900 dark:text-slate-100 mt-0.5">{t('volunteer_awaiting_help')}</p>
             </div>
             <TrendingUp className="w-5 h-5 text-neutral-300 dark:text-slate-600" />
           </div>
@@ -252,15 +254,15 @@ const VolunteerDashboard: React.FC = () => {
       {/* ── Chart + Active Assignments ───────────────────────────────── */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {analyticsData?.statusBreakdown && analyticsData.statusBreakdown.length > 0 ? (
-          <StatusChart data={analyticsData.statusBreakdown} title="Assignment Status" type="pie" />
+          <StatusChart data={analyticsData.statusBreakdown} title={t('dashboard_status_breakdown')} type="pie" />
         ) : (
-          <SectionCard title="Assignment Status">
+          <SectionCard title={t('dashboard_status_breakdown')}>
             <EmptyState icon={CheckSquare} title="No data yet" description="Your assignment statistics will appear here." size="sm" />
           </SectionCard>
         )}
 
         <SectionCard
-          title="My Active Assignments"
+          title={t('dashboard_active_assignments')}
           viewAllLink="/assignments"
           headerClassName="bg-gradient-to-r from-gray-50 to-transparent dark:from-slate-800/80 dark:to-transparent"
         >
@@ -310,7 +312,7 @@ const VolunteerDashboard: React.FC = () => {
       {/* ── Available Requests + Notifications ──────────────────────── */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <SectionCard
-          title="Available Requests"
+          title={t('volunteer_available_requests_label')}
           viewAllLink="/requests/available"
           headerClassName="bg-gradient-to-r from-purple-50 to-white dark:from-purple-900/20 dark:to-slate-800"
         >

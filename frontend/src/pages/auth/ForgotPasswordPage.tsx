@@ -5,8 +5,10 @@ import { authApi } from '../../services/api';
 import Button from '../../components/common/Button';
 import Card from '../../components/common/Card';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 const ForgotPasswordPage: React.FC = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);

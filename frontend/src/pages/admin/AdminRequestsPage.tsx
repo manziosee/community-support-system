@@ -11,8 +11,10 @@ import EmptyState from '../../components/common/EmptyState';
 import { exportToCSV } from '../../utils/exportUtils';
 import Modal from '../../components/common/Modal';
 import Input from '../../components/common/Input';
+import { useTranslation } from 'react-i18next';
 
 const AdminRequestsPage: React.FC = () => {
+  const { t } = useTranslation();
   const [requests, setRequests] = useState<Request[]>([]);
   const [filteredRequests, setFilteredRequests] = useState<Request[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -252,7 +254,7 @@ const AdminRequestsPage: React.FC = () => {
   };
 
   const handleDeleteRequest = async (requestId: number) => {
-    if (window.confirm('Are you sure you want to delete this request? This action cannot be undone.')) {
+    if (window.confirm(t('admin_requests_delete_confirm') + ' This action cannot be undone.')) {
       setIsDeleting(requestId);
       try {
         // Remove from requests list
@@ -402,7 +404,7 @@ const AdminRequestsPage: React.FC = () => {
           {filteredRequests.length === 0 ? (
             <EmptyState
               icon={FileText}
-              title="No requests found"
+              title={t('admin_requests_no_requests')}
               description="No requests match your current filters"
             />
           ) : (

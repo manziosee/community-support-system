@@ -5,7 +5,7 @@ import {
   XCircle, ChevronRight, ArrowRight, Sparkles,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useLanguage } from '../../contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import { requestsApi, notificationsApi } from '../../services/api';
 import type { Request, Notification, CitizenAnalytics } from '../../types';
 import StatusChart from '../../components/charts/StatusChart';
@@ -28,7 +28,7 @@ const ProgressBar: React.FC<{ pct: number; colorClass: string }> = ({ pct, color
 
 const CitizenDashboard: React.FC = () => {
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const [requests, setRequests] = useState<Request[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [stats, setStats] = useState({
@@ -76,7 +76,7 @@ const CitizenDashboard: React.FC = () => {
     fetchDashboardData();
   }, [user]);
 
-  if (isLoading) return <LoadingSpinner size="lg" text="Loading your dashboard…" />;
+  if (isLoading) return <LoadingSpinner size="lg" text={t('citizen_loading')} />;
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
@@ -113,7 +113,7 @@ const CitizenDashboard: React.FC = () => {
 
         <div className="relative p-6 lg:p-8 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5">
           <div className="flex-1">
-            <p className="text-gray-300 text-sm font-medium mb-1">{t('greeting_morning')} 👋</p>
+            <p className="text-gray-300 text-sm font-medium mb-1">{t(getGreeting() === 'Good morning' ? 'greeting_morning' : getGreeting() === 'Good afternoon' ? 'greeting_afternoon' : 'greeting_evening')} 👋</p>
             <h1 className="font-display text-2xl lg:text-3xl font-extrabold mb-2 leading-tight">{user?.name}</h1>
             {locationStr && (
               <p className="flex items-center gap-1.5 text-white/75 text-sm mb-4">
@@ -128,7 +128,7 @@ const CitizenDashboard: React.FC = () => {
                   { label: t('dashboard_total_requests'),       val: stats.totalRequests,                              color: 'text-white',        bg: 'bg-white/15' },
                   { label: t('dashboard_pending'), val: stats.pendingRequests + stats.acceptedRequests,   color: 'text-yellow-300',   bg: 'bg-yellow-400/20' },
                   { label: t('dashboard_completed'),        val: stats.completedRequests,                          color: 'text-green-300',    bg: 'bg-green-400/20' },
-                  { label: 'Completion',  val: `${completionRate}%`,                             color: 'text-primary-200',  bg: 'bg-white/10' },
+                  { label: t('citizen_completion'),  val: `${completionRate}%`,                             color: 'text-primary-200',  bg: 'bg-white/10' },
                 ].map((s) => (
                   <div key={s.label} className={`${s.bg} rounded-xl px-3 py-2 text-center border border-white/10`}>
                     <span className={`font-display text-lg font-black ${s.color} leading-none block`}>{s.val}</span>
@@ -156,7 +156,7 @@ const CitizenDashboard: React.FC = () => {
         <StatCard title={t('dashboard_total_requests')}  value={stats.totalRequests}        icon={FileText}     color="blue"   link="/requests" />
         <StatCard title={t('dashboard_pending')}         value={stats.pendingRequests}       icon={Clock}        color="yellow" />
         <StatCard title={t('dashboard_completed')}       value={stats.completedRequests}     icon={CheckCircle}  color="green" />
-        <StatCard title={t('dashboard_notifications')}   value={stats.unreadNotifications}   icon={Bell}         color="red"    link="/notifications" subtitle={stats.unreadNotifications > 0 ? 'unread' : 'all read'} />
+        <StatCard title={t('dashboard_notifications')}   value={stats.unreadNotifications}   icon={Bell}         color="red"    link="/notifications" subtitle={stats.unreadNotifications > 0 ? t('citizen_unread') : t('citizen_all_read')} />
       </div>
 
       {/* ── Request Journey Stepper ──────────────────────────────────── */}
@@ -167,7 +167,7 @@ const CitizenDashboard: React.FC = () => {
               <p className="text-xs font-bold text-neutral-500 dark:text-slate-400 uppercase tracking-widest">Request Journey</p>
               <p className="text-sm font-semibold text-gray-900 dark:text-slate-100 mt-0.5">Track where your requests stand</p>
             </div>
-            <span className="text-xs font-semibold text-neutral-500 dark:text-slate-400">{stats.totalRequests} total</span>
+            <span className="text-xs font-semibold text-neutral-500 dark:text-slate-400">{stats.totalRequests} {t('citizen_total_label')}</span>
           </div>
 
           {/* Desktop: horizontal stepper */}
@@ -228,7 +228,7 @@ const CitizenDashboard: React.FC = () => {
           <StatusChart data={analyticsData.statusBreakdown} title={t('dashboard_status_breakdown')} type="pie" />
         ) : (
           <SectionCard title={t('dashboard_status_breakdown')}>
-            <EmptyState icon={FileText} title={t('misc_no_data')} description="Your request statistics will appear here." size="sm" />
+            <EmptyState icon={FileText} title={t('misc_no_data')} description={t('citizen_stats_appear')} size="sm" />
           </SectionCard>
         )}
 
@@ -240,8 +240,8 @@ const CitizenDashboard: React.FC = () => {
           {requests.length === 0 ? (
             <EmptyState
               icon={FileText}
-              title="No requests yet"
-              description="Create your first request to get help from volunteers in your area."
+              title={t('citizen_no_requests_title')}
+              description={t('citizen_no_requests_desc')}
               actionLabel={t('nav_create_request')}
               onAction={() => { window.location.href = '/requests/create'; }}
               size="sm"
@@ -290,7 +290,7 @@ const CitizenDashboard: React.FC = () => {
             headerClassName="bg-gradient-to-r from-accent-50 to-white dark:from-accent-900/10 dark:to-slate-800"
           >
             {notifications.length === 0 ? (
-              <EmptyState icon={Bell} title="All caught up!" description="You'll see notifications here when there are updates on your requests." size="sm" />
+              <EmptyState icon={Bell} title={t('citizen_all_caught_up')} description={t('citizen_notif_empty_desc')} size="sm" />
             ) : (
               <div className="space-y-2">
                 {notifications.map((n) => (
@@ -324,9 +324,9 @@ const CitizenDashboard: React.FC = () => {
             Quick Actions
           </h3>
           {[
-            { to: '/requests/create', icon: Plus,     label: 'New Request',   desc: 'Post a new help request',     gradient: 'from-gray-900 to-black' },
-            { to: '/requests',        icon: FileText,  label: 'My Requests',   desc: 'Track all your requests',     gradient: 'from-gray-700 to-gray-900' },
-            { to: '/notifications',   icon: Bell,      label: 'Notifications', desc: `${stats.unreadNotifications} unread`, gradient: 'from-gray-500 to-gray-700' },
+            { to: '/requests/create', icon: Plus,     label: t('citizen_new_request'),   desc: t('citizen_new_request_desc'),     gradient: 'from-gray-900 to-black' },
+            { to: '/requests',        icon: FileText,  label: t('nav_requests'),   desc: t('citizen_my_requests_desc'),     gradient: 'from-gray-700 to-gray-900' },
+            { to: '/notifications',   icon: Bell,      label: t('nav_notifications'), desc: `${stats.unreadNotifications} ${t('citizen_unread')}`, gradient: 'from-gray-500 to-gray-700' },
           ].map((action) => (
             <Link key={action.to} to={action.to}>
               <div className="group flex items-center gap-4 p-4 bg-white dark:bg-slate-800 border border-neutral-200 dark:border-slate-700 rounded-xl hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-soft hover:-translate-y-0.5 transition-all duration-200">

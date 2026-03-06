@@ -6,6 +6,7 @@ import { RatingDisplay } from '../../components/common/StarRating';
 import { LeaderboardSkeleton } from '../../components/common/SkeletonLoader';
 import Breadcrumb from '../../components/common/Breadcrumb';
 import type { LeaderboardEntry } from '../../types';
+import { useTranslation } from 'react-i18next';
 
 type Period = 'weekly' | 'monthly' | 'allTime';
 
@@ -58,6 +59,7 @@ const PodiumCard: React.FC<{ entry: LeaderboardEntry }> = ({ entry }) => {
 };
 
 const LeaderboardPage: React.FC = () => {
+  const { t } = useTranslation();
   const { leaderboard, isLoading } = useGamification();
   const [period, setPeriod] = useState<Period>('allTime');
 

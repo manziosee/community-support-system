@@ -6,8 +6,10 @@ import Card from '../../components/common/Card';
 import { authApi } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 const TwoFactorVerifyPage: React.FC = () => {
+  const { t } = useTranslation();
   const [verificationCode, setVerificationCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [useBackupCode, setUseBackupCode] = useState(false);

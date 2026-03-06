@@ -4,8 +4,10 @@ import { CheckCircle, XCircle, Mail, Loader } from 'lucide-react';
 import { authApi } from '../../services/api';
 import Button from '../../components/common/Button';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 const EmailVerificationPage: React.FC = () => {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('');

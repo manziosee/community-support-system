@@ -11,6 +11,7 @@ import LoadingSpinner from '../../components/common/LoadingSpinner';
 import EmptyState from '../../components/common/EmptyState';
 import Modal from '../../components/common/Modal';
 import Input from '../../components/common/Input';
+import { useTranslation } from 'react-i18next';
 
 const AdminUsersPage: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -33,6 +34,7 @@ const AdminUsersPage: React.FC = () => {
   const [isTogglingLock, setIsTogglingLock] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const { t } = useTranslation();
 
   // Form data
   const [formData, setFormData] = useState({
@@ -346,7 +348,7 @@ const AdminUsersPage: React.FC = () => {
   };
 
   const handleDeleteUser = async (userId: number) => {
-    if (window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+    if (window.confirm(t('admin_users_delete_confirm') + ' This action cannot be undone.')) {
       setIsDeleting(userId);
       try {
         await adminApi.deleteUser(userId);
@@ -396,7 +398,7 @@ const AdminUsersPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">User Management</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('admin_users_title')}</h1>
           <p className="text-gray-600 dark:text-slate-400 mt-1">Manage all system users and their roles</p>
         </div>
         <Button icon={UserPlus} variant="create" onClick={handleAddUser} className="self-start sm:self-auto flex-shrink-0">
@@ -493,7 +495,7 @@ const AdminUsersPage: React.FC = () => {
           {filteredUsers.length === 0 ? (
             <EmptyState
               icon={Users}
-              title="No users found"
+              title={t('admin_users_no_users')}
               description="No users match your current filters"
             />
           ) : (

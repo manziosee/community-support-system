@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { User, Mail, Phone, MapPin, HandHeart, Award, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { rwandaLocationsApi, skillsApi } from '../../services/api';
 import { UserRole } from '../../types';
@@ -37,6 +38,7 @@ const RegisterPage: React.FC = () => {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.CITIZEN);
   const [showPassword, setShowPassword] = useState(false);
+  const { t } = useTranslation();
   const { register: registerUser, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -253,10 +255,10 @@ const RegisterPage: React.FC = () => {
             <HandHeart className="w-6 h-6 sm:w-8 sm:h-8 text-white dark:text-gray-900" />
           </div>
           <h2 className="mt-4 sm:mt-6 text-2xl sm:text-3xl font-bold text-gray-900">
-            Join our community
+            {t('auth_register_title')}
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Create your account to start helping or getting help
+            {t('auth_register_subtitle')}
           </p>
         </div>
 
@@ -266,7 +268,7 @@ const RegisterPage: React.FC = () => {
             {/* Name */}
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Full Name
+                {t('auth_full_name')}
               </label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -289,7 +291,7 @@ const RegisterPage: React.FC = () => {
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email Address
+                {t('auth_email')}
               </label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -312,7 +314,7 @@ const RegisterPage: React.FC = () => {
             {/* Phone */}
             <div>
               <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
-                Phone Number
+                {t('auth_phone')}
               </label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -335,7 +337,7 @@ const RegisterPage: React.FC = () => {
             {/* Password */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
+                {t('auth_password')}
               </label>
               <div className="mt-1 relative">
                 <input
@@ -366,7 +368,7 @@ const RegisterPage: React.FC = () => {
             {/* Role */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                I want to
+                {t('auth_i_want_to')}
               </label>
               <div className="mt-2 space-y-2">
                 <label className="flex items-center">
@@ -376,7 +378,7 @@ const RegisterPage: React.FC = () => {
                     value={UserRole.CITIZEN}
                     className="h-4 w-4 text-gray-900 focus:ring-gray-900 border-gray-300"
                   />
-                  <span className="ml-2 text-sm text-gray-700">Get help from volunteers</span>
+                  <span className="ml-2 text-sm text-gray-700">{t('auth_role_citizen')}</span>
                 </label>
                 <label className="flex items-center">
                   <input
@@ -385,7 +387,7 @@ const RegisterPage: React.FC = () => {
                     value={UserRole.VOLUNTEER}
                     className="h-4 w-4 text-gray-900 focus:ring-gray-900 border-gray-300"
                   />
-                  <span className="ml-2 text-sm text-gray-700">Help others as a volunteer</span>
+                  <span className="ml-2 text-sm text-gray-700">{t('auth_role_volunteer')}</span>
                 </label>
               </div>
               {errors.role && (
@@ -396,7 +398,7 @@ const RegisterPage: React.FC = () => {
 
           {/* Location - All Administrative Levels */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900">Location Information</h3>
+            <h3 className="text-lg font-medium text-gray-900">{t('auth_location_info')}</h3>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {/* Province */}
@@ -565,7 +567,7 @@ const RegisterPage: React.FC = () => {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 <Award className="inline w-4 h-4 mr-1" />
-                Select your skills
+                {t('auth_select_skills')}
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {skills.map((skill) => (
@@ -596,18 +598,18 @@ const RegisterPage: React.FC = () => {
             loading={isLoading}
             disabled={isLoading}
           >
-            Create Account
+            {t('auth_create_account')}
           </Button>
 
           {/* Sign in link */}
           <div className="text-center">
             <p className="text-sm text-gray-600">
-              Already have an account?{' '}
+              {t('auth_have_account')}{' '}
               <Link
                 to="/login"
                 className="font-medium text-gray-700 hover:text-black"
               >
-                Sign in here
+                {t('auth_sign_in')}
               </Link>
             </p>
           </div>

@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import Breadcrumb from '../../components/common/Breadcrumb';
 import { timeAgo } from '../../utils/dateUtils';
 import type { BulletinPost } from '../../types';
+import { useTranslation } from 'react-i18next';
 
 interface MockComment {
   id: string;
@@ -106,6 +107,7 @@ const PostCard: React.FC<{
   const isLong = post.content.length > 200;
 
   const handleLike = () => {
+  const { t } = useTranslation();
     if (!liked) {
       setHeartBurst(true);
       setTimeout(() => setHeartBurst(false), 600);
@@ -279,7 +281,7 @@ const CreatePostModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
       <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-soft-lg w-full max-w-lg animate-scale-in">
         <div className="flex items-center justify-between p-5 border-b border-neutral-100 dark:border-slate-700">
-          <h2 className="font-display font-bold text-gray-900 dark:text-slate-100">New Post</h2>
+          <h2 className="font-display font-bold text-gray-900 dark:text-slate-100">{t('bulletin_new_post')}</h2>
           <button onClick={onClose} className="p-2 rounded-xl hover:bg-neutral-100 dark:hover:bg-slate-700 transition-colors">
             <X className="w-5 h-5 text-neutral-500 dark:text-slate-400" />
           </button>
@@ -300,7 +302,7 @@ const CreatePostModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             <textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder="Share your thoughts, resources, or announcements…" rows={5} className="input-field text-sm resize-none" />
           </div>
           <div className="flex gap-3">
-            <button onClick={onClose} className="flex-1 py-2.5 border border-neutral-200 dark:border-slate-600 rounded-xl text-sm font-semibold hover:bg-neutral-50 dark:hover:bg-slate-700 transition-colors">Cancel</button>
+            <button onClick={onClose} className="flex-1 py-2.5 border border-neutral-200 dark:border-slate-600 rounded-xl text-sm font-semibold hover:bg-neutral-50 dark:hover:bg-slate-700 transition-colors">{t('bulletin_cancel')}</button>
             <button
               disabled={!title.trim() || !content.trim()}
               className="flex-1 py-2.5 bg-gradient-to-r from-[#0d9488] to-[#6366f1] text-white text-sm font-bold rounded-xl hover:from-[#0f766e] hover:to-[#4f46e5] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
@@ -350,7 +352,7 @@ const BulletinBoardPage: React.FC = () => {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Users className="w-5 h-5" />
-              <h1 className="font-display text-xl font-extrabold">Community Board</h1>
+              <h1 className="font-display text-xl font-extrabold">{t('bulletin_title')}</h1>
             </div>
             <p className="text-white/70 text-sm">Share stories, resources, and announcements with the community.</p>
           </div>

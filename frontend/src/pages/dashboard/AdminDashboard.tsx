@@ -123,7 +123,7 @@ const AdminDashboard: React.FC = () => {
 
   const healthItems = [
     {
-      label: t('admin.requestCompletion'),
+      label: t('admin_request_completion'),
       value: completionRate,
       icon: CircleCheck,
       color: 'text-[#059669]',
@@ -132,7 +132,7 @@ const AdminDashboard: React.FC = () => {
       border: 'border-[#bbf7d0] dark:border-[#059669]/30',
     },
     {
-      label: t('admin.volunteerRatio'),
+      label: t('admin_volunteer_ratio'),
       value: stats.totalUsers > 0 ? Math.round((stats.totalVolunteers / stats.totalUsers) * 100) : 0,
       icon: UserCheck,
       color: 'text-[#2563eb]',
@@ -141,7 +141,7 @@ const AdminDashboard: React.FC = () => {
       border: 'border-[#bfdbfe] dark:border-[#2563eb]/30',
     },
     {
-      label: t('admin.activeAssignments'),
+      label: t('admin_active_assignments'),
       value: stats.totalAssignments > 0 ? Math.round((activeAssignments / stats.totalAssignments) * 100) : 0,
       icon: Activity,
       color: 'text-[#7c3aed]',
@@ -150,7 +150,7 @@ const AdminDashboard: React.FC = () => {
       border: 'border-[#e9d5ff] dark:border-[#7c3aed]/30',
     },
     {
-      label: t('admin.pendingRate'),
+      label: t('admin_pending_rate'),
       value: stats.totalRequests > 0 ? Math.round((stats.pendingRequests / stats.totalRequests) * 100) : 0,
       icon: AlertCircle,
       color: 'text-[#d97706]',
@@ -160,7 +160,7 @@ const AdminDashboard: React.FC = () => {
     },
   ];
 
-  if (isLoading) return <LoadingSpinner size="lg" text={t('common.loading')} />;
+  if (isLoading) return <LoadingSpinner size="lg" text={t('common_loading')} />;
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -178,20 +178,20 @@ const AdminDashboard: React.FC = () => {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Shield className="w-4 h-4 text-primary-400" />
-              <p className="text-slate-400 text-sm font-medium uppercase tracking-wider">{t('admin.systemAdministration')}</p>
+              <p className="text-slate-400 text-sm font-medium uppercase tracking-wider">{t('admin_system_administration')}</p>
             </div>
             <h1 className="font-display text-2xl lg:text-3xl font-extrabold mb-1 leading-tight">
-              {t('admin.adminDashboard')}
+              {t('admin_dashboard_title')}
             </h1>
-            <p className="text-slate-400 text-sm mb-5">{t('admin.fullSystemOverview')}</p>
+            <p className="text-slate-400 text-sm mb-5">{t('admin_full_system_overview')}</p>
 
             {/* Key metrics inline */}
             <div className="flex flex-wrap gap-6">
               {[
-                { label: t('admin.totalUsers'),    val: stats.totalUsers,       color: 'text-primary-400',   bg: 'bg-primary-500/10' },
-                { label: t('admin.totalRequests'), val: stats.totalRequests,    color: 'text-secondary-400', bg: 'bg-secondary-500/10' },
-                { label: t('admin.assignments'),    val: stats.totalAssignments, color: 'text-green-400',     bg: 'bg-green-500/10' },
-                { label: t('admin.completion'),     val: `${completionRate}%`,   color: 'text-yellow-400',    bg: 'bg-yellow-500/10' },
+                { label: t('admin_total_users'),    val: stats.totalUsers,       color: 'text-primary-400',   bg: 'bg-primary-500/10' },
+                { label: t('admin_total_requests'), val: stats.totalRequests,    color: 'text-secondary-400', bg: 'bg-secondary-500/10' },
+                { label: t('admin_assignments_label'),    val: stats.totalAssignments, color: 'text-green-400',     bg: 'bg-green-500/10' },
+                { label: t('admin_completion'),     val: `${completionRate}%`,   color: 'text-yellow-400',    bg: 'bg-yellow-500/10' },
               ].map((m) => (
                 <div key={m.label} className={`${m.bg} rounded-xl px-4 py-2.5 text-center border border-white/5`}>
                   <p className={`font-display text-xl font-black ${m.color}`}>{m.val}</p>
@@ -235,25 +235,25 @@ const AdminDashboard: React.FC = () => {
 
       {/* ── Primary Stats ────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard title={t('admin.totalUsers')}    value={stats.totalUsers}      icon={Users}      color="blue"   link="/admin/users" />
-        <StatCard title={t('admin.volunteers')}     value={stats.totalVolunteers} icon={Award}      color="green"  link="/admin/users?role=VOLUNTEER" />
-        <StatCard title={t('admin.citizens')}       value={stats.totalCitizens}   icon={Users}      color="purple" link="/admin/users?role=CITIZEN" />
-        <StatCard title={t('admin.totalRequests')} value={stats.totalRequests}   icon={FileText}   color="orange" link="/admin/requests" />
+        <StatCard title={t('admin_total_users')}    value={stats.totalUsers}      icon={Users}      color="blue"   link="/admin/users" />
+        <StatCard title={t('admin_volunteers')}     value={stats.totalVolunteers} icon={Award}      color="green"  link="/admin/users?role=VOLUNTEER" />
+        <StatCard title={t('admin_citizens')}       value={stats.totalCitizens}   icon={Users}      color="purple" link="/admin/users?role=CITIZEN" />
+        <StatCard title={t('admin_total_requests')} value={stats.totalRequests}   icon={FileText}   color="orange" link="/admin/requests" />
       </div>
 
       {/* ── Secondary Stats ──────────────────────────────────────────── */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <StatCard title={t('admin.pendingRequests')}   value={stats.pendingRequests}   icon={Clock}       color="yellow" link="/admin/requests?status=PENDING" />
-        <StatCard title={t('admin.completedRequests')} value={stats.completedRequests} icon={CheckSquare} color="green"  link="/admin/requests?status=COMPLETED" />
-        <StatCard title={t('admin.totalAssignments')}  value={stats.totalAssignments}  icon={CheckSquare} color="indigo" link="/admin/assignments" />
+        <StatCard title={t('admin_pending_requests')}   value={stats.pendingRequests}   icon={Clock}       color="yellow" link="/admin/requests?status=PENDING" />
+        <StatCard title={t('admin_completed_requests')} value={stats.completedRequests} icon={CheckSquare} color="green"  link="/admin/requests?status=COMPLETED" />
+        <StatCard title={t('admin_total_assignments')}  value={stats.totalAssignments}  icon={CheckSquare} color="indigo" link="/admin/assignments" />
       </div>
 
       {/* ── System Health ────────────────────────────────────────────── */}
       <div className="bg-white dark:bg-slate-800 rounded-xl border border-neutral-200 dark:border-slate-700/60 shadow-sm p-5 transition-colors duration-200">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <p className="text-xs font-bold text-neutral-500 dark:text-slate-400 uppercase tracking-widest">{t('admin.systemHealth')}</p>
-            <p className="text-sm font-semibold text-gray-900 dark:text-slate-100 mt-0.5">{t('admin.platformPerformance')}</p>
+            <p className="text-xs font-bold text-neutral-500 dark:text-slate-400 uppercase tracking-widest">{t('admin_system_health')}</p>
+            <p className="text-sm font-semibold text-gray-900 dark:text-slate-100 mt-0.5">{t('admin_platform_performance')}</p>
           </div>
           <Activity className="w-5 h-5 text-[#10b981]" />
         </div>
@@ -279,8 +279,8 @@ const AdminDashboard: React.FC = () => {
         <Card padding="md">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-sm font-bold text-gray-900 dark:text-slate-100">{t('admin.userDistribution')}</h3>
-              <p className="text-xs text-neutral-500 dark:text-slate-400">{t('admin.breakdownByRole')}</p>
+              <h3 className="text-sm font-bold text-gray-900 dark:text-slate-100">{t('admin_user_distribution')}</h3>
+              <p className="text-xs text-neutral-500 dark:text-slate-400">{t('admin_breakdown_by_role')}</p>
             </div>
             <div className="w-8 h-8 bg-primary-50 dark:bg-primary-900/30 rounded-lg flex items-center justify-center">
               <Users className="w-4 h-4 text-primary-600 dark:text-primary-400" />
@@ -307,8 +307,8 @@ const AdminDashboard: React.FC = () => {
         <Card padding="md">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-sm font-bold text-gray-900 dark:text-slate-100">{t('admin.requestStatus')}</h3>
-              <p className="text-xs text-neutral-500 dark:text-slate-400">{t('admin.currentDistribution')}</p>
+              <h3 className="text-sm font-bold text-gray-900 dark:text-slate-100">{t('admin_request_status')}</h3>
+              <p className="text-xs text-neutral-500 dark:text-slate-400">{t('admin_current_distribution')}</p>
             </div>
             <div className="w-8 h-8 bg-orange-50 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
               <FileText className="w-4 h-4 text-orange-600 dark:text-orange-400" />
@@ -335,8 +335,8 @@ const AdminDashboard: React.FC = () => {
         <Card padding="md">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-sm font-bold text-gray-900 dark:text-slate-100">{t('admin.systemOverview')}</h3>
-              <p className="text-xs text-neutral-500 dark:text-slate-400">{t('admin.totalVsActive')}</p>
+              <h3 className="text-sm font-bold text-gray-900 dark:text-slate-100">{t('admin_system_overview')}</h3>
+              <p className="text-xs text-neutral-500 dark:text-slate-400">{t('admin_total_vs_active')}</p>
             </div>
             <div className="w-8 h-8 bg-secondary-50 dark:bg-secondary-900/30 rounded-lg flex items-center justify-center">
               <BarChart3 className="w-4 h-4 text-secondary-600 dark:text-secondary-400" />
@@ -360,8 +360,8 @@ const AdminDashboard: React.FC = () => {
       <Card padding="md">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-sm font-bold text-gray-900 dark:text-slate-100">{t('admin.platformGrowth')}</h3>
-            <p className="text-xs text-neutral-500 dark:text-slate-400">{t('admin.cumulativeRequests')}</p>
+            <h3 className="text-sm font-bold text-gray-900 dark:text-slate-100">{t('admin_platform_growth')}</h3>
+            <p className="text-xs text-neutral-500 dark:text-slate-400">{t('admin_cumulative_requests')}</p>
           </div>
           <div className="w-8 h-8 bg-green-50 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
             <TrendingUp className="w-4 h-4 text-green-600 dark:text-green-400" />
@@ -431,7 +431,7 @@ const AdminDashboard: React.FC = () => {
       {/* ── Quick Actions ────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <SectionCard
-          title={t('admin.userManagement')}
+          title={t('admin_user_management')}
           headerClassName="bg-gradient-to-r from-blue-50 to-transparent dark:from-blue-900/20 dark:to-transparent"
           headerRight={
             <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/40 rounded-lg flex items-center justify-center">
@@ -441,9 +441,9 @@ const AdminDashboard: React.FC = () => {
         >
           <div className="space-y-2">
             {[
-              { to: '/admin/users',                label: t('admin.viewAllUsers'),       desc: `${stats.totalUsers} ${t('admin.registeredUsers')}` },
-              { to: '/admin/users?role=VOLUNTEER', label: t('admin.volunteerManagement'), desc: `${stats.totalVolunteers} ${t('admin.volunteers').toLowerCase()}` },
-              { to: '/admin/users?role=CITIZEN',   label: t('admin.citizenManagement'),   desc: `${stats.totalCitizens} ${t('admin.citizens').toLowerCase()}` },
+              { to: '/admin/users',                label: t('admin_view_all_users'),       desc: `${stats.totalUsers} ${t('admin_registered_users')}` },
+              { to: '/admin/users?role=VOLUNTEER', label: t('admin_volunteer_management'), desc: `${stats.totalVolunteers} ${t('admin_volunteers').toLowerCase()}` },
+              { to: '/admin/users?role=CITIZEN',   label: t('admin_citizen_management'),   desc: `${stats.totalCitizens} ${t('admin_citizens').toLowerCase()}` },
             ].map((item) => (
               <Link
                 key={item.to}
@@ -461,7 +461,7 @@ const AdminDashboard: React.FC = () => {
         </SectionCard>
 
         <SectionCard
-          title={t('admin.requestManagement')}
+          title={t('admin_request_management')}
           headerClassName="bg-gradient-to-r from-orange-50 to-transparent dark:from-orange-900/10 dark:to-transparent"
           headerRight={
             <div className="w-8 h-8 bg-orange-100 dark:bg-orange-900/40 rounded-lg flex items-center justify-center">
@@ -471,9 +471,9 @@ const AdminDashboard: React.FC = () => {
         >
           <div className="space-y-2">
             {[
-              { to: '/admin/requests',                label: t('admin.allRequests'),    desc: `${stats.totalRequests} ${t('admin.total')}` },
-              { to: '/admin/requests?status=PENDING', label: t('admin.pendingRequests'), desc: `${stats.pendingRequests} ${t('admin.awaitingVolunteers')}` },
-              { to: '/admin/assignments',             label: t('admin.allAssignments'),  desc: `${stats.totalAssignments} ${t('admin.assignments').toLowerCase()}` },
+              { to: '/admin/requests',                label: t('admin_all_requests'),    desc: `${stats.totalRequests} ${t('admin_total_label')}` },
+              { to: '/admin/requests?status=PENDING', label: t('admin_pending_requests'), desc: `${stats.pendingRequests} ${t('admin_awaiting_volunteers')}` },
+              { to: '/admin/assignments',             label: t('admin_all_assignments'),  desc: `${stats.totalAssignments} ${t('admin_assignments_label').toLowerCase()}` },
             ].map((item) => (
               <Link
                 key={item.to}
@@ -491,7 +491,7 @@ const AdminDashboard: React.FC = () => {
         </SectionCard>
 
         <SectionCard
-          title={t('admin.systemSettings')}
+          title={t('nav_system_settings')}
           headerClassName="bg-gradient-to-r from-green-50 to-transparent dark:from-green-900/10 dark:to-transparent"
           headerRight={
             <div className="w-8 h-8 bg-green-100 dark:bg-green-900/40 rounded-lg flex items-center justify-center">
@@ -501,7 +501,7 @@ const AdminDashboard: React.FC = () => {
         >
           <div className="space-y-2">
             {[
-              { to: '/admin/skills',    icon: Zap,       label: t('admin.skillManagement'),    desc: t('admin.manageSkillCategories'), color: 'text-purple-600 dark:text-purple-400',  hoverBorder: 'hover:border-purple-300 dark:hover:border-purple-600', hoverText: 'group-hover:text-purple-700 dark:group-hover:text-purple-400' },
+              { to: '/admin/skills',    icon: Zap,       label: t('admin_skill_management'),    desc: t('admin_manage_skill_categories'), color: 'text-purple-600 dark:text-purple-400',  hoverBorder: 'hover:border-purple-300 dark:hover:border-purple-600', hoverText: 'group-hover:text-purple-700 dark:group-hover:text-purple-400' },
               { to: '/admin/locations', icon: MapPin,    label: 'Location Management', desc: 'Manage geographic data',             color: 'text-green-600 dark:text-green-400',    hoverBorder: 'hover:border-green-300 dark:hover:border-green-600',   hoverText: 'group-hover:text-green-700 dark:group-hover:text-green-400' },
               { to: '/admin/analytics', icon: BarChart3, label: 'Analytics & Reports', desc: 'Full system analytics',              color: 'text-primary-600 dark:text-primary-400', hoverBorder: 'hover:border-primary-300 dark:hover:border-primary-600', hoverText: 'group-hover:text-primary-700 dark:group-hover:text-primary-400' },
             ].map((item) => (

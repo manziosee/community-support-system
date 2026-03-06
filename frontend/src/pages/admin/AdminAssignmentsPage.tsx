@@ -9,8 +9,10 @@ import LoadingSpinner from '../../components/common/LoadingSpinner';
 import EmptyState from '../../components/common/EmptyState';
 import { exportToCSV } from '../../utils/exportUtils';
 import Modal from '../../components/common/Modal';
+import { useTranslation } from 'react-i18next';
 
 const AdminAssignmentsPage: React.FC = () => {
+  const { t } = useTranslation();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [filteredAssignments, setFilteredAssignments] = useState<Assignment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -263,7 +265,7 @@ const AdminAssignmentsPage: React.FC = () => {
   };
 
   const handleDeleteAssignment = async (assignmentId: number) => {
-    if (window.confirm('Are you sure you want to delete this assignment?')) {
+    if (window.confirm(t('admin_assignments_delete_confirm'))) {
       try {
         setAssignments(prev => prev.filter(a => a.assignmentId !== assignmentId));
       } catch (error) {
@@ -383,7 +385,7 @@ const AdminAssignmentsPage: React.FC = () => {
           {filteredAssignments.length === 0 ? (
             <EmptyState
               icon={CheckSquare}
-              title="No assignments found"
+              title={t('admin_assignments_no_assignments')}
               description="No assignments match your current filters"
             />
           ) : (
