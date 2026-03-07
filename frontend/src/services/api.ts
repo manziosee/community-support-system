@@ -22,9 +22,6 @@ function getApiBaseUrl(): string {
 }
 
 const API_BASE_URL = getApiBaseUrl();
-console.log('API Base URL:', API_BASE_URL);
-console.log('Environment:', import.meta.env.PROD ? 'Production' : 'Development');
-console.log('Current URL:', window.location.href);
 
 // Create axios instance
 export const api = axios.create({

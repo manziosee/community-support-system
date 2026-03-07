@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/analytics")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001", "http://localhost:3002", "http://localhost:3003", "https://community-support-system.vercel.app"})
 @Tag(name = "📊 Analytics", description = "Dashboard statistics and business intelligence endpoints")
 public class AnalyticsController {
 
