@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.Optional;
 
 @Service
 public class NotificationService {
+    private static final Logger log = LoggerFactory.getLogger(NotificationService.class);
+
     
     @Autowired
     private NotificationRepository notificationRepository;
@@ -170,6 +174,6 @@ public class NotificationService {
             notificationRepository.save(notification);
         });
         
-        System.out.println("✅ Notified " + volunteers.size() + " volunteers about new request: " + request.getTitle());
+        log.info("✅ Notified " + volunteers.size() + " volunteers about new request: " + request.getTitle());
     }
 }

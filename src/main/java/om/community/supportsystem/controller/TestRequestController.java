@@ -6,6 +6,9 @@ import om.community.supportsystem.repository.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.context.annotation.Profile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,11 +17,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.Map;
 
+@Profile("dev")
 @RestController
 @RequestMapping("/api/test-requests")
 @Tag(name = "🧪 Test Requests", description = "Testing endpoints for debugging request functionality")
 @CrossOrigin(origins = {"http://localhost:3001", "http://localhost:5173", "https://community-support-system.vercel.app"}, allowCredentials = "true")
 public class TestRequestController {
+    private static final Logger log = LoggerFactory.getLogger(TestRequestController.class);
+
     
     @Autowired
     private RequestRepository requestRepository;
@@ -69,7 +75,7 @@ public class TestRequestController {
                 "count", simpleRequests.size()
             ));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Unexpected error", e);
             return ResponseEntity.internalServerError().body(Map.of(
                 "error", "Failed to get requests: " + e.getMessage()
             ));

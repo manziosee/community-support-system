@@ -3,6 +3,8 @@ package om.community.supportsystem.service;
 import om.community.supportsystem.model.Skill;
 import om.community.supportsystem.repository.SkillRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,14 +19,16 @@ public class SkillService {
     private SkillRepository skillRepository;
     
     // Create
+    @CacheEvict(value = "skills", allEntries = true)
     public Skill createSkill(Skill skill) {
         if (skillRepository.existsBySkillName(skill.getSkillName())) {
             throw new RuntimeException("Skill with name " + skill.getSkillName() + " already exists");
         }
         return skillRepository.save(skill);
     }
-    
+
     // Read
+    @Cacheable(value = "skills", key = "'all'")
     public List<Skill> getAllSkills() {
         return skillRepository.findAll();
     }
@@ -62,6 +66,7 @@ public class SkillService {
     }
     
     // Update
+    @CacheEvict(value = "skills", allEntries = true)
     public Skill updateSkill(Long id, Skill skillDetails) {
         return skillRepository.findById(id)
                 .map(skill -> {
@@ -73,6 +78,7 @@ public class SkillService {
     }
     
     // Delete
+    @CacheEvict(value = "skills", allEntries = true)
     public void deleteSkill(Long id) {
         Skill skill = skillRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Skill not found with id: " + id));

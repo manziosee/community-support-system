@@ -3,6 +3,7 @@ package om.community.supportsystem.service;
 import om.community.supportsystem.repository.AssignmentRepository;
 import om.community.supportsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ public class LeaderboardService {
     @Autowired
     private AssignmentRepository assignmentRepository;
     
+    @Cacheable(value = "leaderboard", key = "#limit")
     public List<Map<String, Object>> getTopVolunteers(int limit) {
         return userRepository.findAll().stream()
             .filter(user -> "VOLUNTEER".equals(user.getRole()))

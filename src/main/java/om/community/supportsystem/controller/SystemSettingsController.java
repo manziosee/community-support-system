@@ -4,12 +4,14 @@ import om.community.supportsystem.model.SystemSettings;
 import om.community.supportsystem.service.SystemSettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/system/settings")
+@PreAuthorize("hasRole('ADMIN')")
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001", "http://localhost:3002", "http://localhost:3003", "https://community-support-system.vercel.app"})
 public class SystemSettingsController {
     

@@ -4,7 +4,9 @@ import om.community.supportsystem.config.DataInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.context.annotation.Profile;
 
+@Profile("dev")
 @RestController
 @RequestMapping("/api/manual-init")
 @CrossOrigin(origins = {"http://localhost:3001", "http://localhost:5173", "https://community-support-system.vercel.app"}, allowCredentials = "true")

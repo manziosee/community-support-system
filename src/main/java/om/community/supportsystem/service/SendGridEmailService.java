@@ -6,11 +6,15 @@ import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 @Service
 public class SendGridEmailService {
+    private static final Logger log = LoggerFactory.getLogger(SendGridEmailService.class);
+
 
     @Value("${sendgrid.api.key}")
     private String apiKey;
@@ -56,12 +60,12 @@ public class SendGridEmailService {
                                          ", Body: " + response.getBody());
             }
             
-            System.out.println("✅ Email sent successfully to: " + toEmail);
-            System.out.println("📧 Subject: " + subject);
-            System.out.println("📊 Status Code: " + response.getStatusCode());
+            log.info("✅ Email sent successfully to: " + toEmail);
+            log.info("📧 Subject: " + subject);
+            log.info("📊 Status Code: " + response.getStatusCode());
             
         } catch (IOException ex) {
-            System.err.println("❌ Error sending email: " + ex.getMessage());
+            log.error(String.valueOf("❌ Error sending email: " + ex.getMessage()));
             throw ex;
         }
     }

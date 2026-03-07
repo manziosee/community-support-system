@@ -7,6 +7,8 @@ import om.community.supportsystem.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -31,6 +33,8 @@ import om.community.supportsystem.repository.UserRepository;
 }, allowCredentials = "true")
 @Tag(name = "🔐 Authentication", description = "User authentication, registration, password reset, and 2FA management")
 public class AuthController {
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
+
     
     @Autowired
     private AuthService authService;
@@ -71,13 +75,13 @@ public class AuthController {
     public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
         try {
             String email = request.get("email");
-            System.out.println("🔄 Password reset request received for: " + email);
+            log.info("🔄 Password reset request received for: " + email);
             authService.requestPasswordReset(email);
-            System.out.println("✅ Password reset process completed for: " + email);
+            log.info("✅ Password reset process completed for: " + email);
             return ResponseEntity.ok(Map.of("message", "Password reset email sent"));
         } catch (Exception e) {
-            System.err.println("❌ Password reset failed: " + e.getMessage());
-            e.printStackTrace();
+            log.error(String.valueOf("❌ Password reset failed: " + e.getMessage()));
+            log.error("Unexpected error", e);
             // Don't reveal if email exists for security, but log the actual error
             return ResponseEntity.ok(Map.of("message", "If the email exists, a reset link has been sent"));
         }

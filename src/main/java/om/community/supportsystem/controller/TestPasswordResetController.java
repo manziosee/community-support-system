@@ -5,6 +5,7 @@ import om.community.supportsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.context.annotation.Profile;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Map;
 import java.util.Optional;
 
+@Profile("dev")
 @RestController
 @RequestMapping("/api/test-password-reset")
 @Tag(name = "🔧 Test Password Reset", description = "Testing endpoints for password reset when email is unavailable")

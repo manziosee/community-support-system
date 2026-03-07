@@ -1,5 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import ErrorBoundary from './components/common/ErrorBoundary';
+import NotFoundPage from './pages/NotFoundPage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -178,6 +180,7 @@ const AnimatedRoutes: React.FC = () => {
             {/* Landing & misc */}
             <Route path="/"     element={<LandingPage />} />
             <Route path="/home" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*"     element={<NotFoundPage />} />
           </Route>
         </Routes>
       </Suspense>
@@ -188,6 +191,7 @@ const AnimatedRoutes: React.FC = () => {
 // ─── App ──────────────────────────────────────────────────────────────────────
 function App() {
   return (
+    <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <LanguageProvider>
@@ -225,6 +229,7 @@ function App() {
         </LanguageProvider>
       </ThemeProvider>
     </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

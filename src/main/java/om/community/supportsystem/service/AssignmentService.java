@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +20,8 @@ import java.util.Optional;
 
 @Service
 public class AssignmentService {
+    private static final Logger log = LoggerFactory.getLogger(AssignmentService.class);
+
     
     @Autowired
     private AssignmentRepository assignmentRepository;
@@ -30,7 +34,7 @@ public class AssignmentService {
     
     // Create
     public Assignment createAssignment(Assignment assignment) {
-        System.out.println("🔄 Creating assignment...");
+        log.info("🔄 Creating assignment...");
         
         // Validate input
         if (assignment.getRequest() == null || assignment.getRequest().getRequestId() == null) {
@@ -67,9 +71,9 @@ public class AssignmentService {
         request.setStatus(RequestStatus.ACCEPTED);
         requestRepository.save(request);
         
-        System.out.println("✅ Assignment validation passed, saving...");
+        log.info("✅ Assignment validation passed, saving...");
         Assignment savedAssignment = assignmentRepository.save(assignment);
-        System.out.println("✅ Assignment saved with ID: " + savedAssignment.getAssignmentId());
+        log.info("✅ Assignment saved with ID: " + savedAssignment.getAssignmentId());
         
         return savedAssignment;
     }

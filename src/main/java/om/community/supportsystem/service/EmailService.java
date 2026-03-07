@@ -5,9 +5,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class EmailService {
+    private static final Logger log = LoggerFactory.getLogger(EmailService.class);
+
     
     @Autowired(required = false)
     private JavaMailSender mailSender;
@@ -20,60 +24,60 @@ public class EmailService {
     
     public void sendPasswordResetEmail(String toEmail, String resetToken) {
         try {
-            System.out.println("🔄 Attempting to send password reset email to: " + toEmail);
+            log.info("🔄 Attempting to send password reset email to: " + toEmail);
 
             if (sendGridEmailService != null) {
-                System.out.println("📧 Using SendGrid for password reset email delivery");
+                log.info("📧 Using SendGrid for password reset email delivery");
                 sendGridEmailService.sendPasswordResetEmail(toEmail, "User", resetToken);
-                System.out.println("✅ Password reset email sent successfully via SendGrid to: " + toEmail);
+                log.info("✅ Password reset email sent successfully via SendGrid to: " + toEmail);
                 return;
             }
 
             // Check if SMTP is available
             if (mailSender != null && fromEmail != null && !fromEmail.isEmpty()) {
-                System.out.println("📧 Using SMTP for email delivery");
+                log.info("📧 Using SMTP for email delivery");
                 sendPasswordResetEmailSMTP(toEmail, resetToken);
                 return;
             }
 
             // Email service unavailable - log token for manual use
-            System.err.println("⚠️ Email service unavailable. Logging reset token for manual use:");
-            System.err.println("🔑 MANUAL RESET TOKEN for " + toEmail + ": " + resetToken);
-            System.err.println("🔗 MANUAL RESET URL: " + getFrontendUrl() + "/reset-password?token=" + resetToken);
+            log.error("⚠️ Email service unavailable. Logging reset token for manual use:");
+            log.error(String.valueOf("🔑 MANUAL RESET TOKEN for " + toEmail + ": " + resetToken));
+            log.error(String.valueOf("🔗 MANUAL RESET URL: " + getFrontendUrl()) + "/reset-password?token=" + resetToken);
             throw new RuntimeException("No email service available to send password reset email");
 
         } catch (Exception e) {
-            System.err.println("❌ Failed to send password reset email to " + toEmail + ": " + e.getMessage());
-            System.err.println("🔗 MANUAL RESET URL: " + getFrontendUrl() + "/reset-password?token=" + resetToken);
+            log.error(String.valueOf("❌ Failed to send password reset email to " + toEmail + ": " + e.getMessage()));
+            log.error(String.valueOf("🔗 MANUAL RESET URL: " + getFrontendUrl()) + "/reset-password?token=" + resetToken);
             throw new RuntimeException("Failed to send password reset email: " + e.getMessage(), e);
         }
     }
     
     public void sendEmailVerification(String toEmail, String verificationToken) {
         try {
-            System.out.println("🔄 Sending verification email to: " + toEmail);
+            log.info("🔄 Sending verification email to: " + toEmail);
             
             if (sendGridEmailService != null) {
-                System.out.println("📧 Using SendGrid for email delivery");
+                log.info("📧 Using SendGrid for email delivery");
                 sendGridEmailService.sendVerificationEmail(toEmail, "User", verificationToken);
-                System.out.println("✅ Verification email sent successfully");
+                log.info("✅ Verification email sent successfully");
                 return;
             }
             
             // Check if SMTP is available
             if (mailSender != null && fromEmail != null && !fromEmail.isEmpty()) {
-                System.out.println("📧 Using SMTP for email delivery");
+                log.info("📧 Using SMTP for email delivery");
                 sendEmailVerificationSMTP(toEmail, verificationToken);
                 return;
             }
             
             // Email service unavailable - log token for manual use
-            System.err.println("⚠️ Email service unavailable. Logging verification token for manual use:");
-            System.err.println("🔑 MANUAL VERIFICATION TOKEN for " + toEmail + ": " + verificationToken);
-            System.err.println("🔗 MANUAL VERIFICATION URL: " + getFrontendUrl() + "/verify-email?token=" + verificationToken);
+            log.error("⚠️ Email service unavailable. Logging verification token for manual use:");
+            log.error(String.valueOf("🔑 MANUAL VERIFICATION TOKEN for " + toEmail + ": " + verificationToken));
+            log.error(String.valueOf("🔗 MANUAL VERIFICATION URL: " + getFrontendUrl()) + "/verify-email?token=" + verificationToken);
             
         } catch (Exception e) {
-            System.err.println("❌ Failed to send verification email to " + toEmail + ": " + e.getMessage());
+            log.error(String.valueOf("❌ Failed to send verification email to " + toEmail + ": " + e.getMessage()));
             // Don't throw exception - allow registration to continue
         }
     }
@@ -98,7 +102,7 @@ public class EmailService {
                 "If you didn't request this reset, please ignore this email.");
         
         mailSender.send(message);
-        System.out.println("✅ Password reset email sent successfully to: " + toEmail);
+        log.info("✅ Password reset email sent successfully to: " + toEmail);
     }
     
     private void sendEmailVerificationSMTP(String toEmail, String verificationToken) {
@@ -120,7 +124,7 @@ public class EmailService {
                 "If you didn't create an account, please ignore this email.");
         
         mailSender.send(message);
-        System.out.println("✅ Verification email sent successfully to: " + toEmail);
+        log.info("✅ Verification email sent successfully to: " + toEmail);
     }
     
     private String getFrontendUrl() {
@@ -159,25 +163,25 @@ public class EmailService {
                         "\n\nIf you didn't request this code, please ignore this email.");
                 
                 mailSender.send(message);
-                System.out.println("2FA code sent to: " + toEmail);
+                log.info("2FA code sent to: " + toEmail);
                 return;
             }
             
             // Email service unavailable
-            System.err.println("⚠️ Email service unavailable. 2FA code for " + toEmail + ": " + code);
+            log.error(String.valueOf("⚠️ Email service unavailable. 2FA code for " + toEmail + ": " + code));
             
         } catch (Exception e) {
-            System.err.println("Failed to send 2FA code: " + e.getMessage());
-            System.err.println("🔑 MANUAL 2FA CODE for " + toEmail + ": " + code);
+            log.error(String.valueOf("Failed to send 2FA code: " + e.getMessage()));
+            log.error(String.valueOf("🔑 MANUAL 2FA CODE for " + toEmail + ": " + code));
         }
     }
     
     public void sendLoginOTP(String toEmail, String code) {
         try {
-            System.out.println("🔄 Attempting to send login OTP to: " + toEmail);
+            log.info("🔄 Attempting to send login OTP to: " + toEmail);
             
             if (sendGridEmailService != null) {
-                System.out.println("📧 Using SendGrid for OTP delivery");
+                log.info("📧 Using SendGrid for OTP delivery");
                 String subject = "Login Verification Code - Community Support System";
                 String content = String.format(
                     "<div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>" +
@@ -195,7 +199,7 @@ public class EmailService {
                     code
                 );
                 sendGridEmailService.sendEmail(toEmail, subject, content);
-                System.out.println("✅ Login OTP sent successfully via SendGrid to: " + toEmail);
+                log.info("✅ Login OTP sent successfully via SendGrid to: " + toEmail);
                 return;
             }
             
@@ -210,16 +214,16 @@ public class EmailService {
                         "\n\nIf you didn't attempt to log in, please ignore this email.");
                 
                 mailSender.send(message);
-                System.out.println("Login OTP sent to: " + toEmail);
+                log.info("Login OTP sent to: " + toEmail);
                 return;
             }
             
             // Email service unavailable
-            System.err.println("⚠️ Email service unavailable. Login OTP for " + toEmail + ": " + code);
+            log.error(String.valueOf("⚠️ Email service unavailable. Login OTP for " + toEmail + ": " + code));
             
         } catch (Exception e) {
-            System.err.println("Failed to send login OTP: " + e.getMessage());
-            System.err.println("🔑 MANUAL LOGIN OTP for " + toEmail + ": " + code);
+            log.error(String.valueOf("Failed to send login OTP: " + e.getMessage()));
+            log.error(String.valueOf("🔑 MANUAL LOGIN OTP for " + toEmail + ": " + code));
         }
     }
 }
