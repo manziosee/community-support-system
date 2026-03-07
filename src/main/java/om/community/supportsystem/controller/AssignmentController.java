@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,6 +27,8 @@ import java.util.Optional;
 @Tag(name = "🤝 Assignments", description = "Assignment management APIs - volunteer task assignments, completion tracking, and statistics")
 @CrossOrigin(origins = {"http://localhost:3001", "http://localhost:5173", "https://community-support-system.vercel.app"}, allowCredentials = "true")
 public class AssignmentController {
+    private static final Logger log = LoggerFactory.getLogger(AssignmentController.class);
+
     
     @Autowired
     private AssignmentService assignmentService;
@@ -38,17 +42,17 @@ public class AssignmentController {
     @PostMapping
     public ResponseEntity<?> createAssignment(@RequestBody Assignment assignment) {
         try {
-            System.out.println("🔄 Creating assignment for request: " + 
+            log.info("🔄 Creating assignment for request: " + 
                 (assignment.getRequest() != null ? assignment.getRequest().getRequestId() : "null") + 
                 ", volunteer: " + 
                 (assignment.getVolunteer() != null ? assignment.getVolunteer().getUserId() : "null"));
             
             Assignment createdAssignment = assignmentService.createAssignment(assignment);
-            System.out.println("✅ Assignment created successfully with ID: " + createdAssignment.getAssignmentId());
+            log.info("✅ Assignment created successfully with ID: " + createdAssignment.getAssignmentId());
             return ResponseEntity.ok(createdAssignment);
         } catch (RuntimeException e) {
-            System.err.println("❌ Failed to create assignment: " + e.getMessage());
-            e.printStackTrace();
+            log.error(String.valueOf("❌ Failed to create assignment: " + e.getMessage()));
+            log.error("Unexpected error", e);
             return ResponseEntity.badRequest().body(java.util.Map.of("error", e.getMessage()));
         }
     }
@@ -74,7 +78,7 @@ public class AssignmentController {
     public ResponseEntity<?> getAssignmentById(
             @Parameter(description = "Assignment ID", required = true) @PathVariable Long id) {
         try {
-            System.out.println("🔍 Fetching assignment by ID: " + id);
+            log.info("🔍 Fetching assignment by ID: " + id);
             Optional<Assignment> assignmentOpt = assignmentService.getAssignmentById(id);
             
             if (assignmentOpt.isEmpty()) {
@@ -139,11 +143,11 @@ public class AssignmentController {
                 map.put("volunteer", volunteerMap);
             }
             
-            System.out.println("✅ Assignment " + id + " retrieved successfully");
+            log.info("✅ Assignment " + id + " retrieved successfully");
             return ResponseEntity.ok(map);
         } catch (Exception e) {
-            System.err.println("❌ Failed to fetch assignment " + id + ": " + e.getMessage());
-            e.printStackTrace();
+            log.error(String.valueOf("❌ Failed to fetch assignment " + id + ": " + e.getMessage()));
+            log.error("Unexpected error", e);
             return ResponseEntity.internalServerError().body(java.util.Map.of("error", e.getMessage()));
         }
     }
@@ -157,9 +161,9 @@ public class AssignmentController {
     public ResponseEntity<?> getAssignmentsByVolunteerId(
             @Parameter(description = "Volunteer user ID", required = true) @PathVariable Long volunteerId) {
         try {
-            System.out.println("🔍 Fetching assignments for volunteer ID: " + volunteerId);
+            log.info("🔍 Fetching assignments for volunteer ID: " + volunteerId);
             List<Assignment> assignments = assignmentService.getAssignmentsByVolunteerId(volunteerId);
-            System.out.println("✅ Found " + assignments.size() + " assignments for volunteer " + volunteerId);
+            log.info("✅ Found " + assignments.size() + " assignments for volunteer " + volunteerId);
             
             // Create simplified response to avoid serialization issues
             List<java.util.Map<String, Object>> simpleAssignments = assignments.stream()
@@ -225,8 +229,8 @@ public class AssignmentController {
             
             return ResponseEntity.ok(simpleAssignments);
         } catch (Exception e) {
-            System.err.println("❌ Failed to fetch assignments for volunteer " + volunteerId + ": " + e.getMessage());
-            e.printStackTrace();
+            log.error(String.valueOf("❌ Failed to fetch assignments for volunteer " + volunteerId + ": " + e.getMessage()));
+            log.error("Unexpected error", e);
             return ResponseEntity.internalServerError().body(java.util.Map.of("error", e.getMessage()));
         }
     }

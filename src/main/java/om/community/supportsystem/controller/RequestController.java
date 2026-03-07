@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -18,6 +20,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +29,8 @@ import java.util.stream.Collectors;
 @Tag(name = "📝 Requests", description = "Request management APIs - CRUD operations, status updates, and location-based filtering")
 @CrossOrigin(origins = {"http://localhost:3001", "http://localhost:5173", "https://community-support-system.vercel.app"}, allowCredentials = "true")
 public class RequestController {
+    private static final Logger log = LoggerFactory.getLogger(RequestController.class);
+
     
     @Autowired
     private RequestService requestService;
@@ -37,7 +42,7 @@ public class RequestController {
         @ApiResponse(responseCode = "400", description = "Invalid request data")
     })
     @PostMapping
-    public ResponseEntity<Request> createRequest(@RequestBody Request request) {
+    public ResponseEntity<Request> createRequest(@Valid @RequestBody Request request) {
         Request createdRequest = requestService.createRequest(request);
         return ResponseEntity.ok(createdRequest);
     }
@@ -54,8 +59,8 @@ public class RequestController {
                 .collect(Collectors.toList());
             return ResponseEntity.ok(requestDTOs);
         } catch (Exception e) {
-            System.err.println("Error fetching all requests: " + e.getMessage());
-            e.printStackTrace();
+            log.error(String.valueOf("Error fetching all requests: " + e.getMessage()));
+            log.error("Unexpected error", e);
             return ResponseEntity.internalServerError().body(
                 java.util.Map.of("error", "Failed to fetch requests: " + e.getMessage())
             );
@@ -93,8 +98,8 @@ public class RequestController {
             List<Request> requests = requestService.getRequestsByCitizenId(citizenId);
             return ResponseEntity.ok(requests);
         } catch (Exception e) {
-            System.err.println("Error fetching requests for citizen " + citizenId + ": " + e.getMessage());
-            e.printStackTrace();
+            log.error(String.valueOf("Error fetching requests for citizen " + citizenId + ": " + e.getMessage()));
+            log.error("Unexpected error", e);
             return ResponseEntity.internalServerError().body(
                 java.util.Map.of("error", "Failed to fetch requests: " + e.getMessage())
             );
@@ -109,8 +114,8 @@ public class RequestController {
             List<Request> requests = requestService.getPendingRequests();
             return ResponseEntity.ok(requests);
         } catch (Exception e) {
-            System.err.println("Error fetching pending requests: " + e.getMessage());
-            e.printStackTrace();
+            log.error(String.valueOf("Error fetching pending requests: " + e.getMessage()));
+            log.error("Unexpected error", e);
             return ResponseEntity.internalServerError().body(
                 java.util.Map.of("error", "Failed to fetch pending requests: " + e.getMessage())
             );
@@ -123,8 +128,8 @@ public class RequestController {
             List<Request> requests = requestService.getRequestsByProvince(province);
             return ResponseEntity.ok(requests);
         } catch (Exception e) {
-            System.err.println("Error fetching requests for province " + province + ": " + e.getMessage());
-            e.printStackTrace();
+            log.error(String.valueOf("Error fetching requests for province " + province + ": " + e.getMessage()));
+            log.error("Unexpected error", e);
             return ResponseEntity.internalServerError().body(
                 java.util.Map.of("error", "Failed to fetch requests for province: " + e.getMessage())
             );
@@ -144,8 +149,8 @@ public class RequestController {
             List<Request> requests = requestService.getPendingRequestsByProvince(province);
             return ResponseEntity.ok(requests);
         } catch (Exception e) {
-            System.err.println("Error fetching pending requests for province " + province + ": " + e.getMessage());
-            e.printStackTrace();
+            log.error(String.valueOf("Error fetching pending requests for province " + province + ": " + e.getMessage()));
+            log.error("Unexpected error", e);
             return ResponseEntity.internalServerError().body(
                 java.util.Map.of("error", "Failed to fetch pending requests for province: " + e.getMessage())
             );
@@ -199,7 +204,7 @@ public class RequestController {
     
     // Update
     @PutMapping("/{id}")
-    public ResponseEntity<Request> updateRequest(@PathVariable Long id, @RequestBody Request requestDetails) {
+    public ResponseEntity<Request> updateRequest(@PathVariable Long id, @Valid @RequestBody Request requestDetails) {
         try {
             Request updatedRequest = requestService.updateRequest(id, requestDetails);
             return ResponseEntity.ok(updatedRequest);

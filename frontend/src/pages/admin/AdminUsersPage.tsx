@@ -7,7 +7,7 @@ import { UserRole } from '../../types';
 import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 import Badge from '../../components/common/Badge';
-import LoadingSpinner from '../../components/common/LoadingSpinner';
+import { TableSkeleton, StatCardSkeleton } from '../../components/common/SkeletonLoader';
 import EmptyState from '../../components/common/EmptyState';
 import Modal from '../../components/common/Modal';
 import Input from '../../components/common/Input';
@@ -390,7 +390,17 @@ const AdminUsersPage: React.FC = () => {
   };
 
   if (isLoading) {
-    return <LoadingSpinner size="lg" text="Loading users..." />;
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCardSkeleton />
+          <StatCardSkeleton />
+          <StatCardSkeleton />
+          <StatCardSkeleton />
+        </div>
+        <TableSkeleton cols={5} rows={8} />
+      </div>
+    );
   }
 
   return (

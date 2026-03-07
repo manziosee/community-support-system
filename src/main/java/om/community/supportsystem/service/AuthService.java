@@ -10,6 +10,8 @@ import om.community.supportsystem.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -18,6 +20,8 @@ import java.util.UUID;
 
 @Service
 public class AuthService {
+    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
+
     
     @Autowired
     private UserRepository userRepository;
@@ -80,12 +84,12 @@ public class AuthService {
         
         // Send verification email - this is critical, don't continue if it fails
         try {
-            System.out.println("🔄 Sending verification email to: " + user.getEmail());
+            log.info("🔄 Sending verification email to: " + user.getEmail());
             emailService.sendEmailVerification(user.getEmail(), user.getEmailVerificationToken());
-            System.out.println("✅ Verification email sent successfully");
+            log.info("✅ Verification email sent successfully");
         } catch (Exception e) {
-            System.err.println("❌ Failed to send verification email: " + e.getMessage());
-            e.printStackTrace();
+            log.error(String.valueOf("❌ Failed to send verification email: " + e.getMessage()));
+            log.error("Unexpected error", e);
             // Don't fail registration, but log the issue
         }
         
@@ -130,12 +134,12 @@ public class AuthService {
             userRepository.save(user);
             
             try {
-                System.out.println("🔄 Sending login OTP to: " + user.getEmail());
+                log.info("🔄 Sending login OTP to: " + user.getEmail());
                 emailService.sendLoginOTP(user.getEmail(), code);
-                System.out.println("✅ Login OTP sent successfully to: " + user.getEmail());
+                log.info("✅ Login OTP sent successfully to: " + user.getEmail());
             } catch (Exception e) {
-                System.err.println("❌ Failed to send login OTP: " + e.getMessage());
-                e.printStackTrace();
+                log.error(String.valueOf("❌ Failed to send login OTP: " + e.getMessage()));
+            log.error("Unexpected error", e);
                 throw new RuntimeException("Failed to send verification code. Please try again.");
             }
             
@@ -159,7 +163,7 @@ public class AuthService {
             if (!user.isEmailVerified()) {
                 user.setEmailVerified(true);
                 user.setEmailVerificationToken(null);
-                System.out.println("✅ Email automatically verified for user: " + user.getEmail());
+                log.info("✅ Email automatically verified for user: " + user.getEmail());
             }
             
             user.setTwoFactorSecret(null); // Clear OTP code
@@ -175,21 +179,21 @@ public class AuthService {
     }
     
     public void requestPasswordReset(String email) {
-        System.out.println("🔄 Password reset requested for email: " + email);
+        log.info("🔄 Password reset requested for email: " + email);
         
         // Check if user exists in database
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isEmpty()) {
-            System.out.println("⚠️ Email not found in database: " + email);
+            log.info("⚠️ Email not found in database: " + email);
             throw new RuntimeException("Email address not found. Please check your email or register first.");
         }
         
         User user = userOpt.get();
-        System.out.println("✅ User found: " + user.getUserId() + " - " + user.getName());
+        log.info("✅ User found: " + user.getUserId() + " - " + user.getName());
         
         // Check if account is locked
         if (user.isAccountLocked()) {
-            System.out.println("⚠️ Account is locked for user: " + email);
+            log.info("⚠️ Account is locked for user: " + email);
             throw new RuntimeException("Account is locked. Please contact support.");
         }
         
@@ -197,20 +201,20 @@ public class AuthService {
         user.setPasswordResetToken(resetToken);
         user.setPasswordResetTokenExpiry(LocalDateTime.now().plusHours(1));
         
-        System.out.println("💾 Saving reset token for user: " + user.getUserId());
-        System.out.println("🔑 Reset token: " + resetToken);
+        log.info("💾 Saving reset token for user: " + user.getUserId());
+        log.info("🔑 Reset token: " + resetToken);
         userRepository.save(user);
-        System.out.println("✅ Reset token saved successfully");
+        log.info("✅ Reset token saved successfully");
         
         try {
-            System.out.println("📧 Attempting to send password reset email to: " + email);
-            System.out.println("📧 EmailService instance: " + (emailService != null ? "Available" : "NULL"));
+            log.info("📧 Attempting to send password reset email to: " + email);
+            log.info("📧 EmailService instance: " + (emailService != null ? "Available" : "NULL"));
             emailService.sendPasswordResetEmail(email, resetToken);
-            System.out.println("✅ Password reset email sent successfully");
+            log.info("✅ Password reset email sent successfully");
         } catch (Exception e) {
-            System.err.println("❌ Failed to send password reset email: " + e.getMessage());
-            e.printStackTrace();
-            System.err.println("🔗 Reset URL: https://community-support-system.vercel.app/reset-password?token=" + resetToken);
+            log.error(String.valueOf("❌ Failed to send password reset email: " + e.getMessage()));
+            log.error("Unexpected error", e);
+            log.error(String.valueOf("🔗 Reset URL: https://community-support-system.vercel.app/reset-password?token=" + resetToken));
             // Token is saved in DB, so even if email fails, manual reset is possible via logs
             throw new RuntimeException("Failed to send password reset email. Please try again later.");
         }
@@ -264,7 +268,7 @@ public class AuthService {
         
         userRepository.save(user);
         
-        System.out.println("✅ 2FA enabled for user: " + user.getEmail());
+        log.info("✅ 2FA enabled for user: " + user.getEmail());
         return backupCodes;
     }
     
@@ -309,9 +313,9 @@ public class AuthService {
         // Send verification email
         try {
             emailService.sendEmailVerification(email, newToken);
-            System.out.println("✅ Verification email resent to: " + email);
+            log.info("✅ Verification email resent to: " + email);
         } catch (Exception e) {
-            System.err.println("❌ Failed to resend verification email: " + e.getMessage());
+            log.error(String.valueOf("❌ Failed to resend verification email: " + e.getMessage()));
             throw new RuntimeException("Failed to send verification email. Please try again later.");
         }
     }

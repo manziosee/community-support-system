@@ -5,9 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.context.annotation.Profile;
 
 import java.util.Map;
 
+@Profile("dev")
 @RestController
 @RequestMapping("/api/test")
 @ConditionalOnProperty(name = "sendgrid.enabled", havingValue = "true")

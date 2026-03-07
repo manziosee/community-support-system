@@ -6,10 +6,12 @@ import om.community.supportsystem.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.context.annotation.Profile;
 
 import java.util.Map;
 import java.util.Optional;
 
+@Profile("dev")
 @RestController
 @RequestMapping("/api/test/auth")
 public class AuthTestController {

@@ -5,6 +5,9 @@ import om.community.supportsystem.repository.AssignmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.context.annotation.Profile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,11 +16,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.Map;
 
+@Profile("dev")
 @RestController
 @RequestMapping("/api/test-assignments")
 @Tag(name = "🧪 Test Assignments", description = "Testing endpoints for debugging assignment functionality")
 @CrossOrigin(origins = {"http://localhost:3001", "http://localhost:5173", "https://community-support-system.vercel.app"}, allowCredentials = "true")
 public class TestAssignmentController {
+    private static final Logger log = LoggerFactory.getLogger(TestAssignmentController.class);
+
     
     @Autowired
     private AssignmentRepository assignmentRepository;
@@ -45,7 +51,7 @@ public class TestAssignmentController {
     @GetMapping("/volunteer/{volunteerId}/simple")
     public ResponseEntity<?> getSimpleAssignmentsByVolunteer(@PathVariable Long volunteerId) {
         try {
-            System.out.println("🔍 Testing simple assignment retrieval for volunteer: " + volunteerId);
+            log.info("🔍 Testing simple assignment retrieval for volunteer: " + volunteerId);
             
             List<Assignment> assignments = assignmentRepository.findByVolunteerUserId(volunteerId);
             
@@ -66,7 +72,7 @@ public class TestAssignmentController {
                 "volunteerId", volunteerId
             ));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Unexpected error", e);
             return ResponseEntity.internalServerError().body(Map.of(
                 "error", "Failed to get simple assignments: " + e.getMessage(),
                 "volunteerId", volunteerId
@@ -96,7 +102,7 @@ public class TestAssignmentController {
                 "count", simpleAssignments.size()
             ));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Unexpected error", e);
             return ResponseEntity.internalServerError().body(Map.of(
                 "error", "Failed to get all assignments: " + e.getMessage()
             ));

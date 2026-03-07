@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,6 +18,8 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001", "http://localhost:3002", "http://localhost:3003", "https://community-support-system.vercel.app"})
 @Tag(name = "📊 Analytics", description = "Dashboard statistics and business intelligence endpoints")
 public class AnalyticsController {
+    private static final Logger log = LoggerFactory.getLogger(AnalyticsController.class);
+
 
     @Autowired
     private UserRepository userRepository;
@@ -138,8 +142,8 @@ public class AnalyticsController {
             
             return ResponseEntity.ok(stats);
         } catch (Exception e) {
-            System.err.println("❌ Error getting citizen stats for userId " + userId + ": " + e.getMessage());
-            e.printStackTrace();
+            log.error(String.valueOf("❌ Error getting citizen stats for userId " + userId + ": " + e.getMessage()));
+            log.error("Unexpected error", e);
             return ResponseEntity.status(500).body(Map.of(
                 "error", "Failed to fetch citizen statistics",
                 "message", e.getMessage() != null ? e.getMessage() : "Unknown error"
@@ -181,8 +185,8 @@ public class AnalyticsController {
             
             return ResponseEntity.ok(stats);
         } catch (Exception e) {
-            System.err.println("❌ Error getting volunteer stats for userId " + userId + ": " + e.getMessage());
-            e.printStackTrace();
+            log.error(String.valueOf("❌ Error getting volunteer stats for userId " + userId + ": " + e.getMessage()));
+            log.error("Unexpected error", e);
             return ResponseEntity.status(500).body(Map.of(
                 "error", "Failed to fetch volunteer statistics",
                 "message", e.getMessage() != null ? e.getMessage() : "Unknown error"

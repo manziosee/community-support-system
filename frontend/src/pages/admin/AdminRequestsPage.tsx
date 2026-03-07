@@ -6,7 +6,7 @@ import { RequestStatus } from '../../types';
 import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 import Badge from '../../components/common/Badge';
-import LoadingSpinner from '../../components/common/LoadingSpinner';
+import { TableSkeleton } from '../../components/common/SkeletonLoader';
 import EmptyState from '../../components/common/EmptyState';
 import { exportToCSV } from '../../utils/exportUtils';
 import Modal from '../../components/common/Modal';
@@ -270,7 +270,7 @@ const AdminRequestsPage: React.FC = () => {
   };
 
   if (isLoading) {
-    return <LoadingSpinner size="lg" text="Loading requests..." />;
+    return <TableSkeleton cols={6} rows={8} />;
   }
 
   return (

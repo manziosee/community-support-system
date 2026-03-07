@@ -7,7 +7,7 @@ import {
 import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 import { exportToCSV } from '../../utils/exportUtils';
-import LoadingSpinner from '../../components/common/LoadingSpinner';
+import { StatCardSkeleton } from '../../components/common/SkeletonLoader';
 import { api } from '../../services/api';
 
 interface AnalyticsData {
@@ -96,7 +96,16 @@ const AdminAnalyticsPage: React.FC = () => {
     }
   };
 
-  if (isLoading) return <LoadingSpinner size="lg" text="Loading analytics..." />;
+  if (isLoading) return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton />
+      </div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton />
+      </div>
+    </div>
+  );
 
   if (error) {
     return (

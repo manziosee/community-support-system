@@ -3,6 +3,8 @@ package om.community.supportsystem.controller;
 import om.community.supportsystem.model.RequestCategory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,6 +19,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/categories")
 @Tag(name = "📂 Request Categories", description = "APIs for managing request categories - 8 predefined categories for help requests")
 public class CategoryController {
+    private static final Logger log = LoggerFactory.getLogger(CategoryController.class);
+
     
     @Operation(
         summary = "Get all request categories", 
@@ -38,8 +42,8 @@ public class CategoryController {
                     .collect(Collectors.toList());
             return ResponseEntity.ok(categories);
         } catch (Exception e) {
-            System.err.println("Error in getAllCategories: " + e.getMessage());
-            e.printStackTrace();
+            log.error(String.valueOf("Error in getAllCategories: " + e.getMessage()));
+            log.error("Unexpected error", e);
             // Return simple string array as fallback
             List<String> fallbackCategories = Arrays.stream(RequestCategory.values())
                     .map(category -> category.name().replace("_", " "))

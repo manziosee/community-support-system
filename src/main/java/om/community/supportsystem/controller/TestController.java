@@ -6,11 +6,13 @@ import om.community.supportsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.context.annotation.Profile;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+@Profile("dev")
 @RestController
 @RequestMapping("/api/test")
 @CrossOrigin(origins = {

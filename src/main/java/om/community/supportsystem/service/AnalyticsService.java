@@ -4,6 +4,7 @@ import om.community.supportsystem.model.RequestStatus;
 import om.community.supportsystem.model.UserRole;
 import om.community.supportsystem.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -28,6 +29,7 @@ public class AnalyticsService {
     @Autowired
     private NotificationRepository notificationRepository;
 
+    @Cacheable(value = "analytics", key = "'dashboard'")
     public Map<String, Object> getAnalyticsDashboard() {
         Map<String, Object> analytics = new HashMap<>();
         

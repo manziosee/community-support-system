@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.net.URI;
@@ -13,6 +15,8 @@ import java.net.URISyntaxException;
 @Configuration
 @Profile("fly")
 public class DatabaseConfig {
+    private static final Logger log = LoggerFactory.getLogger(DatabaseConfig.class);
+
 
     @Bean
     @Primary
@@ -23,7 +27,7 @@ public class DatabaseConfig {
             throw new RuntimeException("DATABASE_URL environment variable is not set");
         }
         
-        System.out.println("🔍 Original DATABASE_URL: " + databaseUrl);
+        log.info("🔍 Original DATABASE_URL: " + databaseUrl);
         
         try {
             // Handle both postgresql:// and postgres:// schemes
@@ -53,12 +57,12 @@ public class DatabaseConfig {
             String username = credentials[0];
             String password = credentials[1];
             
-            System.out.println("✅ Parsed database connection:");
-            System.out.println("   Host: " + host);
-            System.out.println("   Port: " + port);
-            System.out.println("   Database: " + database);
-            System.out.println("   Username: " + username);
-            System.out.println("   JDBC URL: " + jdbcUrl);
+            log.info("✅ Parsed database connection:");
+            log.info("   Host: " + host);
+            log.info("   Port: " + port);
+            log.info("   Database: " + database);
+            log.info("   Username: " + username);
+            log.info("   JDBC URL: " + jdbcUrl);
             
             return DataSourceBuilder.create()
                 .url(jdbcUrl)

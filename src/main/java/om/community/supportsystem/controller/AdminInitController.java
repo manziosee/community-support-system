@@ -7,6 +7,9 @@ import om.community.supportsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.context.annotation.Profile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,11 +17,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.Map;
 
+@Profile("dev")
 @RestController
 @RequestMapping("/api/admin-init")
 @Tag(name = "🔧 Admin Initialization", description = "Manual data initialization for production environment")
 @CrossOrigin(origins = {"http://localhost:3001", "http://localhost:5173", "https://community-support-system.vercel.app"}, allowCredentials = "true")
 public class AdminInitController {
+    private static final Logger log = LoggerFactory.getLogger(AdminInitController.class);
+
     
     @Autowired
     private DataInitializer dataInitializer;
@@ -65,7 +71,7 @@ public class AdminInitController {
     @PostMapping("/initialize")
     public ResponseEntity<?> initializeDatabase() {
         try {
-            System.out.println("🔧 Manual database initialization requested...");
+            log.info("🔧 Manual database initialization requested...");
             
             // Force run the data initializer
             dataInitializer.run();
@@ -89,7 +95,7 @@ public class AdminInitController {
                 )
             ));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Unexpected error", e);
             return ResponseEntity.internalServerError().body(Map.of(
                 "error", "Failed to initialize database: " + e.getMessage()
             ));

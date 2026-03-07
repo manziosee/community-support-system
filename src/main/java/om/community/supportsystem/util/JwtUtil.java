@@ -2,6 +2,9 @@ package om.community.supportsystem.util;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -10,15 +13,32 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 @Component
 public class JwtUtil {
-    
+
+    private static final Logger log = LoggerFactory.getLogger(JwtUtil.class);
+    private static final int MIN_SECRET_BYTES = 32;
+
     @Value("${jwt.secret:mySecretKey}")
     private String secret;
-    
+
     @Value("${jwt.expiration:86400000}") // 24 hours
     private Long expiration;
-    
+
+    @PostConstruct
+    public void validateSecret() {
+        int len = secret.getBytes(UTF_8).length;
+        if (len < MIN_SECRET_BYTES) {
+            throw new IllegalStateException(
+                "JWT secret is too weak (" + len + " bytes). " +
+                "Set the JWT_SECRET environment variable to a random string of at least " +
+                MIN_SECRET_BYTES + " characters.");
+        }
+        log.info("JWT secret validated ({} bytes)", len);
+    }
+
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }

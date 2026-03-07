@@ -8,9 +8,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
+    private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
+
     
     @Autowired
     private LocationService locationService;
@@ -38,30 +42,30 @@ public class DataInitializer implements CommandLineRunner {
         if (initializeData) {
             initializeBasicData();
         } else {
-            System.out.println("🚫 Data initialization disabled by configuration");
+            log.info("🚫 Data initialization disabled by configuration");
         }
     }
     
     public void initializeBasicData() {
         // Force initialization regardless of existing data
-        System.out.println("🚀 Force initializing system data...");
+        log.info("🚀 Force initializing system data...");
         initializeLocations();
         initializeSkills();
         initializeAdminUser();
         
-        System.out.println("✅ System data initialized successfully!");
-        System.out.println("📊 Data loaded:");
-        System.out.println("   - Locations: " + locationRepository.count());
-        System.out.println("   - Skills: " + skillRepository.count());
-        System.out.println("   - Admin user: darkosee23@gmail.com");
+        log.info("✅ System data initialized successfully!");
+        log.info("📊 Data loaded:");
+        log.info("   - Locations: " + locationRepository.count());
+        log.info("   - Skills: " + skillRepository.count());
+        log.info("   - Admin user: darkosee23@gmail.com");
     }
     
     private void initializeLocations() {
-        System.out.println("Creating Rwanda administrative locations...");
+        log.info("Creating Rwanda administrative locations...");
         
         // Check if locations already exist
         if (locationRepository.count() > 0) {
-            System.out.println("⚠️ Locations already exist - skipping creation");
+            log.info("⚠️ Locations already exist - skipping creation");
             return;
         }
         
@@ -113,7 +117,7 @@ public class DataInitializer implements CommandLineRunner {
     }
     
     private void initializeSkills() {
-        System.out.println("Creating comprehensive skill categories...");
+        log.info("Creating comprehensive skill categories...");
         
         // Force creation of all skills (will skip duplicates)
         createSkillIfNotExists("Programming", "Software development, coding, and web development");
@@ -181,31 +185,31 @@ public class DataInitializer implements CommandLineRunner {
         createSkillIfNotExists("Shoe Repair", "Cobbler services, shoe restoration, and leather repair");
         createSkillIfNotExists("Watch Repair", "Timepiece repair, battery replacement, and watch maintenance");
         
-        System.out.println("✅ Skills initialization completed. Total skills: " + skillRepository.count());
+        log.info("✅ Skills initialization completed. Total skills: " + skillRepository.count());
     }
     
     private void createSkillIfNotExists(String name, String description) {
         if (!skillRepository.existsBySkillName(name)) {
             skillService.createSkill(new Skill(name, description));
-            System.out.println("➕ Created skill: " + name);
+            log.info("➕ Created skill: " + name);
         } else {
-            System.out.println("⚠️ Skill already exists: " + name);
+            log.info("⚠️ Skill already exists: " + name);
         }
     }
     
     private void initializeAdminUser() {
-        System.out.println("Creating system administrator account...");
+        log.info("Creating system administrator account...");
         
         // Force creation of admin user
         if (userRepository.existsByEmail("darkosee23@gmail.com")) {
-            System.out.println("⚠️ Admin user already exists - updating if needed");
+            log.info("⚠️ Admin user already exists - updating if needed");
             // Update existing admin user
             User existingAdmin = userRepository.findByEmail("darkosee23@gmail.com").orElse(null);
             if (existingAdmin != null && existingAdmin.getRole() != UserRole.ADMIN) {
                 existingAdmin.setRole(UserRole.ADMIN);
                 existingAdmin.setName("admin");
                 userRepository.save(existingAdmin);
-                System.out.println("✅ Updated existing user to admin role");
+                log.info("✅ Updated existing user to admin role");
             }
             return;
         }
@@ -230,9 +234,9 @@ public class DataInitializer implements CommandLineRunner {
         admin.setVillage("Kabeza");
         
         userRepository.save(admin);
-        System.out.println("✅ Admin user created successfully!");
-        System.out.println("   - Email: darkosee23@gmail.com");
-        System.out.println("   - Password: admin123");
-        System.out.println("   - Role: ADMIN");
+        log.info("✅ Admin user created successfully!");
+        log.info("   - Email: darkosee23@gmail.com");
+        log.info("   - Password: admin123");
+        log.info("   - Role: ADMIN");
     }
 }
