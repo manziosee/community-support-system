@@ -35,7 +35,7 @@ services:
       JWT_EXPIRATION: ${JWT_EXPIRATION:-86400000}
       CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:3000,http://frontend:80}
       SENDGRID_API_KEY: ${SENDGRID_API_KEY:-dummy-key}
-      SENDGRID_FROM_EMAIL: ${SENDGRID_FROM_EMAIL:-noreply@community-support.com}
+      SENDGRID_FROM_EMAIL: ${SENDGRID_FROM_EMAIL:-darkosee23@gmail.com}
       SENDGRID_FROM_NAME: ${SENDGRID_FROM_NAME:-Community Support System}
       SENDGRID_ENABLED: ${SENDGRID_ENABLED:-false}
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}

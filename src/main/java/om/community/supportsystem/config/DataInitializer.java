@@ -53,7 +53,7 @@ public class DataInitializer implements CommandLineRunner {
         System.out.println("📊 Data loaded:");
         System.out.println("   - Locations: " + locationRepository.count());
         System.out.println("   - Skills: " + skillRepository.count());
-        System.out.println("   - Admin user: oseemanzi3@gmail.com");
+        System.out.println("   - Admin user: darkosee23@gmail.com");
     }
     
     private void initializeLocations() {
@@ -197,10 +197,10 @@ public class DataInitializer implements CommandLineRunner {
         System.out.println("Creating system administrator account...");
         
         // Force creation of admin user
-        if (userRepository.existsByEmail("oseemanzi3@gmail.com")) {
+        if (userRepository.existsByEmail("darkosee23@gmail.com")) {
             System.out.println("⚠️ Admin user already exists - updating if needed");
             // Update existing admin user
-            User existingAdmin = userRepository.findByEmail("oseemanzi3@gmail.com").orElse(null);
+            User existingAdmin = userRepository.findByEmail("darkosee23@gmail.com").orElse(null);
             if (existingAdmin != null && existingAdmin.getRole() != UserRole.ADMIN) {
                 existingAdmin.setRole(UserRole.ADMIN);
                 existingAdmin.setName("admin");
@@ -217,7 +217,7 @@ public class DataInitializer implements CommandLineRunner {
         // Create admin user
         User admin = new User();
         admin.setName("admin");
-        admin.setEmail("oseemanzi3@gmail.com");
+        admin.setEmail("darkosee23@gmail.com");
         admin.setPhoneNumber("0788000000"); // Default admin phone
         admin.setPassword(passwordEncoder.encode("admin123"));
         admin.setRole(UserRole.ADMIN);
@@ -231,7 +231,7 @@ public class DataInitializer implements CommandLineRunner {
         
         userRepository.save(admin);
         System.out.println("✅ Admin user created successfully!");
-        System.out.println("   - Email: oseemanzi3@gmail.com");
+        System.out.println("   - Email: darkosee23@gmail.com");
         System.out.println("   - Password: admin123");
         System.out.println("   - Role: ADMIN");
     }

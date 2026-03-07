@@ -9,6 +9,7 @@ import om.community.supportsystem.service.RequestService;
 import om.community.supportsystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,6 +23,7 @@ import java.util.*;
 @RequestMapping("/api/admin")
 @Tag(name = "🔧 Admin", description = "Administrative operations")
 @SecurityRequirement(name = "bearerAuth")
+@PreAuthorize("hasRole('ADMIN')")
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001", "http://localhost:3002",
         "http://localhost:3003", "https://community-support-system.vercel.app"})
 public class AdminController {

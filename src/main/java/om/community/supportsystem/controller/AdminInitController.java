@@ -42,7 +42,7 @@ public class AdminInitController {
             long userCount = userRepository.count();
             long adminCount = userRepository.countByRole(om.community.supportsystem.model.UserRole.ADMIN);
             
-            boolean hasAdmin = userRepository.existsByEmail("oseemanzi3@gmail.com");
+            boolean hasAdmin = userRepository.existsByEmail("darkosee23@gmail.com");
             
             return ResponseEntity.ok(Map.of(
                 "locations", locationCount,
@@ -50,7 +50,7 @@ public class AdminInitController {
                 "users", userCount,
                 "admins", adminCount,
                 "hasAdminUser", hasAdmin,
-                "adminEmail", "oseemanzi3@gmail.com",
+                "adminEmail", "darkosee23@gmail.com",
                 "needsInitialization", locationCount == 0 || skillCount < 40 || !hasAdmin
             ));
         } catch (Exception e) {
@@ -74,7 +74,7 @@ public class AdminInitController {
             long locationCount = locationRepository.count();
             long skillCount = skillRepository.count();
             long userCount = userRepository.count();
-            boolean hasAdmin = userRepository.existsByEmail("oseemanzi3@gmail.com");
+            boolean hasAdmin = userRepository.existsByEmail("darkosee23@gmail.com");
             
             return ResponseEntity.ok(Map.of(
                 "message", "Database initialization completed successfully",
@@ -83,7 +83,7 @@ public class AdminInitController {
                 "users", userCount,
                 "adminCreated", hasAdmin,
                 "adminCredentials", Map.of(
-                    "email", "oseemanzi3@gmail.com",
+                    "email", "darkosee23@gmail.com",
                     "password", "admin123",
                     "role", "ADMIN"
                 )
@@ -101,7 +101,7 @@ public class AdminInitController {
     @PostMapping("/reset-admin-password")
     public ResponseEntity<?> resetAdminPassword() {
         try {
-            var adminUser = userRepository.findByEmail("oseemanzi3@gmail.com");
+            var adminUser = userRepository.findByEmail("darkosee23@gmail.com");
             if (adminUser.isEmpty()) {
                 return ResponseEntity.badRequest().body(Map.of(
                     "error", "Admin user not found. Please initialize database first."
@@ -111,7 +111,7 @@ public class AdminInitController {
             // This would require UserService to reset password
             return ResponseEntity.ok(Map.of(
                 "message", "Admin user exists",
-                "email", "oseemanzi3@gmail.com",
+                "email", "darkosee23@gmail.com",
                 "note", "Use the manual reset URL method for password reset"
             ));
         } catch (Exception e) {

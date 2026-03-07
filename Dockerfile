@@ -1,5 +1,5 @@
-# Multi-stage build for Spring Boot backend - Fly.io optimized
-FROM maven:3.9.9-amazoncorretto-21 AS build
+# Multi-stage build for Spring Boot backend - Java 17
+FROM maven:3.9.9-amazoncorretto-17 AS build
 
 WORKDIR /app
 COPY pom.xml .
@@ -7,7 +7,7 @@ COPY src ./src
 
 RUN mvn clean package -DskipTests
 
-FROM amazoncorretto:21
+FROM amazoncorretto:17
 
 RUN yum update -y && yum install -y curl && yum clean all
 
