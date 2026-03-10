@@ -65,6 +65,9 @@ public class AuthenticationIntegrationTest {
         registerRequest.setRole(UserRole.VOLUNTEER);
         registerRequest.setProvince("Eastern Province");
         registerRequest.setDistrict("Nyagatare");
+        registerRequest.setSector("Karangazi");
+        registerRequest.setCell("Karangazi");
+        registerRequest.setVillage("Karangazi");
 
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
