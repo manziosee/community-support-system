@@ -46,12 +46,12 @@ public class AuthenticationIntegrationTest {
         registerRequest.setCell("Test Cell");
         registerRequest.setVillage("Test Village");
 
+        // Registration now requires email verification — returns a message, not a token
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registerRequest)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").exists())
-                .andExpect(jsonPath("$.user.email").value("test@example.com"));
+                .andExpect(jsonPath("$.message").exists());
     }
 
     @Test
@@ -70,7 +70,7 @@ public class AuthenticationIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registerRequest)));
 
-        // Then try to login
+        // Login now always requires OTP — first call returns requiresTwoFactor=true
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setEmail("login@example.com");
         loginRequest.setPassword("password123");
@@ -79,31 +79,16 @@ public class AuthenticationIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").exists())
-                .andExpect(jsonPath("$.user.email").value("login@example.com"));
+                .andExpect(jsonPath("$.requiresTwoFactor").value(true));
     }
 
     @Test
-    public void testPasswordReset() throws Exception {
-        // Register a user first
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setName("Reset Test User");
-        registerRequest.setEmail("reset@example.com");
-        registerRequest.setPhoneNumber("5555555555");
-        registerRequest.setPassword("password123");
-        registerRequest.setRole(UserRole.CITIZEN);
-        registerRequest.setProvince("Western Province");
-        registerRequest.setDistrict("Rusizi");
-
-        mockMvc.perform(post("/api/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(registerRequest)));
-
-        // Request password reset
+    public void testPasswordResetRequest() throws Exception {
+        // Endpoint always returns 200 with a message (doesn't reveal if email exists)
         mockMvc.perform(post("/api/auth/forgot-password")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"email\":\"reset@example.com\"}"))
+                .content("{\"email\":\"nobody@example.com\"}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Password reset email sent"));
+                .andExpect(jsonPath("$.message").exists());
     }
 }
