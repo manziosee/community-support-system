@@ -1,9 +1,11 @@
 package om.community.supportsystem.service;
 
+import om.community.supportsystem.dto.CreateRequestDTO;
 import om.community.supportsystem.model.Request;
 import om.community.supportsystem.model.RequestStatus;
 import om.community.supportsystem.model.User;
 import om.community.supportsystem.repository.RequestRepository;
+import om.community.supportsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,11 +20,26 @@ public class RequestService {
     
     @Autowired
     private RequestRepository requestRepository;
-    
+
+    @Autowired
+    private UserRepository userRepository;
+
     @Autowired
     private NotificationService notificationService;
-    
-    // Create
+
+    // Create from DTO (preferred — avoids exposing the JPA entity to clients)
+    public Request createRequest(CreateRequestDTO dto) {
+        User citizen = userRepository.findById(dto.getCitizenId())
+            .orElseThrow(() -> new RuntimeException("Citizen not found with id: " + dto.getCitizenId()));
+        Request request = new Request();
+        request.setTitle(dto.getTitle());
+        request.setDescription(dto.getDescription());
+        request.setCategory(dto.getCategory());
+        request.setCitizen(citizen);
+        return createRequest(request);
+    }
+
+    // Create from entity (kept for internal/legacy use)
     public Request createRequest(Request request) {
         Request savedRequest = requestRepository.save(request);
         

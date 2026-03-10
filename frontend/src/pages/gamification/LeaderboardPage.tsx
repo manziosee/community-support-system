@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Trophy, Medal, Star, TrendingUp, Award, Crown } from 'lucide-react';
-import { useGamification, LEVEL_THRESHOLDS } from '../../contexts/GamificationContext';
+import { Star, TrendingUp, Crown } from 'lucide-react';
+import { useGamification } from '../../contexts/GamificationContext';
 import { LevelBadge, BadgeRow } from '../../components/common/BadgeDisplay';
-import { RatingDisplay } from '../../components/common/StarRating';
 import { LeaderboardSkeleton } from '../../components/common/SkeletonLoader';
 import Breadcrumb from '../../components/common/Breadcrumb';
 import type { LeaderboardEntry } from '../../types';
@@ -17,14 +16,13 @@ const PERIOD_LABELS: Record<Period, string> = {
 };
 
 function getPodiumColor(rank: number) {
-  if (rank === 1) return { bg: 'bg-yellow-100 dark:bg-yellow-900/30', border: 'border-yellow-300 dark:border-yellow-600/40', icon: '🥇', text: 'text-yellow-700 dark:text-yellow-400', ring: 'ring-yellow-300 dark:ring-yellow-600' };
-  if (rank === 2) return { bg: 'bg-slate-100 dark:bg-slate-700',      border: 'border-slate-300 dark:border-slate-500',       icon: '🥈', text: 'text-slate-600 dark:text-slate-300', ring: 'ring-slate-300 dark:ring-slate-500' };
-  return            { bg: 'bg-orange-100 dark:bg-orange-900/30',      border: 'border-orange-300 dark:border-orange-600/40',  icon: '🥉', text: 'text-orange-700 dark:text-orange-400', ring: 'ring-orange-300 dark:ring-orange-600' };
+  if (rank === 1) return { bg: 'bg-black dark:bg-gray-900',           border: 'border-gray-800 dark:border-gray-700',  icon: '1st', text: 'text-white dark:text-gray-100', ring: 'ring-black dark:ring-gray-700' };
+  if (rank === 2) return { bg: 'bg-gray-700 dark:bg-gray-800',         border: 'border-gray-600 dark:border-gray-600',  icon: '2nd', text: 'text-white dark:text-gray-200', ring: 'ring-gray-700 dark:ring-gray-600' };
+  return            { bg: 'bg-gray-400 dark:bg-gray-600',              border: 'border-gray-300 dark:border-gray-500',  icon: '3rd', text: 'text-white dark:text-gray-100', ring: 'ring-gray-400 dark:ring-gray-600' };
 }
 
 const PodiumCard: React.FC<{ entry: LeaderboardEntry }> = ({ entry }) => {
   const colors = getPodiumColor(entry.rank);
-  const levelInfo = LEVEL_THRESHOLDS[entry.level];
   const height = entry.rank === 1 ? 'h-28' : entry.rank === 2 ? 'h-20' : 'h-14';
 
   return (
@@ -59,12 +57,11 @@ const PodiumCard: React.FC<{ entry: LeaderboardEntry }> = ({ entry }) => {
 };
 
 const LeaderboardPage: React.FC = () => {
-  const { t } = useTranslation();
+  useTranslation();
   const { leaderboard, isLoading } = useGamification();
   const [period, setPeriod] = useState<Period>('allTime');
 
-  const top3    = leaderboard.slice(0, 3);
-  const rest    = leaderboard.slice(3);
+  const top3 = leaderboard.slice(0, 3);
   const podiumOrder = [top3[1], top3[0], top3[2]].filter(Boolean) as LeaderboardEntry[];
 
   return (
@@ -72,7 +69,7 @@ const LeaderboardPage: React.FC = () => {
       <Breadcrumb />
 
       {/* Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-yellow-500 via-orange-500 to-primary-600 text-white shadow-soft-lg p-6 lg:p-8">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white shadow-soft-lg p-6 lg:p-8">
         <div className="dot-grid absolute inset-0 opacity-[0.07]" />
         <div className="absolute -top-8 -right-8 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
         <div className="relative">
@@ -82,7 +79,7 @@ const LeaderboardPage: React.FC = () => {
             </div>
             <div>
               <h1 className="font-display text-2xl font-extrabold">Community Leaderboard</h1>
-              <p className="text-white/70 text-sm">Celebrating our top volunteers 🏆</p>
+              <p className="text-white/70 text-sm">Celebrating our top volunteers</p>
             </div>
           </div>
           <div className="flex flex-wrap gap-2 mt-4">
@@ -92,7 +89,7 @@ const LeaderboardPage: React.FC = () => {
                 onClick={() => setPeriod(p)}
                 className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
                   period === p
-                    ? 'bg-white text-orange-700 shadow-sm'
+                    ? 'bg-white text-black shadow-sm'
                     : 'bg-white/20 text-white hover:bg-white/30'
                 }`}
               >
@@ -128,26 +125,25 @@ const LeaderboardPage: React.FC = () => {
             </div>
 
             <div className="divide-y divide-neutral-50 dark:divide-slate-800">
-              {leaderboard.map((entry, idx) => {
+              {leaderboard.map((entry) => {
                 const isTop3 = entry.rank <= 3;
-                const rankIcons: Record<number, string> = { 1: '🥇', 2: '🥈', 3: '🥉' };
 
                 return (
                   <div
                     key={entry.user.userId}
-                    className={`flex items-center gap-4 p-4 transition-colors hover:bg-neutral-50 dark:hover:bg-slate-700/50 ${isTop3 ? 'bg-gradient-to-r from-yellow-50/60 to-transparent dark:from-yellow-900/5' : ''}`}
+                    className={`flex items-center gap-4 p-4 transition-colors hover:bg-neutral-50 dark:hover:bg-slate-700/50 ${isTop3 ? 'bg-gray-50 dark:bg-slate-700/30' : ''}`}
                   >
                     {/* Rank */}
                     <div className="w-8 text-center flex-shrink-0">
                       {isTop3 ? (
-                        <span className="text-xl">{rankIcons[entry.rank]}</span>
+                        <span className="text-sm font-black text-black dark:text-white">#{entry.rank}</span>
                       ) : (
                         <span className="text-sm font-bold text-neutral-400 dark:text-slate-500">#{entry.rank}</span>
                       )}
                     </div>
 
                     {/* Avatar */}
-                    <div className={`w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-primary-500 to-secondary-600 shadow-sm ${isTop3 ? 'ring-2 ring-yellow-300 dark:ring-yellow-600/40' : ''}`}>
+                    <div className={`w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center bg-black dark:bg-gray-700 shadow-sm ${isTop3 ? 'ring-2 ring-gray-400 dark:ring-gray-500' : ''}`}>
                       <span className="text-white font-bold">{entry.user.name.charAt(0).toUpperCase()}</span>
                     </div>
 
@@ -171,7 +167,7 @@ const LeaderboardPage: React.FC = () => {
                       </div>
                       {entry.averageRating && (
                         <div className="hidden md:flex items-center gap-1">
-                          <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+                          <Star className="w-3.5 h-3.5 fill-gray-500 text-gray-500 dark:fill-gray-400 dark:text-gray-400" />
                           <span className="text-xs font-bold text-gray-900 dark:text-slate-100">{entry.averageRating.toFixed(1)}</span>
                         </div>
                       )}
