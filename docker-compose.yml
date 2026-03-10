@@ -21,14 +21,14 @@ services:
       timeout: 5s
       retries: 5
 
-  # Spring Boot Backend - Fly.io Profile
+  # Spring Boot Backend - Docker Profile
   backend:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: community-backend
     environment:
-      SPRING_PROFILES_ACTIVE: fly
+      SPRING_PROFILES_ACTIVE: docker
       PORT: 8080
       DATABASE_URL: jdbc:postgresql://database:5432/community_support_system_db?user=postgres&password=postgres
       JWT_SECRET: ${JWT_SECRET:-5f566298b0ba4f8e38c1ff7c6e0844a1}
@@ -58,6 +58,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api}
     container_name: community-frontend
     ports:
       - "3000:80"
@@ -66,8 +68,6 @@ services:
         condition: service_healthy
     networks:
       - community-network
-    env_file:
-      - ./frontend/.env.docker
 
 volumes:
   postgres_data:

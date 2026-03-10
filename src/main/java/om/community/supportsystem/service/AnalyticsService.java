@@ -4,7 +4,9 @@ import om.community.supportsystem.model.RequestStatus;
 import om.community.supportsystem.model.UserRole;
 import om.community.supportsystem.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -267,7 +269,14 @@ public class AnalyticsService {
         long previousAssignments = assignmentRepository.findByAcceptedAtAfter(sixtyDaysAgo).size() - currentAssignments;
         double assignmentGrowth = previousAssignments > 0 ? ((currentAssignments - previousAssignments) * 100.0 / previousAssignments) : 0;
         growth.put("assignmentGrowth", Math.round(assignmentGrowth * 10.0) / 10.0);
-        
+
         return growth;
+    }
+
+    /** Evict analytics cache every 5 minutes so data stays fresh. */
+    @Scheduled(fixedDelay = 5 * 60 * 1000)
+    @CacheEvict(value = "analytics", allEntries = true)
+    public void evictAnalyticsCache() {
+        // triggered automatically — no body needed
     }
 }

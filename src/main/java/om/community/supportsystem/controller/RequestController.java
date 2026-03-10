@@ -1,5 +1,6 @@
 package om.community.supportsystem.controller;
 
+import om.community.supportsystem.dto.CreateRequestDTO;
 import om.community.supportsystem.dto.RequestResponseDTO;
 import om.community.supportsystem.model.Request;
 import om.community.supportsystem.model.RequestStatus;
@@ -42,8 +43,8 @@ public class RequestController {
         @ApiResponse(responseCode = "400", description = "Invalid request data")
     })
     @PostMapping
-    public ResponseEntity<Request> createRequest(@Valid @RequestBody Request request) {
-        Request createdRequest = requestService.createRequest(request);
+    public ResponseEntity<Request> createRequest(@Valid @RequestBody CreateRequestDTO dto) {
+        Request createdRequest = requestService.createRequest(dto);
         return ResponseEntity.ok(createdRequest);
     }
     

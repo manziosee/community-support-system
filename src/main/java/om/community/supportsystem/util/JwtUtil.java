@@ -12,6 +12,7 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -96,5 +97,10 @@ public class JwtUtil {
     public Boolean validateToken(String token, String email) {
         final String tokenEmail = extractEmail(token);
         return (tokenEmail.equals(email) && !isTokenExpired(token));
+    }
+
+    /** Generate an opaque refresh token (UUID). Stored in the User entity. */
+    public String generateRefreshToken() {
+        return UUID.randomUUID().toString();
     }
 }

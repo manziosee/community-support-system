@@ -3,6 +3,7 @@ package om.community.supportsystem.controller;
 import om.community.supportsystem.dto.AuthResponse;
 import om.community.supportsystem.dto.LoginRequest;
 import om.community.supportsystem.dto.RegisterRequest;
+import om.community.supportsystem.dto.ResetPasswordRequest;
 import om.community.supportsystem.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -93,11 +94,9 @@ public class AuthController {
         @ApiResponse(responseCode = "400", description = "Invalid or expired token")
     })
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
         try {
-            String token = request.get("token");
-            String newPassword = request.get("password");
-            authService.resetPassword(token, newPassword);
+            authService.resetPassword(request.getToken(), request.getPassword());
             return ResponseEntity.ok(Map.of("message", "Password reset successful"));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
@@ -176,5 +175,33 @@ public class AuthController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
+    }
+
+    @Operation(summary = "Refresh Access Token", description = "Exchange a valid refresh token for a new access token and rotated refresh token")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "New tokens issued"),
+        @ApiResponse(responseCode = "400", description = "Invalid or expired refresh token")
+    })
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(@RequestBody Map<String, String> body) {
+        try {
+            String refreshToken = body.get("refreshToken");
+            if (refreshToken == null || refreshToken.isBlank()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "refreshToken is required"));
+            }
+            return ResponseEntity.ok(authService.refresh(refreshToken));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @Operation(summary = "Logout", description = "Revoke the refresh token for a user (server-side logout)")
+    @ApiResponse(responseCode = "200", description = "Logged out successfully")
+    @PostMapping("/logout/{userId}")
+    public ResponseEntity<?> logout(
+            @Parameter(description = "User ID", required = true)
+            @PathVariable Long userId) {
+        authService.revokeRefreshToken(userId);
+        return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
     }
 }

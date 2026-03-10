@@ -17,7 +17,9 @@ COPY --from=build /app/target/*.jar app.jar
 COPY start.sh start.sh
 RUN chmod +x start.sh
 
-ENV SPRING_PROFILES_ACTIVE=fly
+# Profile — defaults to fly; overridden at runtime by docker-compose or Fly.io env
+ARG SPRING_PROFILES_ACTIVE=fly
+ENV SPRING_PROFILES_ACTIVE=$SPRING_PROFILES_ACTIVE
 ENV JAVA_OPTS="-Xmx400m -Xms200m -XX:+UseG1GC"
 
 EXPOSE 8080

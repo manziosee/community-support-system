@@ -170,14 +170,41 @@ public class AuthService {
             user.setPasswordResetTokenExpiry(null); // Clear expiry
         }
         
+        // Issue refresh token
+        String refreshToken = jwtUtil.generateRefreshToken();
+        user.setRefreshToken(refreshToken);
         userRepository.save(user);
-        
-        // Generate JWT token
+
+        // Generate JWT access token
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name(), user.getUserId());
-        
-        return new AuthResponse(token, user);
+
+        AuthResponse response = new AuthResponse(token, user);
+        response.setRefreshToken(refreshToken);
+        return response;
     }
-    
+
+    public AuthResponse refresh(String refreshToken) {
+        User user = userRepository.findByRefreshToken(refreshToken)
+            .orElseThrow(() -> new RuntimeException("Invalid or expired refresh token"));
+
+        // Rotate: issue a new refresh token every time
+        String newRefreshToken = jwtUtil.generateRefreshToken();
+        user.setRefreshToken(newRefreshToken);
+        userRepository.save(user);
+
+        String newAccessToken = jwtUtil.generateToken(user.getEmail(), user.getRole().name(), user.getUserId());
+        AuthResponse response = new AuthResponse(newAccessToken, user);
+        response.setRefreshToken(newRefreshToken);
+        return response;
+    }
+
+    public void revokeRefreshToken(Long userId) {
+        userRepository.findById(userId).ifPresent(user -> {
+            user.setRefreshToken(null);
+            userRepository.save(user);
+        });
+    }
+
     public void requestPasswordReset(String email) {
         log.info("🔄 Password reset requested for email: " + email);
         

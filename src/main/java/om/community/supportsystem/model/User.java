@@ -46,8 +46,12 @@ public class User {
     @JsonIgnore
     @Column(length = 255)
     private String passwordResetToken;
-    
+
     private LocalDateTime passwordResetTokenExpiry;
+
+    @JsonIgnore
+    @Column(length = 255)
+    private String refreshToken;
     
     @JsonIgnore
     @Column(length = 255)
@@ -201,6 +205,9 @@ public class User {
     
     public String getPasswordResetToken() { return passwordResetToken; }
     public void setPasswordResetToken(String passwordResetToken) { this.passwordResetToken = passwordResetToken; }
+
+    public String getRefreshToken() { return refreshToken; }
+    public void setRefreshToken(String refreshToken) { this.refreshToken = refreshToken; }
     
     public LocalDateTime getPasswordResetTokenExpiry() { return passwordResetTokenExpiry; }
     public void setPasswordResetTokenExpiry(LocalDateTime passwordResetTokenExpiry) { this.passwordResetTokenExpiry = passwordResetTokenExpiry; }
